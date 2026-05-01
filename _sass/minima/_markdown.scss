@@ -1,0 +1,371 @@
+// GitHub-flavored markdown styles
+
+.markdown-body {
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  word-wrap: break-word;
+
+  // Headings
+  h1 {
+    font-size: $font-size-32;
+    font-weight: $font-weight-semibold;
+    padding-bottom: $spacing-2;
+    border-bottom: 1px solid var(--color-border-default);
+    margin: $spacing-6 0 $spacing-4;
+  }
+
+  h2 {
+    font-size: $font-size-24;
+    font-weight: $font-weight-semibold;
+    padding-bottom: $spacing-2;
+    border-bottom: 1px solid var(--color-border-default);
+    margin: $spacing-6 0 $spacing-3;
+  }
+
+  h3 {
+    font-size: $font-size-20;
+    font-weight: $font-weight-semibold;
+    margin: $spacing-4 0 $spacing-2;
+  }
+
+  h4 {
+    font-size: $font-size-16;
+    font-weight: $font-weight-semibold;
+    margin: $spacing-4 0 $spacing-2;
+  }
+
+  h5, h6 {
+    font-size: $base-font-size;
+    font-weight: $font-weight-semibold;
+    margin: $spacing-4 0 $spacing-2;
+  }
+
+  // Paragraphs
+  p {
+    margin: 0 0 $spacing-4;
+  }
+
+  // Links
+  a {
+    color: var(--color-text-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // Lists
+  ul, ol {
+    margin: 0 0 $spacing-4;
+    padding-left: $spacing-6;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  li {
+    margin: $spacing-1 0;
+
+    > ul, > ol {
+      margin-bottom: 0;
+      margin-top: $spacing-1;
+    }
+  }
+
+  // Code
+  code {
+    padding: 2px 6px;
+    background-color: var(--color-accent-subtle);
+    border-radius: $border-radius-sm;
+    font-family: $mono-font-family;
+    font-size: 85%;
+  }
+
+  pre {
+    margin: 0 0 $spacing-4;
+    padding: $spacing-4;
+    background-color: var(--color-syntax-bg);
+    border-radius: $border-radius-md;
+    overflow-x: auto;
+
+    code {
+      padding: 0;
+      background: none;
+      font-size: 85%;
+      border-radius: 0;
+    }
+  }
+
+  // Blockquotes
+  blockquote {
+    margin: 0 0 $spacing-4;
+    padding: 0 $spacing-4;
+    color: var(--color-text-secondary);
+    border-left: 4px solid var(--color-text-success);
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Tables
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 $spacing-4;
+
+    th, td {
+      padding: $spacing-2 $spacing-3;
+      border: 1px solid var(--color-border-default);
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--color-bg-subtle);
+      font-weight: $font-weight-semibold;
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--color-bg-subtle);
+    }
+  }
+
+  // Images
+  img {
+    max-width: 100%;
+    box-sizing: content-box;
+    background-color: var(--color-bg-canvas);
+  }
+
+  // Horizontal rule
+  hr {
+    border: 0;
+    height: 2px;
+    background-color: var(--color-border-default);
+    margin: $spacing-6 0;
+  }
+
+  // Task list items
+  .task-list-item {
+    list-style: none;
+    margin-left: -20px;
+  }
+
+  .task-list-item-checkbox {
+    margin-right: $spacing-2;
+    vertical-align: middle;
+  }
+}
+
+// Issue-style header (for blog posts)
+.gh-issue {
+  .gh-issue-header {
+    margin-bottom: $spacing-4;
+    padding-bottom: $spacing-3;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .gh-issue-title {
+    font-size: $font-size-24;
+    font-weight: $font-weight-semibold;
+    margin: 0 0 $spacing-2;
+  }
+
+  .gh-issue-meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    font-size: $font-size-small;
+    color: var(--color-text-secondary);
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: $spacing-1;
+    }
+  }
+}
+
+.gh-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: $border-radius-xl;
+  line-height: 20px;
+}
+
+// Page header
+.gh-page-header {
+  margin-bottom: $spacing-4;
+  padding-bottom: $spacing-3;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.gh-page-title {
+  font-size: $font-size-24;
+  font-weight: $font-weight-semibold;
+  margin: 0;
+}
+
+// Repo page styles
+.gh-repo-page {
+  .gh-repo-header {
+    margin-bottom: $spacing-3;
+  }
+
+  .gh-repo-name-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-size: $font-size-20;
+  }
+
+  .gh-repo-owner {
+    color: var(--color-text-link);
+  }
+
+  .gh-repo-separator {
+    color: var(--color-text-secondary);
+  }
+
+  .gh-repo-name-link {
+    font-weight: $font-weight-semibold;
+    color: var(--color-text-link);
+  }
+
+  .gh-repo-description {
+    margin: $spacing-2 0 0;
+    color: var(--color-text-secondary);
+    font-size: $base-font-size;
+  }
+
+  .gh-repo-nav {
+    display: flex;
+    border-bottom: 1px solid var(--color-border-default);
+    margin-bottom: $spacing-4;
+    gap: 0;
+  }
+
+  .gh-repo-tab {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-2 $spacing-3;
+    font-size: $base-font-size;
+    color: var(--color-text-secondary);
+    border-bottom: 2px solid transparent;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+
+    &.active {
+      color: var(--color-text-primary);
+      font-weight: $font-weight-semibold;
+      border-bottom-color: #f78166;
+    }
+  }
+
+  .gh-repo-stats {
+    display: flex;
+    gap: $spacing-4;
+    margin-bottom: $spacing-4;
+    font-size: $font-size-small;
+    color: var(--color-text-secondary);
+  }
+
+  .gh-repo-stat-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+  }
+}
+
+// File list
+.gh-file-list {
+  border: 1px solid var(--color-border-default);
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  margin-bottom: $spacing-4;
+}
+
+.gh-file-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-3;
+  border-bottom: 1px solid var(--color-border-default);
+  font-size: $base-font-size;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: var(--color-bg-subtle);
+  }
+}
+
+.gh-file-icon {
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+
+  &.gh-file-dir {
+    color: var(--color-accent-fg);
+  }
+}
+
+.gh-file-name {
+  color: var(--color-text-primary);
+}
+
+// README section
+.gh-readme {
+  border: 1px solid var(--color-border-default);
+  border-radius: $border-radius-md;
+  overflow: hidden;
+}
+
+.gh-readme-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-2 $spacing-4;
+  background-color: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border-default);
+  font-size: $base-font-size;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-secondary);
+}
+
+// 404 page
+.gh-404 {
+  text-align: center;
+  padding: $spacing-12 0;
+
+  h1 {
+    font-size: 64px;
+    font-weight: $font-weight-semibold;
+    color: var(--color-text-tertiary);
+    margin-bottom: $spacing-4;
+  }
+
+  p {
+    font-size: $font-size-20;
+    color: var(--color-text-secondary);
+    margin-bottom: $spacing-6;
+  }
+}

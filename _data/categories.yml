@@ -1,0 +1,65 @@
+- id: frontend
+  name: Frontend
+  icon: globe
+  children:
+    - id: react
+      name: React
+    - id: vue
+      name: Vue
+    - id: css
+      name: CSS
+      children:
+        - id: tailwind
+          name: Tailwind
+        - id: sass
+          name: Sass
+
+- id: backend
+  name: Backend
+  icon: server
+  children:
+    - id: nodejs
+      name: Node.js
+    - id: python
+      name: Python
+    - id: go
+      name: Go
+
+- id: jvm
+  name: JVM
+  icon: cpu
+  children:
+    - id: java
+      name: Java
+    - id: kotlin
+      name: Kotlin
+    - id: scala
+      name: Scala
+      children:
+        - id: akka
+          name: Akka
+        - id: spark
+          name: Spark
+    - id: jvm-tools
+      name: JVM Tools
+      children:
+        - id: gradle
+          name: Gradle
+        - id: jvm-performance
+          name: Performance Tuning
+
+- id: devops
+  name: DevOps
+  icon: tools
+  children:
+    - id: docker
+      name: Docker
+    - id: k8s
+      name: Kubernetes
+    - id: ci
+      name: CI/CD
+
+- id: about
+  name: About
+  icon: person
+  children: []

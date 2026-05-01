@@ -1,0 +1,19 @@
+header:
+  - name: Overview
+    url: "/"
+    category: overview
+  - name: Frontend
+    url: "/frontend/"
+    category: frontend
+  - name: Backend
+    url: "/backend/"
+    category: backend
+  - name: JVM
+    url: "/jvm/"
+    category: jvm
+  - name: DevOps
+    url: "/devops/"
+    category: devops
+  - name: About
+    url: "/about/"
+    category: about

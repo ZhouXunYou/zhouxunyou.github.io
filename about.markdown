@@ -2,17 +2,24 @@
 layout: page
 title: About
 permalink: /about/
+category: about
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+Hi, I'm **{{ site.author }}** — a developer and open source enthusiast.
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+## About Me
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+I build things for the web. I'm passionate about clean code, developer tools, and open source software.
 
+## Skills
 
-[jekyll-organization]: https://github.com/jekyll
+- **Frontend**: React, Vue, TypeScript, CSS/Tailwind/Sass
+- **Backend**: Node.js, Python, Go
+- **DevOps**: Docker, Kubernetes, CI/CD
+
+## Contact
+
+- GitHub: [{{ site.github_username }}](https://github.com/{{ site.github_username }})
+{% if site.email %}
+- Email: [{{ site.email }}](mailto:{{ site.email }})
+{% endif %}

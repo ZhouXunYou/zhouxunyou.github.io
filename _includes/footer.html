@@ -1,0 +1,11 @@
+<footer class="gh-footer" role="contentinfo">
+  <div class="gh-footer-inner">
+    <ul class="gh-footer-links">
+      <li>&copy; {{ 'now' | date: "%Y" }} {{ site.author | default: site.title | escape }}</li>
+      {% if site.github_username %}
+        <li><a href="https://github.com/{{ site.github_username }}">GitHub</a></li>
+      {% endif %}
+      <li><a href="{{ '/feed.xml' | relative_url }}">RSS</a></li>
+    </ul>
+  </div>
+</footer>

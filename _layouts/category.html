@@ -1,0 +1,116 @@
+---
+layout: default
+---
+
+<div class="gh-category-page">
+  {% assign cat_id = page.category_id | default: page.category %}
+
+  <!-- Find the category at any level in the tree -->
+  {% assign current_cat = nil %}
+  {% assign parent_cat = nil %}
+  {% for cat in site.data.categories %}
+    {% if cat.id == cat_id %}
+      {% assign current_cat = cat %}
+    {% else %}
+      {% for child in cat.children %}
+        {% if child.id == cat_id %}
+          {% assign current_cat = child %}
+          {% assign parent_cat = cat %}
+        {% endif %}
+        {% if child.children %}
+          {% for grandchild in child.children %}
+            {% if grandchild.id == cat_id %}
+              {% assign current_cat = grandchild %}
+              {% assign parent_cat = child %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+
+  {% if current_cat %}
+  <h1 class="gh-category-title">{{ current_cat.name }}</h1>
+
+  {% if parent_cat %}
+  <div class="gh-breadcrumb">
+    <a href="/{{ parent_cat.id }}/">{{ parent_cat.name }}</a>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/></svg>
+    <span>{{ current_cat.name }}</span>
+  </div>
+  {% endif %}
+
+  {% if current_cat.children and current_cat.children.size > 0 %}
+  <div class="gh-category-children">
+    {% for child in current_cat.children %}
+    <div class="gh-category-child">
+      {% if child.children and child.children.size > 0 %}
+      <details class="gh-tree-details" open>
+        <summary class="gh-tree-item">
+          <svg class="gh-tree-arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
+          </svg>
+          <span>{{ child.name }}</span>
+        </summary>
+        <div class="gh-tree-children">
+          {% for grandchild in child.children %}
+          <a class="gh-tree-link" href="/{{ grandchild.id }}/">
+            <svg class="gh-tree-dot" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
+              <circle cx="8" cy="8" r="4"/>
+            </svg>
+            <span>{{ grandchild.name }}</span>
+          </a>
+          {% endfor %}
+        </div>
+      </details>
+      {% else %}
+      <a class="gh-category-link" href="/{{ child.id }}/">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
+        </svg>
+        <span>{{ child.name }}</span>
+      </a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Repos matching this category and all its sub-categories -->
+  {% assign cat_repos = "" | split: "" %}
+  {% for repo in site.data.repos %}
+    {% assign is_match = false %}
+    {% if repo.category == cat_id %}
+      {% assign is_match = true %}
+    {% endif %}
+    {% if current_cat.children %}
+      {% for child in current_cat.children %}
+        {% if repo.category == child.id %}
+          {% assign is_match = true %}
+        {% endif %}
+        {% if child.children %}
+          {% for grandchild in child.children %}
+            {% if repo.category == grandchild.id %}
+              {% assign is_match = true %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% if is_match %}
+      {% assign cat_repos = cat_repos | push: repo %}
+    {% endif %}
+  {% endfor %}
+
+  {% if cat_repos.size > 0 %}
+  <h2 class="gh-section-title">Repositories</h2>
+  <div class="gh-repo-list">
+    {% for repo in cat_repos %}
+      {% include repo-card.html repo=repo layout="list" %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {{ content }}
+  {% endif %}
+</div>

@@ -1,0 +1,137 @@
+// ============================================
+// GitHub Color Tokens -- Light Theme (default)
+// ============================================
+:root,
+[data-theme="light"] {
+  // Page
+  --color-bg-canvas:         #ffffff;
+  --color-bg-canvas-inset:   #f6f8fa;
+  --color-bg-subtle:         #f6f8fa;
+  --color-bg-inset:          #f6f8fa;
+  --color-bg-overlay:        #ffffff;
+
+  // Borders
+  --color-border-default:    #d0d7de;
+  --color-border-muted:      #d8dee4;
+  --color-border-subtle:     rgba(175, 184, 193, 0.2);
+
+  // Text
+  --color-text-primary:      #1f2328;
+  --color-text-secondary:    #656d76;
+  --color-text-tertiary:     #6e7781;
+  --color-text-link:         #0969da;
+  --color-text-success:      #1a7f37;
+  --color-text-danger:       #d1242f;
+
+  // Accent
+  --color-accent-fg:         #0969da;
+  --color-accent-emphasis:   #0969da;
+  --color-accent-subtle:     #ddf4ff;
+
+  // Buttons
+  --color-btn-bg:            #f6f8fa;
+  --color-btn-border:        rgba(31, 35, 40, 0.15);
+  --color-btn-text:          #1f2328;
+  --color-btn-hover-bg:      #f3f4f6;
+  --color-btn-primary-bg:    #2da44e;
+  --color-btn-primary-text:  #ffffff;
+
+  // Header
+  --color-header-bg:         #24292f;
+  --color-header-text:       #ffffff;
+  --color-header-logo:       #ffffff;
+
+  // Cards
+  --color-card-bg:           #ffffff;
+  --color-card-border:       #d0d7de;
+
+  // Syntax
+  --color-syntax-bg:         #f6f8fa;
+
+  // Shadows
+  --color-shadow:            rgba(31, 35, 40, 0.04);
+  --color-shadow-medium:     rgba(31, 35, 40, 0.08);
+  --color-shadow-large:      rgba(31, 35, 40, 0.12);
+
+  // Timeline
+  --color-timeline-dot:      #0969da;
+  --color-timeline-line:     #d0d7de;
+
+  // Badge
+  --color-badge-lang-bg:     rgba(175, 184, 193, 0.2);
+
+  // Sidebar
+  --color-sidebar-bg:        #ffffff;
+  --color-sidebar-item-hover: #f6f8fa;
+  --color-sidebar-active-bg: #f6f8fa;
+  --color-sidebar-active-border: #fd8c73;
+
+  // Contribution graph
+  --color-calendar-graph-1:  #9be9a8;
+  --color-calendar-graph-2:  #40c463;
+  --color-calendar-graph-3:  #30a14e;
+  --color-calendar-graph-4:  #216e39;
+  --color-calendar-graph-0:  #ebedf0;
+}
+
+// ============================================
+// GitHub Color Tokens -- Dark Theme
+// ============================================
+[data-theme="dark"] {
+  --color-bg-canvas:         #0d1117;
+  --color-bg-canvas-inset:   #161b22;
+  --color-bg-subtle:         #161b22;
+  --color-bg-inset:          #161b22;
+  --color-bg-overlay:        #1c2128;
+
+  --color-border-default:    #30363d;
+  --color-border-muted:      #21262d;
+  --color-border-subtle:     rgba(240, 246, 252, 0.1);
+
+  --color-text-primary:      #e6edf3;
+  --color-text-secondary:    #8b949e;
+  --color-text-tertiary:     #8b949e;
+  --color-text-link:         #58a6ff;
+  --color-text-success:      #3fb950;
+  --color-text-danger:       #f85149;
+
+  --color-accent-fg:         #58a6ff;
+  --color-accent-emphasis:   #1f6feb;
+  --color-accent-subtle:     rgba(56, 139, 253, 0.15);
+
+  --color-btn-bg:            #21262d;
+  --color-btn-border:        rgba(240, 246, 252, 0.1);
+  --color-btn-text:          #c9d1d9;
+  --color-btn-hover-bg:      #30363d;
+  --color-btn-primary-bg:    #238636;
+  --color-btn-primary-text:  #ffffff;
+
+  --color-header-bg:         #161b22;
+  --color-header-text:       #f0f6fc;
+  --color-header-logo:       #f0f6fc;
+
+  --color-card-bg:           #0d1117;
+  --color-card-border:       #30363d;
+
+  --color-syntax-bg:         #161b22;
+
+  --color-shadow:            rgba(0, 0, 0, 0.1);
+  --color-shadow-medium:     rgba(0, 0, 0, 0.2);
+  --color-shadow-large:      rgba(0, 0, 0, 0.3);
+
+  --color-timeline-dot:      #58a6ff;
+  --color-timeline-line:     #30363d;
+
+  --color-badge-lang-bg:     rgba(240, 246, 252, 0.1);
+
+  --color-sidebar-bg:        #0d1117;
+  --color-sidebar-item-hover: #161b22;
+  --color-sidebar-active-bg: #161b22;
+  --color-sidebar-active-border: #f78166;
+
+  --color-calendar-graph-1:  #0e4429;
+  --color-calendar-graph-2:  #006d32;
+  --color-calendar-graph-3:  #26a641;
+  --color-calendar-graph-4:  #39d353;
+  --color-calendar-graph-0:  #161b22;
+}

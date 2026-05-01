@@ -1,0 +1,27 @@
+---
+layout: default
+---
+<article class="gh-issue">
+  <header class="gh-issue-header">
+    <h1 class="gh-issue-title">{{ page.title | escape }}</h1>
+    <div class="gh-issue-meta">
+      <span class="gh-issue-author">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M10.561 8.073a6.005 6.005 0 013.432 5.142.75.75 0 11-1.498.07 4.5 4.5 0 00-8.99 0 .75.75 0 11-1.498-.07 6.005 6.005 0 013.432-5.142 3.999 3.999 0 115.123 0zM10.5 5a2.5 2.5 0 10-5 0 2.5 2.5 0 005 0z"/></svg>
+        {{ page.author | default: site.author | escape }}
+      </span>
+      <span class="gh-issue-date">
+        <time datetime="{{ page.date | date_to_xmlschema }}">
+          {{ page.date | date: "%b %-d, %Y" }}
+        </time>
+      </span>
+      {% if page.categories %}
+        {% for cat in page.categories %}
+          <span class="gh-badge">{{ cat }}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </header>
+  <div class="markdown-body">
+    {{ content }}
+  </div>
+</article>

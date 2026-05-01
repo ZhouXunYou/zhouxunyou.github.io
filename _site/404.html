@@ -1,87 +1,128 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-  <meta charset="utf-8">
+<html lang="zh-CN" data-theme="light">
+  <head>
+  <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Your awesome title | Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</title>
-<meta name="generator" content="Jekyll v4.3.3" />
-<meta property="og:title" content="Your awesome title" />
-<meta property="og:locale" content="en_US" />
-<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
-<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
-<link rel="canonical" href="/404.html" />
-<meta property="og:url" content="/404.html" />
-<meta property="og:site_name" content="Your awesome title" />
-<meta property="og:type" content="website" />
-<meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Your awesome title" />
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"Your awesome title","url":"/404.html"}</script>
-<!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Your awesome title" /></head>
-<body><header class="site-header" role="banner">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Developer / Open Source Enthusiast">
 
-  <div class="wrapper"><a class="site-title" rel="author" href="/">Your awesome title</a><nav class="site-nav">
-        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-        <label for="nav-trigger">
-          <span class="menu-icon">
-            <svg viewBox="0 0 18 15" width="18px" height="15px">
-              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
-            </svg>
-          </span>
-        </label>
+  <title>Zhou Xunyou</title>
 
-        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
-      </nav></div>
-</header>
-<main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        <style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+  <!-- Prevent flash: set theme before CSS paints -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 
-<div class="container">
-  <h1>404</h1>
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="alternate" type="application/rss+xml" title="Zhou Xunyou" href="/feed.xml">
+  <link rel="icon" href="/favicon.ico">
 
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
-</div>
+  <script src="/assets/js/theme-toggle.js"></script>
+  <script src="/assets/js/sidebar.js" defer></script>
+</head>
 
-      </div>
-    </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
+  <body>
+    <header class="gh-header" role="banner">
+  <div class="gh-header-inner">
+    <!-- Logo / Site name -->
+    <a class="gh-header-logo" href="/">
+      <svg class="gh-octicon" width="28" height="28" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+      <span class="gh-header-title">Zhou Xunyou</span>
+    </a>
 
-  <div class="wrapper">
+    <!-- Category navigation tabs -->
+    <nav class="gh-header-nav" role="navigation">
+      
+        <a class="gh-header-link active"
+           href="/"
+           data-category="overview">
+          Overview
+        </a>
+      
+        <a class="gh-header-link"
+           href="/frontend/"
+           data-category="frontend">
+          Frontend
+        </a>
+      
+        <a class="gh-header-link"
+           href="/backend/"
+           data-category="backend">
+          Backend
+        </a>
+      
+        <a class="gh-header-link"
+           href="/jvm/"
+           data-category="jvm">
+          JVM
+        </a>
+      
+        <a class="gh-header-link"
+           href="/devops/"
+           data-category="devops">
+          DevOps
+        </a>
+      
+        <a class="gh-header-link"
+           href="/about/"
+           data-category="about">
+          About
+        </a>
+      
+    </nav>
 
-    <h2 class="footer-heading">Your awesome title</h2>
+    <!-- Right side actions -->
+    <div class="gh-header-actions">
+      <button class="gh-theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
+  <svg class="gh-theme-icon-light" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+    <path d="M8 12a4 4 0 100-8 4 4 0 000 8zm0-1.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM1.5 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h.75A.75.75 0 011.5 8zm13 0a.75.75 0 01-.75.75h-.75a.75.75 0 010-1.5h.75a.75.75 0 01.75.75zM3.05 3.05a.75.75 0 010 1.06l-.53.53a.75.75 0 01-1.06-1.06l.53-.53a.75.75 0 011.06 0zm9.9 9.9a.75.75 0 010 1.06l-.53.53a.75.75 0 01-1.06-1.06l.53-.53a.75.75 0 011.06 0zM3.58 13.04a.75.75 0 01-1.06 0l-.53-.53a.75.75 0 011.06-1.06l.53.53a.75.75 0 010 1.06zm9.9-9.9a.75.75 0 01-1.06 0l-.53-.53a.75.75 0 011.06-1.06l.53.53a.75.75 0 010 1.06z"/>
+  </svg>
+  <svg class="gh-theme-icon-dark" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+    <path d="M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786z"/>
+  </svg>
+</button>
 
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Your awesome title</li><li><a class="u-email" href="mailto:your-email@example.com">your-email@example.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
-</div>
-
-      <div class="footer-col footer-col-3">
-        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
-      </div>
     </div>
 
+    <!-- Mobile hamburger -->
+    <button class="gh-header-hamburger" aria-label="Toggle navigation" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 010 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 010 1.5H1.75A.75.75 0 011 7.75zM1.75 12h12.5a.75.75 0 010 1.5H1.75a.75.75 0 010-1.5z"/>
+      </svg>
+    </button>
   </div>
+</header>
 
+    <div class="gh-layout gh-layout-full">
+      
+      <main class="gh-main" aria-label="Content">
+        <div class="gh-container">
+          <div class="gh-404">
+  <h1>404</h1>
+  <p>Page not found.</p>
+  <a href="/" class="gh-btn gh-btn-primary">Back to home</a>
+</div>
+
+        </div>
+      </main>
+    </div>
+    <footer class="gh-footer" role="contentinfo">
+  <div class="gh-footer-inner">
+    <ul class="gh-footer-links">
+      <li>&copy; 2026 Zhou Xunyou</li>
+      
+        <li><a href="https://github.com/zhouxunyou">GitHub</a></li>
+      
+      <li><a href="/feed.xml">RSS</a></li>
+    </ul>
+  </div>
 </footer>
-</body>
 
+  </body>
 </html>

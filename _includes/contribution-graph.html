@@ -1,0 +1,11 @@
+<!-- Static contribution graph visualization -->
+<div class="gh-contribution-graph-grid">
+  {% for i in (1..52) %}
+    <div class="gh-contribution-week">
+      {% for j in (1..7) %}
+        {% assign level = forloop.parentloop.index0 | modulo: 4 %}
+        <div class="gh-contribution-cell gh-contribution-level-{{ level }}" title="Contributions"></div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>

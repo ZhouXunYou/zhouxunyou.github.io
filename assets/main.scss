@@ -1,0 +1,12 @@
+---
+# Only the main Sass file needs front matter
+---
+@import "theme";
+@import "minima/variables";
+@import "minima/base";
+@import "minima/layout";
+@import "minima/sidebar";
+@import "minima/components";
+@import "minima/markdown";
+@import "minima/syntax-highlighting";
+@import "minima/responsive";

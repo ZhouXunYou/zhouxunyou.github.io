@@ -1,0 +1,152 @@
+// Responsive breakpoints matching GitHub
+
+// Mobile: <= 544px (default styles are mobile-first)
+@media (max-width: $on-mobile) {
+  .gh-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gh-sidebar {
+    position: static;
+    height: auto;
+    border-bottom: 1px solid var(--color-border-default);
+    border-right: none;
+    display: none;
+
+    &.gh-sidebar-open {
+      display: block;
+    }
+  }
+
+  .gh-main {
+    border-left: none;
+    padding: $spacing-4;
+  }
+
+  .gh-header-nav {
+    display: none;
+    position: absolute;
+    top: $header-height;
+    left: 0;
+    right: 0;
+    background-color: var(--color-header-bg);
+    flex-direction: column;
+    padding: $spacing-2 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+    &.gh-header-nav-open {
+      display: flex;
+    }
+  }
+
+  .gh-header-link {
+    padding: $spacing-3 $spacing-6;
+    border-bottom: none;
+    border-left: 2px solid transparent;
+
+    &.active {
+      border-bottom: none;
+      border-left-color: #f78166;
+    }
+  }
+
+  .gh-pinned-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gh-header-title {
+    display: none;
+  }
+
+  // Show sidebar toggle button on mobile
+  .gh-sidebar-toggle {
+    display: flex;
+  }
+
+  .gh-repo-name-row {
+    font-size: $font-size-16 !important;
+    flex-wrap: wrap;
+  }
+
+  .gh-repo-stats {
+    flex-wrap: wrap;
+    gap: $spacing-2;
+  }
+
+  .gh-contribution-graph-grid {
+    display: none; // Too small on mobile
+  }
+}
+
+// Tablet: 545px - 768px
+@media (min-width: 545px) and (max-width: $on-tablet) {
+  .gh-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gh-sidebar {
+    position: static;
+    height: auto;
+    border-bottom: 1px solid var(--color-border-default);
+    border-right: none;
+  }
+
+  .gh-main {
+    border-left: none;
+    padding: $spacing-4 $spacing-6;
+  }
+
+  .gh-pinned-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gh-header-hamburger {
+    display: flex;
+  }
+
+  .gh-header-nav {
+    display: none;
+
+    &.gh-header-nav-open {
+      display: flex;
+      position: absolute;
+      top: $header-height;
+      left: 0;
+      right: 0;
+      background-color: var(--color-header-bg);
+      flex-direction: column;
+      padding: $spacing-2 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+// Desktop: 769px+
+@media (min-width: 769px) {
+  .gh-layout {
+    grid-template-columns: $sidebar-width 1fr;
+  }
+
+  .gh-sidebar {
+    display: block;
+  }
+
+  .gh-main {
+    border-left: 1px solid var(--color-border-default);
+  }
+
+  .gh-header-hamburger {
+    display: none;
+  }
+
+  .gh-header-nav {
+    display: flex;
+  }
+}
+
+// Wide: >= 1012px
+@media (min-width: $on-desktop) {
+  .gh-container {
+    max-width: calc(#{$content-width} - #{$sidebar-width} - #{$spacing-6} * 3);
+  }
+}

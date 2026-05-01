@@ -1,0 +1,196 @@
+// Reset & GitHub typography
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: $base-font-size;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+  font-weight: $base-font-weight;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-canvas);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+// Links
+a {
+  color: var(--color-text-link);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Headings
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+}
+
+h1 { font-size: $font-size-32; line-height: 1.25; }
+h2 { font-size: $font-size-24; line-height: 1.33; }
+h3 { font-size: $font-size-20; line-height: 1.4; }
+h4 { font-size: $font-size-16; line-height: 1.5; }
+
+// Paragraphs
+p {
+  margin: 0 0 $spacing-4 0;
+  color: var(--color-text-primary);
+}
+
+// Lists
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// Images
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+// Code
+code, pre {
+  font-family: $mono-font-family;
+  font-size: $font-size-small;
+}
+
+code {
+  padding: 2px 6px;
+  background-color: var(--color-accent-subtle);
+  border-radius: $border-radius-sm;
+  font-size: 85%;
+}
+
+pre {
+  margin: 0 0 $spacing-4 0;
+  padding: $spacing-4;
+  background-color: var(--color-syntax-bg);
+  border-radius: $border-radius-md;
+  overflow-x: auto;
+  line-height: 1.45;
+
+  code {
+    padding: 0;
+    background: none;
+    font-size: inherit;
+    border-radius: 0;
+  }
+}
+
+// Blockquotes
+blockquote {
+  margin: 0 0 $spacing-4 0;
+  padding: 0 $spacing-4;
+  color: var(--color-text-secondary);
+  border-left: 4px solid var(--color-text-success);
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Tables
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 $spacing-4 0;
+
+  th, td {
+    padding: $spacing-2 $spacing-3;
+    border: 1px solid var(--color-border-default);
+    text-align: left;
+  }
+
+  th {
+    background-color: var(--color-bg-subtle);
+    font-weight: $font-weight-semibold;
+  }
+
+  tr:nth-child(even) {
+    background-color: var(--color-bg-subtle);
+  }
+}
+
+// Horizontal rule
+hr {
+  border: 0;
+  height: 1px;
+  background-color: var(--color-border-default);
+  margin: $spacing-4 0;
+}
+
+// Buttons
+.gh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 16px;
+  font-size: $base-font-size;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid var(--color-btn-border);
+  border-radius: $border-radius-md;
+  background-color: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--color-btn-hover-bg);
+    text-decoration: none;
+  }
+
+  &-primary {
+    background-color: var(--color-btn-primary-bg);
+    color: var(--color-btn-primary-text);
+    border-color: rgba(31, 35, 40, 0.15);
+
+    &:hover {
+      opacity: 0.9;
+      background-color: var(--color-btn-primary-bg);
+    }
+  }
+}
+
+// Input
+.gh-input {
+  padding: 5px 12px;
+  font-size: $base-font-size;
+  line-height: 20px;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-canvas);
+  border: 1px solid var(--color-border-default);
+  border-radius: $border-radius-md;
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-accent-fg);
+    box-shadow: 0 0 0 3px var(--color-accent-subtle);
+  }
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}

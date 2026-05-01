@@ -1,0 +1,173 @@
+// Layout: Header + Grid + Main + Footer
+
+// Fixed header
+.gh-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--color-header-bg);
+  color: var(--color-header-text);
+  height: $header-height;
+  display: flex;
+  align-items: center;
+  padding: 0 $spacing-6;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.gh-header-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: $content-width;
+  margin: 0 auto;
+  gap: $spacing-4;
+}
+
+.gh-header-logo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  color: var(--color-header-logo);
+  text-decoration: none;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-16;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--color-header-logo);
+    opacity: 0.85;
+    text-decoration: none;
+  }
+}
+
+.gh-header-title {
+  @media (max-width: $on-mobile) {
+    display: none;
+  }
+}
+
+.gh-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.gh-header-link {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-2 $spacing-3;
+  color: var(--color-header-text);
+  font-size: $base-font-size;
+  font-weight: $base-font-weight;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    color: #ffffff;
+    text-decoration: none;
+    border-bottom-color: rgba(255, 255, 255, 0.4);
+  }
+
+  &.active {
+    font-weight: $font-weight-semibold;
+    border-bottom-color: #f78166;
+  }
+}
+
+.gh-header-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin-left: auto;
+}
+
+.gh-header-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-header-text);
+  cursor: pointer;
+  padding: $spacing-2;
+  margin-left: auto;
+
+  @media (max-width: $on-tablet) {
+    display: flex;
+  }
+}
+
+// Theme toggle button
+.gh-theme-toggle {
+  background: none;
+  border: none;
+  color: var(--color-header-text);
+  cursor: pointer;
+  padding: $spacing-2;
+  border-radius: $border-radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Show/hide sun/moon icons based on theme
+[data-theme="light"] .gh-theme-icon-dark { display: none; }
+[data-theme="dark"] .gh-theme-icon-light { display: none; }
+
+// Main layout grid
+.gh-layout {
+  display: grid;
+  grid-template-columns: $sidebar-width 1fr;
+  max-width: $content-width;
+  margin: 0 auto;
+  min-height: calc(100vh - #{$header-height});
+  flex: 1;
+}
+
+// Full width layout (no sidebar)
+.gh-layout-full {
+  grid-template-columns: 1fr;
+}
+
+// Main content area
+.gh-main {
+  min-width: 0;
+  padding: $spacing-6 $spacing-6 $spacing-8;
+  border-left: 1px solid var(--color-border-default);
+}
+
+.gh-layout-full > .gh-main {
+  border-left: none;
+}
+
+.gh-container {
+  max-width: calc(#{$content-width} - #{$sidebar-width});
+}
+
+// Footer
+.gh-footer {
+  border-top: 1px solid var(--color-border-default);
+  padding: $spacing-6;
+  color: var(--color-text-secondary);
+  font-size: $font-size-small;
+}
+
+.gh-footer-inner {
+  max-width: $content-width;
+  margin: 0 auto;
+}
+
+.gh-footer-links {
+  display: flex;
+  gap: $spacing-4;
+  flex-wrap: wrap;
+
+  a {
+    color: var(--color-text-link);
+  }
+}

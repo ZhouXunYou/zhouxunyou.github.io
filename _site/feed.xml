@@ -1,4 +1,1783 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-08-03T10:38:05+08:00</updated><id>/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Welcome to Jekyll!</title><link href="/jekyll/update/2024/08/03/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2024-08-03T10:36:15+08:00</published><updated>2024-08-03T10:36:15+08:00</updated><id>/jekyll/update/2024/08/03/welcome-to-jekyll</id><content type="html" xml:base="/jekyll/update/2024/08/03/welcome-to-jekyll.html"><![CDATA[<p>You’ll find this post in your <code class="language-plaintext highlighter-rouge">_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-05-01T19:21:04+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Zhou Xunyou</title><subtitle>Developer / Open Source Enthusiast</subtitle><author><name>Zhou Xunyou</name></author><entry><title type="html">堆外内存与 DirectByteBuffer：高性能 I/O 的幕后功臣</title><link href="http://localhost:4000/jvm-performance/2024/12/08/off-heap-memory.html" rel="alternate" type="text/html" title="堆外内存与 DirectByteBuffer：高性能 I/O 的幕后功臣" /><published>2024-12-08T00:00:00+08:00</published><updated>2024-12-08T00:00:00+08:00</updated><id>http://localhost:4000/jvm-performance/2024/12/08/off-heap-memory</id><content type="html" xml:base="http://localhost:4000/jvm-performance/2024/12/08/off-heap-memory.html"><![CDATA[<p>除了堆内内存，JVM 还有一块常被忽视但至关重要的内存区域——<strong>堆外内存（Off-Heap / Direct Memory）</strong>。它由 NIO 的 <code class="language-plaintext highlighter-rouge">DirectByteBuffer</code> 和 native 代码使用，是高性能 I/O 的基础。</p>
+
+<h2 id="什么是堆外内存">什么是堆外内存？</h2>
+
+<p>堆外内存是 ** JVM 堆以外、由操作系统直接管理的内存<strong>，也叫做 **Direct Memory</strong> 或 <strong>Native Memory</strong>。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JVM 进程内存布局：
+
+┌──────────────────────────────────────────────────┐
+│  JVM 进程（操作系统视角）                            │
+│                                                   │
+│  ┌────────────────────┐                          │
+│  │    Java Heap (堆)    │  ← -Xms/-Xmx 控制    │
+│  │   - 对象在此分配      │                        │
+│  │   - 由 GC 管理        │                        │
+│  └────────────────────┘                          │
+│                                                   │
+│  ┌────────────────────┐                          │
+│  │  Metaspace          │  ← 类元数据              │
+│  └────────────────────┘                          │
+│                                                   │
+│  ┌────────────────────┐                          │
+│  │  Thread Stacks      │  ← 每个线程 ~1MB        │
+│  └────────────────────┘                          │
+│                                                   │
+│  ┌────────────────────┐                          │
+│  │  Direct Memory     │  ← NIO Buffer、native代码│
+│  │  (堆外内存/本地内存)  │    不受 GC 直接管理      │
+│  └────────────────────┘                          │
+│                                                   │
+│  ┌────────────────────┐                          │
+│  │  JIT Compiled Code  │  ← JIT 编译后的机器码   │
+│  └────────────────────┘                          │
+│                                                   │
+│  ┌────────────────────┐                          │
+│  │  Internal / malloc  │  ← JVM 内部数据机构      │
+│  └────────────────────┘                          │
+└──────────────────────────────────────────────────┘
+</code></pre></div></div>
+
+<h2 id="为什么需要堆外内存">为什么需要堆外内存？</h2>
+
+<h3 id="传统-io-的问题内核缓冲区复制">传统 I/O 的问题：内核缓冲区复制</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>传统 I/O（堆内 ByteBuffer）：
+
+用户进程                     内核                    硬件
+    │                        │                       │
+    │  read(socket)          │                       │
+    │ ─────────────────────→ │                       │
+    │                        │  DMA 读取数据          │
+    │                        │ ─────────────────────→ │
+    │                        │                       │
+    │   ① 内核缓冲区 → 用户缓冲区（复制）              │
+    │ ←────────────────────── │                       │
+    │                        │                       │
+    │  ② JVM 堆内 Buffer 填充（又一次复制）           │
+    │ ←────────────────────── │                       │
+    │
+问题：经历了两次数据复制！
+</code></pre></div></div>
+
+<h3 id="零拷贝-io堆外内存的解决方案">零拷贝 I/O：堆外内存的解决方案</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DMA I/O（DirectByteBuffer / 零拷贝）：
+
+用户进程                     内核                    硬件
+    │                        │                       │
+    │  read(socket)          │                       │
+    │ ─────────────────────→ │                       │
+    │                        │  DMA 读取数据          │
+    │                        │ ─────────────────────→ │
+    │                        │                       │
+    │  ① 直接在内核缓冲区使用，无需复制到用户空间       │
+    │ ←────────────────────── │                       │
+    │                        │                       │
+    │
+优点：只需一次 DMA 复制，不经过 JVM 堆！
+</code></pre></div></div>
+
+<h2 id="directbytebuffer-详解">DirectByteBuffer 详解</h2>
+
+<h3 id="创建与内存分配">创建与内存分配</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 分配一块 64MB 的堆外内存</span>
+<span class="nc">ByteBuffer</span> <span class="n">buffer</span> <span class="o">=</span> <span class="nc">ByteBuffer</span><span class="o">.</span><span class="na">allocateDirect</span><span class="o">(</span><span class="mi">64</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="o">);</span>
+
+<span class="c1">// 写入数据</span>
+<span class="n">buffer</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"Hello, Off-Heap!"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">());</span>
+<span class="n">buffer</span><span class="o">.</span><span class="na">flip</span><span class="o">();</span>
+
+<span class="c1">// 读取数据</span>
+<span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">buffer</span><span class="o">.</span><span class="na">remaining</span><span class="o">()];</span>
+<span class="n">buffer</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">data</span><span class="o">);</span>
+</code></pre></div></div>
+
+<h3 id="directbytebuffer-的内存管理">DirectByteBuffer 的内存管理</h3>
+
+<p><code class="language-plaintext highlighter-rouge">DirectByteBuffer</code> 对象本身在<strong>堆内</strong>（由 GC 管理），但它持有的<strong>数据</strong>在<strong>堆外内存</strong>中：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>堆内（GC 管理）：
+┌──────────────────────────────────────────────┐
+│  DirectByteBuffer 对象                      │
+│  - address: 0x7f8e000000L  （指向堆外地址）│
+│  - capacity: 67108864                       │
+│  - cleaner: Cleaner (虚引用)                │
+└──────────────────────────────────────────────┘
+              ↓ address 字段
+堆外（OS 直接管理）：
+┌──────────────────────────────────────────────┐
+│  64MB Direct Memory                        │
+│  0x7f8e000000 ~ 0x7f8e3FFFFF             │
+│  数据在此                                  │
+└──────────────────────────────────────────────┘
+</code></pre></div></div>
+
+<h3 id="释放机制phantomreference--cleaner">释放机制：PhantomReference + Cleaner</h3>
+
+<p><code class="language-plaintext highlighter-rouge">DirectByteBuffer</code> 不再被引用时，GC 会回收堆内的 <code class="language-plaintext highlighter-rouge">DirectByteBuffer</code> 对象，其关联的** Cleaner（虚引用）**被加入 ReferenceQueue。GC 完成后， Cleaner 线程负责调用 <code class="language-plaintext highlighter-rouge">unsafe.freeMemory()</code> 释放堆外内存：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DirectByteBuffer 对象（堆内）
+        ↓（不再被引用）
+    GC 回收该对象
+        ↓（虚引用被加入 ReferenceQueue）
+    Cleaner 线程检测到引用
+        ↓
+    unsafe.freeMemory(address)  ← 释放堆外内存
+</code></pre></div></div>
+
+<h2 id="堆外内存常见问题">堆外内存常见问题</h2>
+
+<h3 id="1-direct-memory-oom">1. Direct Memory OOM</h3>
+
+<p><strong>现象</strong>：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.lang.OutOfMemoryError: Direct buffer memory
+    at java.nio.Bits.reserveMemory(Bits.java:217)
+    at java.nio.DirectByteBuffer.&lt;init&gt;(DirectByteBuffer.java:104)
+</code></pre></div></div>
+
+<p><strong>原因</strong>：堆外内存耗尽。通常是因为分配速度 &gt; 释放速度，或 <code class="language-plaintext highlighter-rouge">MaxDirectMemorySize</code> 设置过小。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 默认 MaxDirectMemorySize = -Xmx（堆最大内存）</span>
+<span class="c"># 设置堆外内存上限</span>
+<span class="nt">-XX</span>:MaxDirectMemorySize<span class="o">=</span>512m
+</code></pre></div></div>
+
+<h3 id="2-堆外内存泄漏">2. 堆外内存泄漏</h3>
+
+<p><strong>原因</strong>：大量创建 <code class="language-plaintext highlighter-rouge">DirectByteBuffer</code> 但未及时释放（尤其在高并发 I/O 场景）。</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 问题代码：每次请求都创建新的 DirectByteBuffer，但没有及时释放</span>
+<span class="kd">public</span> <span class="nc">String</span> <span class="nf">readChannel</span><span class="o">(</span><span class="nc">SocketChannel</span> <span class="n">ch</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+    <span class="nc">ByteBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="nc">ByteBuffer</span><span class="o">.</span><span class="na">allocateDirect</span><span class="o">(</span><span class="mi">8</span> <span class="o">*</span> <span class="mi">1024</span><span class="o">);</span>  <span class="c1">// 每次 8KB</span>
+    <span class="c1">// ... 读写操作</span>
+    <span class="c1">// ❌ buf 对象可能仍然被 channel 或其他引用持有</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>正确做法</strong>：使用对象池或复用 Buffer：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 复用 Buffer，避免频繁分配</span>
+<span class="nc">ByteBuffer</span> <span class="n">buf</span> <span class="o">=</span> <span class="nc">ByteBuffer</span><span class="o">.</span><span class="na">allocateDirect</span><span class="o">(</span><span class="mi">8</span> <span class="o">*</span> <span class="mi">1024</span><span class="o">);</span>
+<span class="k">while</span> <span class="o">(</span><span class="n">ch</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">buf</span><span class="o">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">buf</span><span class="o">.</span><span class="na">flip</span><span class="o">();</span>
+    <span class="n">process</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>
+    <span class="n">buf</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>  <span class="c1">// 复用，不创建新对象</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="3--xxnativememorytracking-查看堆外内存">3. -XX:NativeMemoryTracking 查看堆外内存</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 启动时开启 NMT</span>
+java <span class="nt">-XX</span>:NativeMemoryTracking<span class="o">=</span>detail <span class="se">\</span>
+     <span class="nt">-XX</span>:+UseG1GC <span class="se">\</span>
+     <span class="nt">-Xms4g</span> <span class="nt">-Xmx4g</span> <span class="se">\</span>
+     your-app.jar
+
+<span class="c"># 运行时查看内存分布（需要 jcmd）</span>
+jcmd &lt;pid&gt; VM.native_memory summary
+
+<span class="c"># 示例输出：</span>
+<span class="c"># Native Memory Tracking:</span>
+<span class="c"># Total: reserved=4856MB, committed=4856MB</span>
+<span class="c"># - Java Heap (reserved=4096MB, committed=4096MB)</span>
+<span class="c"># - Class (reserved=128MB, committed=128MB)</span>
+<span class="c"># - Thread (reserved=64MB, committed=64MB)</span>
+<span class="c"># - Code (reserved=48MB, committed=48MB)</span>
+<span class="c"># - GC (reserved=256MB, committed=256MB)</span>
+<span class="c"># - Internal (reserved=64MB, committed=64MB)</span>
+<span class="c"># - Direct Memory (reserved=200MB, committed=200MB)  ← 堆外内存</span>
+</code></pre></div></div>
+
+<h2 id="堆外内存与-gc-的关系">堆外内存与 GC 的关系</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>堆内内存</th>
+      <th>堆外内存（Direct Memory）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>管理方式</td>
+      <td>GC 自动回收</td>
+      <td>手动或 Cleaner 释放</td>
+    </tr>
+    <tr>
+      <td>分配速度</td>
+      <td>快（有 TLAB）</td>
+      <td>略慢（系统调用）</td>
+    </tr>
+    <tr>
+      <td>I/O 性能</td>
+      <td>需复制到内核</td>
+      <td>零拷贝（最优）</td>
+    </tr>
+    <tr>
+      <td>OOM 原因</td>
+      <td>Java heap space</td>
+      <td>Direct buffer memory</td>
+    </tr>
+    <tr>
+      <td>释放时机</td>
+      <td>GC 时</td>
+      <td>对象不可达后 Cleaner 异步释放</td>
+    </tr>
+    <tr>
+      <td>大小控制</td>
+      <td>-Xms/-Xmx</td>
+      <td>-XX:MaxDirectMemorySize</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="netty-中的堆外内存使用">Netty 中的堆外内存使用</h2>
+
+<p>Netty 是堆外内存使用最成熟的框架，通过 <code class="language-plaintext highlighter-rouge">ByteBuf</code> 实现了高效内存管理：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// PooledDirectByteBuf（池化堆外内存，Netty 默认）</span>
+<span class="nc">ByteBuf</span> <span class="n">buf</span> <span class="o">=</span> <span class="nc">Unpooled</span><span class="o">.</span><span class="na">directBuffer</span><span class="o">(</span><span class="mi">1024</span><span class="o">);</span>
+
+<span class="c1">// 非池化（调试时用）</span>
+<span class="nc">ByteBuf</span> <span class="n">buf</span> <span class="o">=</span> <span class="nc">Unpooled</span><span class="o">.</span><span class="na">directBuffer</span><span class="o">(</span><span class="mi">1024</span><span class="o">);</span>
+
+<span class="c1">// 从 Channel 读取</span>
+<span class="n">ctx</span><span class="o">.</span><span class="na">channel</span><span class="o">().</span><span class="na">read</span><span class="o">(</span><span class="n">buf</span><span class="o">).</span><span class="na">addListener</span><span class="o">(</span><span class="n">future</span> <span class="o">-&gt;</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">future</span><span class="o">.</span><span class="na">isSuccess</span><span class="o">())</span> <span class="o">{</span>
+        <span class="c1">// buf 内容已经就绪，可以直接使用</span>
+        <span class="n">process</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>
+        <span class="n">buf</span><span class="o">.</span><span class="na">release</span><span class="o">();</span>  <span class="c1">// 显式释放（重要！）</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</code></pre></div></div>
+
+<p><strong>Netty 的内存池</strong>避免了频繁的 <code class="language-plaintext highlighter-rouge">allocateDirect()</code> 系统调用，大幅提升了高并发 I/O 场景的性能。</p>
+
+<h2 id="监控与调优建议">监控与调优建议</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. NMT 查看堆外内存使用</span>
+jcmd &lt;pid&gt; VM.native_memory baseline  <span class="c"># 建立基准线</span>
+<span class="c"># ... 运行一段时间后 ...</span>
+jcmd &lt;pid&gt; VM.native_memory summary.diff
+
+<span class="c"># 2. Async-profiler 采样堆外内存分配</span>
+./async-profiler.sh profiler <span class="nt">-e</span> <span class="s1">'java/nio/DirectByteBuffer*'</span> <span class="se">\</span>
+    <span class="nt">-f</span> direct-memory.html &lt;pid&gt;
+
+<span class="c"># 3. 推荐参数配置（高并发 I/O 场景）</span>
+java <span class="nt">-XX</span>:+UseG1GC <span class="se">\</span>
+     <span class="nt">-Xms8g</span> <span class="nt">-Xmx8g</span> <span class="se">\</span>
+     <span class="nt">-XX</span>:MaxDirectMemorySize<span class="o">=</span>1g <span class="se">\ </span>  <span class="c"># 堆外内存上限</span>
+     <span class="nt">-XX</span>:+DisableExplicitGC          <span class="c"># 不建议，可能影响 Cleaner</span>
+     your-app.jar
+</code></pre></div></div>
+
+<h2 id="总结">总结</h2>
+
+<ul>
+  <li>堆外内存由 OS 直接管理，不受 GC 控制，适合高性能 I/O</li>
+  <li><code class="language-plaintext highlighter-rouge">DirectByteBuffer</code> 对象在堆内，数据在堆外，通过 Cleaner 异步释放</li>
+  <li><strong>零拷贝</strong>是堆外内存最大的优势：减少了内核缓冲区到用户缓冲区的复制</li>
+  <li>NMT 和 async-profiler 是监控堆外内存的主要工具</li>
+  <li>高并发 I/O 场景推荐使用 <strong>Netty</strong> 等成熟框架的池化堆外内存</li>
+</ul>
+
+<hr />
+
+<h2 id="系列总结">系列总结</h2>
+
+<p>本系列从 JVM 内存模型出发，介绍了：</p>
+
+<ol>
+  <li><strong>内存模型</strong>：堆 / Metaspace / VM Stack 的职责</li>
+  <li><strong>GC 算法</strong>：标记-清除 / 复制 / 标记-整理 / 分代收集</li>
+  <li><strong>G1GC</strong>：Region 化设计、可预测停顿、Humongous 对象</li>
+  <li><strong>内存泄漏排查</strong>：MAT + async-profiler 实战</li>
+  <li><strong>性能调优</strong>：不同场景的参数配置方案</li>
+  <li><strong>堆外内存</strong>：DirectByteBuffer 与零拷贝 I/O</li>
+</ol>
+
+<p>理解底层原理，配合工具进行监控和分析，是解决生产环境 JVM 内存问题的必经之路。</p>]]></content><author><name>Zhou Xunyou</name></author><category term="jvm-performance" /><summary type="html"><![CDATA[除了堆内内存，JVM 还有一块常被忽视但至关重要的内存区域——堆外内存（Off-Heap / Direct Memory）。它由 NIO 的 DirectByteBuffer 和 native 代码使用，是高性能 I/O 的基础。]]></summary></entry><entry><title type="html">JVM 性能调优实战：从参数到工具的完整流程</title><link href="http://localhost:4000/jvm-performance/2024/12/01/jvm-performance-tuning.html" rel="alternate" type="text/html" title="JVM 性能调优实战：从参数到工具的完整流程" /><published>2024-12-01T00:00:00+08:00</published><updated>2024-12-01T00:00:00+08:00</updated><id>http://localhost:4000/jvm-performance/2024/12/01/jvm-performance-tuning</id><content type="html" xml:base="http://localhost:4000/jvm-performance/2024/12/01/jvm-performance-tuning.html"><![CDATA[<p>前面的文章介绍了原理和工具，本篇将理论与实践结合，讲解如何对真实业务系统做 JVM 调优，包括常见场景的参数配置与调优思路。</p>
+
+<h2 id="调优的基本原则">调优的基本原则</h2>
+
+<blockquote>
+  <p><strong>调优之前先监控</strong>——不要猜测，用数据说话。</p>
+</blockquote>
+
+<p>调优的核心指标：</p>
+<ul>
+  <li><strong>吞吐量</strong>（Throughput）：应用实际运行时间 / 总时间</li>
+  <li><strong>停顿时间</strong>（Latency）：GC 停顿的最大时长、平均时长</li>
+  <li><strong>内存占用</strong>（Footprint）：堆大小对应用的影响</li>
+</ul>
+
+<p>这三个指标相互制约，<strong>吞吐量 ↑ 意味着 GC 频率 ↓，每次停顿时间可能更长</strong>。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>调优三角：
+        吞吐量
+           /\
+          /  \
+         /    \
+        /──────\
+  停顿时间   内存占用
+</code></pre></div></div>
+
+<h2 id="场景一高吞吐-web-服务用户量大无严格延迟要求">场景一：高吞吐 Web 服务（用户量大，无严格延迟要求）</h2>
+
+<p><strong>典型场景</strong>：后台管理系统、报表系统、异步任务处理</p>
+
+<p><strong>GC 选择</strong>：Parallel GC（追求高吞吐）</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java <span class="nt">-server</span> <span class="se">\</span>
+     <span class="nt">-Xms4g</span> <span class="nt">-Xmx4g</span> <span class="se">\ </span>                 <span class="c"># 堆大小固定，避免运行时调整</span>
+     <span class="nt">-Xmn2g</span> <span class="se">\ </span>                         <span class="c"># Young 代大小（建议为堆的 1/2~1/3）</span>
+     <span class="nt">-XX</span>:+UseParallelGC <span class="se">\ </span>             <span class="c"># Parallel GC（关注吞吐）</span>
+     <span class="nt">-XX</span>:+UseParallelOldGC <span class="se">\ </span>          <span class="c"># 老年代也用并行整理</span>
+     <span class="nt">-XX</span>:ParallelGCThreads<span class="o">=</span>8 <span class="se">\ </span>        <span class="c"># GC 线程数 = CPU 核心数</span>
+     <span class="nt">-XX</span>:+UnlockExperimentalVMOptions <span class="se">\</span>
+     <span class="nt">-XX</span>:+UseNUMA <span class="se">\ </span>                  <span class="c"># NUMA 架构下启用，对多插槽服务器有效</span>
+     <span class="nt">-XX</span>:MaxGCPauseMillis<span class="o">=</span>500 <span class="se">\ </span>       <span class="c"># 目标停顿（ParallelGC 会尽量满足）</span>
+     <span class="nt">-XX</span>:+AlwaysPreTouch               <span class="c"># 启动时预分配所有内存，减少运行时 page fault</span>
+</code></pre></div></div>
+
+<p><strong>为什么这样配</strong>：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>吞吐量优先 → Parallel GC：
+  - 应用线程：  95% 运行
+  - GC 线程：   5%（Full GC 时 Stop-the-World）
+  - 目标吞吐： 99%+
+
+-Xmn2g 设置理由：
+  Young = 堆的 50%
+  Old   = 堆的 50%
+  Young 足够大 → Minor GC 频率降低
+  对象在 Young 中经历足够多 Minor GC 才晋升 → Old 压力减小
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="场景二低延迟-api-服务p99--50ms-要求">场景二：低延迟 API 服务（P99 &lt; 50ms 要求）</h2>
+
+<p><strong>典型场景</strong>：REST API、金融交易、实时推荐</p>
+
+<p><strong>GC 选择</strong>：G1GC 或 ZGC</p>
+
+<h3 id="g1gc-配置">G1GC 配置</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java <span class="nt">-server</span> <span class="se">\</span>
+     <span class="nt">-Xms4g</span> <span class="nt">-Xmx4g</span> <span class="se">\</span>
+     <span class="nt">-XX</span>:+UseG1GC <span class="se">\</span>
+     <span class="nt">-XX</span>:MaxGCPauseMillis<span class="o">=</span>50 <span class="se">\ </span>         <span class="c"># 目标停顿 50ms（G1 会自动调整）</span>
+     <span class="nt">-XX</span>:G1HeapRegionSize<span class="o">=</span>4m <span class="se">\ </span>         <span class="c"># 4MB Region，平衡粒度</span>
+     <span class="nt">-XX</span>:InitiatingHeapOccupancyPercent<span class="o">=</span>45 <span class="se">\ </span> <span class="c"># 堆占 45% 时开始并发标记（低于 CMS 默认值 68%）</span>
+     <span class="nt">-XX</span>:G1ReservePercent<span class="o">=</span>15 <span class="se">\ </span>          <span class="c"># 预留 15% 堆空间作为 Survivor，避免晋升失败</span>
+     <span class="nt">-XX</span>:+UseStringDeduplication <span class="se">\ </span>      <span class="c"># 字符串去重（降低内存占用）</span>
+     <span class="nt">-XX</span>:+AlwaysPreTouch
+</code></pre></div></div>
+
+<h3 id="zgc-配置jdk-15超低停顿">ZGC 配置（JDK 15+，超低停顿）</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java <span class="nt">-server</span> <span class="se">\</span>
+     <span class="nt">-Xms8g</span> <span class="nt">-Xmx8g</span> <span class="se">\</span>
+     <span class="nt">-XX</span>:+UseZGC <span class="se">\</span>
+     <span class="nt">-XX</span>:MaxGCPauseMillis<span class="o">=</span>1 <span class="se">\ </span>          <span class="c"># 目标停顿 &lt; 1ms（ZGC 保证）</span>
+     <span class="nt">-XX</span>:+ZGenerational <span class="se">\ </span>              <span class="c"># JDK 21+ 的分代 ZGC，减少 GC 频率</span>
+     <span class="nt">-XX</span>:+AlwaysPreTouch
+</code></pre></div></div>
+
+<p><strong>ZGC vs G1GC 对比</strong>：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>G1GC</th>
+      <th>ZGC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>停顿时间</td>
+      <td>&lt; 200ms（可配置）</td>
+      <td>&lt; 1ms（可配置）</td>
+    </tr>
+    <tr>
+      <td>吞吐量</td>
+      <td>略低于 Parallel</td>
+      <td>接近 G1</td>
+    </tr>
+    <tr>
+      <td>内存占用</td>
+      <td>低碎片</td>
+      <td>略高（有 colored pointers）</td>
+    </tr>
+    <tr>
+      <td>JDK 版本</td>
+      <td>JDK 8+</td>
+      <td>JDK 11+（JDK 15+ 成熟）</td>
+    </tr>
+    <tr>
+      <td>适用场景</td>
+      <td>通用，推荐首选</td>
+      <td>超低延迟，要求苛刻</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="场景三微服务容器化--k8s">场景三：微服务（容器化 + K8s）</h2>
+
+<p><strong>典型场景</strong>：Docker 容器内运行的 Spring Boot 微服务</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># K8s deployment 配置示例</span>
+<span class="na">resources</span><span class="pi">:</span>
+  <span class="na">requests</span><span class="pi">:</span>
+    <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2Gi"</span>
+    <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">500m"</span>
+  <span class="na">limits</span><span class="pi">:</span>
+    <span class="na">memory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2Gi"</span>       <span class="c1"># 内存必须设置 limits，防止 OOMKill</span>
+    <span class="na">cpu</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1000m"</span>
+
+<span class="c1"># JVM 参数（注意：容器内存限制 ≠ 堆大小）</span>
+<span class="na">env</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">JAVA_OPTS</span>
+    <span class="na">value</span><span class="pi">:</span> <span class="s2">"</span><span class="s">-XX:+UseContainerSupport"</span>  <span class="c1"># JDK 10+，让 JVM 自动感知容器内存限制</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 容器-aware JVM 配置</span>
+java <span class="nt">-XX</span>:+UseContainerSupport <span class="se">\ </span>          <span class="c"># 自动读取容器 cgroup 内存限制</span>
+     <span class="nt">-XX</span>:MaxRAMPercentage<span class="o">=</span>75.0 <span class="se">\ </span>        <span class="c"># 使用容器内存的 75% 作为堆上限（推荐）</span>
+     <span class="nt">-XX</span>:InitialRAMPercentage<span class="o">=</span>75.0 <span class="se">\</span>
+     <span class="nt">-XX</span>:+UseG1GC <span class="se">\</span>
+     <span class="nt">-XX</span>:MaxGCPauseMillis<span class="o">=</span>100 <span class="se">\</span>
+     <span class="nt">-XX</span>:+UseStringDeduplication <span class="se">\</span>
+     <span class="nt">-XX</span>:+AlwaysPreTouch
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>注意</strong>：<code class="language-plaintext highlighter-rouge">JAVA_OPTS</code> 设置堆外内存，<strong>不能</strong>用 <code class="language-plaintext highlighter-rouge">-Xmx</code> 硬编码（容器调度器可能 kill 该进程）。<code class="language-plaintext highlighter-rouge">MaxRAMPercentage</code> 是最佳实践。</p>
+</blockquote>
+
+<hr />
+
+<h2 id="调优实操流程">调优实操流程</h2>
+
+<h3 id="第一步获取基准数据">第一步：获取基准数据</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 启动时加上以下参数，持续运行 24 小时收集数据</span>
+java <span class="nt">-Xms4g</span> <span class="nt">-Xmx4g</span> <span class="se">\</span>
+     <span class="nt">-XX</span>:+UseG1GC <span class="se">\</span>
+     <span class="nt">-XX</span>:MaxGCPauseMillis<span class="o">=</span>100 <span class="se">\</span>
+     <span class="nt">-Xlog</span>:gc<span class="k">*</span><span class="o">=</span>debug:file<span class="o">=</span>/data/logs/gc.log:time,level,tags:filecount<span class="o">=</span>10,filesize<span class="o">=</span>50m <span class="se">\</span>
+     <span class="nt">-XX</span>:+HeapDumpOnOutOfMemoryError <span class="se">\</span>
+     <span class="nt">-XX</span>:HeapDumpPath<span class="o">=</span>/data/heapdump/ <span class="se">\</span>
+     your-app.jar
+</code></pre></div></div>
+
+<h3 id="第二步gc-日志分析">第二步：GC 日志分析</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 使用 gclog 分析工具：gceasy.io（在线）或 gcviewer（本地）</span>
+<span class="c"># 下载 gc.log 上传到 https://gceasy.io 获取可视化报告</span>
+
+<span class="c"># 关键指标：</span>
+<span class="c"># - Total GC time：总 GC 时间 / 运行时间</span>
+<span class="c"># - GC Throughput：（1 - TotalGCTime/TotalTime）× 100%</span>
+<span class="c"># - Total pauses：最长停顿时间</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gc.log 示例分析报告：
+┌─────────────────────────────────────────────────┐
+│  Application Total Time：24h                       │
+│  Total GC Time：8.2 min                           │
+│  GC Throughput：99.43% ✓ （目标 &gt; 99%）             │
+│  Avg Pause：23ms                                   │
+│  Max Pause：156ms                                 │
+│  Young GC：6,234 次                               │
+│  Old GC：3 次                                     │
+└─────────────────────────────────────────────────┘
+</code></pre></div></div>
+
+<h3 id="第三步瓶颈判断">第三步：瓶颈判断</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 如果 GC Throughput &lt; 98%，优先考虑：</span>
+<span class="c"># 1. 增大堆：-Xms=-Xmx 增大</span>
+<span class="c"># 2. 调高 MaxGCPauseMillis（允许更长停顿换更高吞吐）</span>
+
+<span class="c"># 如果 Max Pause &gt; 目标（如 200ms），优先考虑：</span>
+<span class="c"># 1. 切换到 G1GC（已有）</span>
+<span class="c"># 2. 调低 MaxGCPauseMillis</span>
+<span class="c"># 3. 分析 Full GC 原因</span>
+</code></pre></div></div>
+
+<h3 id="第四步参数迭代">第四步：参数迭代</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>调优参数优先级：
+  1. -Xms=-Xmx        （先保证堆大小稳定）
+  2. -XX:+UseG1GC      （低延迟首选）
+  3. -XX:MaxGCPauseMillis  （设定目标）
+  4. -XX:G1HeapRegionSize  （Region 大小）
+  5. -XX:InitiatingHeapOccupancyPercent  （标记时机）
+  6. -XX:G1ReservePercent    （晋升保护）
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="常见错误配置">常见错误配置</h2>
+
+<h3 id="错误-1初始堆和最大堆不一致">错误 1：初始堆和最大堆不一致</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ❌ 错误：运行时调整堆大小，GC 压力大</span>
+<span class="nt">-Xms256m</span> <span class="nt">-Xmx4g</span>
+
+<span class="c"># ✅ 正确：固定大小</span>
+<span class="nt">-Xms4g</span> <span class="nt">-Xmx4g</span>
+</code></pre></div></div>
+
+<h3 id="错误-2堆设置过大">错误 2：堆设置过大</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ❌ 错误：系统内存 8GB，给堆 7.5GB</span>
+<span class="c"># 系统其他进程 + 元空间 + 直接内存 + VM Struct → 可能 OOM</span>
+
+<span class="c"># ✅ 正确：留足够空间给非堆区域</span>
+<span class="c"># 建议堆 = 系统内存 * 50%~75%</span>
+<span class="c"># 8GB 机器 → -Xmx4g ~ -Xmx6g</span>
+</code></pre></div></div>
+
+<h3 id="错误-3禁用-systemgc">错误 3：禁用 System.gc()</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ❌ 错误：直接禁用所有显式 GC</span>
+<span class="nt">-XX</span>:+DisableExplicitGC   <span class="c"># ← 可能导致 NIO direct memory OOM！</span>
+
+<span class="c"># ✅ 正确：不干预 GC，让 JVM 自己管理</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="调优参数速查表">调优参数速查表</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>GC</th>
+      <th>关键参数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>高吞吐后台</td>
+      <td>ParallelGC</td>
+      <td><code class="language-plaintext highlighter-rouge">-Xms=-Xmx</code>, <code class="language-plaintext highlighter-rouge">-Xmn</code>, <code class="language-plaintext highlighter-rouge">-XX:+UseParallelOldGC</code></td>
+    </tr>
+    <tr>
+      <td>低延迟 API</td>
+      <td>G1GC</td>
+      <td><code class="language-plaintext highlighter-rouge">-XX:MaxGCPauseMillis=50</code>, <code class="language-plaintext highlighter-rouge">-XX:G1ReservePercent=15</code></td>
+    </tr>
+    <tr>
+      <td>超低延迟</td>
+      <td>ZGC</td>
+      <td><code class="language-plaintext highlighter-rouge">-XX:+UseZGC</code>, <code class="language-plaintext highlighter-rouge">-XX:MaxGCPauseMillis=1</code></td>
+    </tr>
+    <tr>
+      <td>容器微服务</td>
+      <td>G1GC + ContainerSupport</td>
+      <td><code class="language-plaintext highlighter-rouge">-XX:+UseContainerSupport</code>, <code class="language-plaintext highlighter-rouge">-XX:MaxRAMPercentage=75</code></td>
+    </tr>
+    <tr>
+      <td>大内存（&gt; 32GB）</td>
+      <td>G1GC / ZGC</td>
+      <td><code class="language-plaintext highlighter-rouge">-XX:+UseLargePages</code>, <code class="language-plaintext highlighter-rouge">-XX:G1HeapRegionSize=8m</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="总结">总结</h2>
+
+<ul>
+  <li><strong>调优顺序</strong>：先固定堆大小 → 选 GC → 设停顿目标 → 分析日志 → 迭代参数</li>
+  <li><strong>GC Throughput &gt; 99%</strong> 是高吞吐场景的及格线</li>
+  <li><strong>MaxGCPauseMillis</strong> 是调优的杠杆参数，G1 会自动平衡</li>
+  <li><strong>ZGC</strong> 是低延迟场景的最终方案（JDK 21+ 推荐）</li>
+  <li>容器环境用 <strong>MaxRAMPercentage</strong>，不要硬编码 <code class="language-plaintext highlighter-rouge">-Xmx</code></li>
+</ul>
+
+<p>下篇将介绍<strong>堆外内存与 DirectByteBuffer</strong>——NIO 高性能通信背后的内存管理机制。</p>]]></content><author><name>Zhou Xunyou</name></author><category term="jvm-performance" /><summary type="html"><![CDATA[前面的文章介绍了原理和工具，本篇将理论与实践结合，讲解如何对真实业务系统做 JVM 调优，包括常见场景的参数配置与调优思路。]]></summary></entry><entry><title type="html">内存泄漏排查实战：用 MAT 和 async-profiler 定位生产问题</title><link href="http://localhost:4000/jvm-performance/2024/11/22/memory-leak-diagnosis.html" rel="alternate" type="text/html" title="内存泄漏排查实战：用 MAT 和 async-profiler 定位生产问题" /><published>2024-11-22T00:00:00+08:00</published><updated>2024-11-22T00:00:00+08:00</updated><id>http://localhost:4000/jvm-performance/2024/11/22/memory-leak-diagnosis</id><content type="html" xml:base="http://localhost:4000/jvm-performance/2024/11/22/memory-leak-diagnosis.html"><![CDATA[<p>内存泄漏是 Java 生产环境的常见问题。本文通过一个真实案例，展示如何用 <strong>MAT（Memory Analyzer Tool）</strong> 和 <strong>async-profiler</strong> 定位并解决内存泄漏。</p>
+
+<h2 id="什么是内存泄漏">什么是内存泄漏？</h2>
+
+<p>内存泄漏 = <strong>对象应该被回收但实际没有被回收</strong>，导致可用内存越来越少，最终触发 OOM。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>正常回收：                              内存泄漏：
+  GC Roots                                  GC Roots
+     ↓                                        ↓
+  A → B → C  → D（引用链正常）           A → B → C → D（存在隐藏引用）
+  C 不再被外部引用                       C 仍被一个 HashMap 持有引用
+  C 可被回收                             C 无法被回收 → 泄漏
+</code></pre></div></div>
+
+<h3 id="常见的泄漏场景">常见的泄漏场景</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>原因</th>
+      <th>典型代码</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>静态集合持有对象</td>
+      <td>集合只增不减</td>
+      <td><code class="language-plaintext highlighter-rouge">static Map cache = new HashMap()</code></td>
+    </tr>
+    <tr>
+      <td>监听器未注销</td>
+      <td>观察者模式中 listener 未移除</td>
+      <td><code class="language-plaintext highlighter-rouge">addListener(listener)</code> 后无 <code class="language-plaintext highlighter-rouge">removeListener</code></td>
+    </tr>
+    <tr>
+      <td>ThreadLocal 未清理</td>
+      <td>线程池复用导致值对象无法释放</td>
+      <td><code class="language-plaintext highlighter-rouge">threadLocal.set(obj)</code> 后无 <code class="language-plaintext highlighter-rouge">remove()</code></td>
+    </tr>
+    <tr>
+      <td>数据库连接/Stream 未关闭</td>
+      <td>资源未 finally 释放</td>
+      <td><code class="language-plaintext highlighter-rouge">ResultSet</code>/<code class="language-plaintext highlighter-rouge">Stream</code> 用完未 close</td>
+    </tr>
+    <tr>
+      <td>动态类加载</td>
+      <td>ClassLoader 持有元数据</td>
+      <td>CGLIB/JVM TI 动态生成大量类</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="案例spring-boot-应用内存持续增长">案例：Spring Boot 应用内存持续增长</h2>
+
+<h3 id="症状">症状</h3>
+
+<p>应用启动后内存从 500MB 逐渐增长到 OOM（约 2GB），GC 后内存不回落：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>heap after GC：
+  2024-11-20 10:00  used=480M, gc.time=23ms
+  2024-11-20 10:05  used=620M, gc.time=31ms    ← 持续上升
+  2024-11-20 10:10  used=890M, gc.time=45ms    ← 上升更快
+  ...（大约 6 小时后 OOM）
+</code></pre></div></div>
+
+<h3 id="step-1heap-dump-获取">Step 1：Heap Dump 获取</h3>
+
+<p><strong>方式一：运行时自动 dump（推荐）</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># OOM 时自动生成 heap dump</span>
+java <span class="nt">-XX</span>:+HeapDumpOnOutOfMemoryError <span class="se">\</span>
+     <span class="nt">-XX</span>:HeapDumpPath<span class="o">=</span>/data/heapdump/ <span class="se">\</span>
+     <span class="nt">-Xms2g</span> <span class="nt">-Xmx2g</span> your-app.jar
+</code></pre></div></div>
+
+<p><strong>方式二：手动 jmap（需要 JDK 工具）</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 获取 live heap dump（会触发 Full GC + STW）</span>
+jmap <span class="nt">-dump</span>:live,format<span class="o">=</span>b,file<span class="o">=</span>heap-20241120-1015.hprof &lt;pid&gt;
+
+<span class="c"># 无 Full GC 的 dump（所有对象，包括即将被回收的）</span>
+jmap <span class="nt">-dump</span>:format<span class="o">=</span>b,file<span class="o">=</span>heap-all.hprof &lt;pid&gt;
+</code></pre></div></div>
+
+<h3 id="step-2mat-分析泄漏嫌疑">Step 2：MAT 分析泄漏嫌疑</h3>
+
+<p>用 MAT（Eclipse Memory Analyzer）打开 <code class="language-plaintext highlighter-rouge">.hprof</code> 文件：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. Leak Suspects Report → 自动分析泄漏嫌疑人
+2. Dominator Tree → 按对象 retained heap 排序
+3. Histogram → 按类名统计对象数量
+4. OQL → SQL 风格查询对象
+</code></pre></div></div>
+
+<p><strong>关键视图解读：</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 视图 1：Leak Suspects（自动报告）
+┌──────────────────────────────────────────────────┐
+│  Leak Suspect #1                                  │
+│  The class "com.example.CacheManager"             │
+│  occupies 847MB (42%) of 2GB heap                 │
+│  └── java.util.HashMap$Node[8192] × 1           │
+│       └── key: String (class name)               │
+│       └── value: Object[] (cached result)        │
+│                                                      │
+│  Reason: Cache never eviction → growing forever    │
+└──────────────────────────────────────────────────┘
+
+# 视图 2：Dominator Tree（Retained Heap 排序）
+Class Name                     │ Shallow Heap │ Retained Heap
+──────────────────────────────┼──────────────┼──────────────
+char[] (String内部字符数组)    │    1.2MB     │    520MB      ← 大字符串
+byte[][]                      │      890KB    │    310MB      ← 缓存数据
+HashMap$Node[]                │      200KB    │    280MB      ← CacheManager.cache
+LinkedHashMap$Entry          │      150KB    │    195MB      ← Session 管理
+</code></pre></div></div>
+
+<h3 id="step-3gc-roots-追踪引用链">Step 3：GC Roots 追踪引用链</h3>
+
+<p>在 MAT 中对着可疑对象右键 → <strong>Path to GC Roots</strong> → <strong>excludes weak refs</strong>：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>查找引用链：
+CacheManager.cache (HashMap)
+  ↓ (key)
+String "user:12345:profile"
+  ↓ (value)
+CachedUserProfile[]
+  ↓ (reference)
+UserService.userCache (static)
+
+GC Roots：
+  ↑ Thread Stack: main() → ApplicationContext → userService → ...
+</code></pre></div></div>
+
+<h3 id="step-4async-profiler-补充分析">Step 4：async-profiler 补充分析</h3>
+
+<p>在 MAT 之外，用 async-profiler 做 Allocation 分析（看谁在疯狂分配内存）：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 采样 30 秒的内存分配</span>
+./async-profiler.sh profiler <span class="nt">-d</span> 30 <span class="se">\</span>
+    <span class="nt">-e</span> alloc <span class="se">\</span>
+    <span class="nt">-f</span> allocation-profile.html <span class="se">\</span>
+    &lt;pid&gt;
+
+<span class="c"># 生成火焰图</span>
+./async-profiler.sh flames <span class="nt">-d</span> 30 <span class="se">\</span>
+    <span class="nt">-e</span> alloc <span class="se">\</span>
+    &lt;pid&gt; <span class="o">&gt;</span> flames.svg
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allocation 火焰图（SVG）片段：
+
+┌─────────────────────────────────────────────┐
+│  ██                                      │
+│  ██ ██  ██████████                        │
+│  ██ ██ ██ ████████ ████  ████████████    │  ← CacheManager.store() 分配最多
+│  ██ ██ ██ ████████ ████  ████████████    │
+│  ██ ██ ██ ████████ ████  ████████████    │
+│  ██ ██ ██ ████████ ████  ████████████    │
+│  ██ ██ ██ ████████ ████  ████████████    │
+└─────────────────────────────────────────────┘
+  main() → CacheManager.store() → CacheManager.rebuild()
+</code></pre></div></div>
+
+<h3 id="定位到的根因">定位到的根因</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>问题代码（简化）：
+
+@Service
+public class CacheManager {
+    private static Map&lt;String, Object&gt; cache = new HashMap&lt;&gt;();
+
+    public void store(String key, Object value) {
+        // 不断往 HashMap 塞数据，从不清理
+        cache.put(key, value);
+    }
+}
+</code></pre></div></div>
+
+<p><strong>引用链</strong>：<code class="language-plaintext highlighter-rouge">CacheManager.cache</code>（static HashMap）→ 持有所有缓存对象 → 无法被 GC</p>
+
+<h3 id="step-5修复方案">Step 5：修复方案</h3>
+
+<p><strong>方案 A：添加 LRU  eviction（最小改动）</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Service</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CacheManager</span> <span class="o">{</span>
+    <span class="c1">// 使用 LinkedHashMap 实现 LRU，maxEntries = 10000</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="no">MAX_ENTRIES</span> <span class="o">=</span> <span class="mi">10000</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">cache</span> <span class="o">=</span>
+        <span class="k">new</span> <span class="nc">LinkedHashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;(</span><span class="no">MAX_ENTRIES</span><span class="o">,</span> <span class="mf">0.75f</span><span class="o">,</span> <span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">removeEldestEntry</span><span class="o">(</span><span class="nc">Map</span><span class="o">.</span><span class="na">Entry</span> <span class="n">eldest</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="nf">size</span><span class="o">()</span> <span class="o">&gt;</span> <span class="no">MAX_ENTRIES</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">store</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">cache</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">cache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>方案 B：Caffeine（推荐，性能更好）</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Service</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CacheManager</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Cache</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">cache</span> <span class="o">=</span> <span class="nc">Caffeine</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">maximumSize</span><span class="o">(</span><span class="mi">10_000</span><span class="o">)</span>              <span class="c1">// 最多 10000 条</span>
+        <span class="o">.</span><span class="na">expireAfterWrite</span><span class="o">(</span><span class="nc">Duration</span><span class="o">.</span><span class="na">ofMinutes</span><span class="o">(</span><span class="mi">30</span><span class="o">))</span>  <span class="c1">// 写入 30 分钟后过期</span>
+        <span class="o">.</span><span class="na">expireAfterAccess</span><span class="o">(</span><span class="nc">Duration</span><span class="o">.</span><span class="na">ofMinutes</span><span class="o">(</span><span class="mi">10</span><span class="o">))</span> <span class="c1">// 10 分钟无访问则过期</span>
+        <span class="o">.</span><span class="na">recordStats</span><span class="o">()</span>                    <span class="c1">// 开启统计</span>
+        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">store</span><span class="o">(</span><span class="nc">String</span> <span class="n">key</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">cache</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 监控缓存命中率</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">logStats</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">CacheStats</span> <span class="n">stats</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="na">stats</span><span class="o">();</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"hitRate={}, evictions={}"</span><span class="o">,</span>
+            <span class="n">stats</span><span class="o">.</span><span class="na">hitRate</span><span class="o">(),</span> <span class="n">stats</span><span class="o">.</span><span class="na">evictionCount</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="修复后验证">修复后验证</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 重启后观察内存</span>
+jstat <span class="nt">-gc</span> &lt;pid&gt; 1000
+
+<span class="c"># 修复后结果：</span>
+<span class="c"># heap 稳定在 500MB~800MB，GC 后回落，内存不再持续增长</span>
+</code></pre></div></div>
+
+<h2 id="threadlocal-泄漏排查另一个常见场景">ThreadLocal 泄漏排查（另一个常见场景）</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 典型泄漏代码</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserInterceptor</span> <span class="kd">extends</span> <span class="nc">HandlerInterceptorAdapter</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">ThreadLocal</span><span class="o">&lt;</span><span class="nc">User</span><span class="o">&gt;</span> <span class="n">currentUser</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ThreadLocal</span><span class="o">&lt;&gt;();</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">preHandle</span><span class="o">(</span><span class="nc">HttpRequest</span> <span class="n">request</span><span class="o">,</span> <span class="o">...)</span> <span class="o">{</span>
+        <span class="n">currentUser</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">parseUser</span><span class="o">(</span><span class="n">request</span><span class="o">));</span>  <span class="c1">// ← 设置了但未清理</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">// ❌ 缺少 afterCompletion() 中的 currentUser.remove()</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>async-profiler 快速定位</strong>：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 找出 ThreadLocal.set() 调用最多的栈</span>
+./async-profiler.sh profiler <span class="nt">-e</span> ClassLoad <span class="se">\</span>
+    <span class="nt">-f</span> classload.html <span class="se">\</span>
+    <span class="nt">-I</span> <span class="s1">'*ThreadLocal*'</span> <span class="se">\</span>
+    &lt;pid&gt;
+</code></pre></div></div>
+
+<p><strong>修复</strong>：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterCompletion</span><span class="o">(</span><span class="nc">HttpRequest</span> <span class="n">request</span><span class="o">,</span> <span class="o">...)</span> <span class="o">{</span>
+    <span class="n">currentUser</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>  <span class="c1">// ← 无论成功失败都必须清理</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="排查工具一览">排查工具一览</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>工具</th>
+      <th>用途</th>
+      <th>特点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>MAT (Memory Analyzer)</strong></td>
+      <td>Heap Dump 分析</td>
+      <td>Eclipse 插件，支持 Leak Suspect、Dominator Tree</td>
+    </tr>
+    <tr>
+      <td><strong>async-profiler</strong></td>
+      <td>CPU/Allocation 采样</td>
+      <td>无需修改代码，生产安全，生成火焰图</td>
+    </tr>
+    <tr>
+      <td><strong>jmap + jhat</strong></td>
+      <td>Heap Dump + 快速分析</td>
+      <td>JDK 内置，jhat 简易但功能有限</td>
+    </tr>
+    <tr>
+      <td><strong>Java Mission Control (JMC)</strong></td>
+      <td>实时 JMX 监控</td>
+      <td>JDK 内置，记录 Flight Recording</td>
+    </tr>
+    <tr>
+      <td><strong>VisualVM</strong></td>
+      <td>本地连接分析</td>
+      <td>JDK 内置，轻量级</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="总结">总结</h2>
+
+<ul>
+  <li><strong>Heap Dump 是关键</strong>：OOM 时自动 dump，OOM 前手动 dump</li>
+  <li><strong>MAT + GC Roots 追踪</strong>是定位泄漏引用链最有效的方法</li>
+  <li><strong>async-profiler</strong> 无侵入，适合生产环境采样</li>
+  <li>修复方案首选<strong>引入成熟缓存库</strong>（Caffeine、Guava Cache）而非手写 eviction</li>
+</ul>
+
+<p>下篇将介绍<strong>JVM 性能调优实战</strong>——结合具体业务场景的参数配置案例。</p>]]></content><author><name>Zhou Xunyou</name></author><category term="jvm-performance" /><summary type="html"><![CDATA[内存泄漏是 Java 生产环境的常见问题。本文通过一个真实案例，展示如何用 MAT（Memory Analyzer Tool） 和 async-profiler 定位并解决内存泄漏。]]></summary></entry><entry><title type="html">G1GC 原理与调优：从 Region 到 Humongous</title><link href="http://localhost:4000/java/2024/11/15/g1gc-tuning.html" rel="alternate" type="text/html" title="G1GC 原理与调优：从 Region 到 Humongous" /><published>2024-11-15T00:00:00+08:00</published><updated>2024-11-15T00:00:00+08:00</updated><id>http://localhost:4000/java/2024/11/15/g1gc-tuning</id><content type="html" xml:base="http://localhost:4000/java/2024/11/15/g1gc-tuning.html"><![CDATA[<p>G1（Garbage-First）GC 是 JDK 9+ 的默认垃圾收集器，也是目前最流行的企业级 GC。本文深入解析 G1 的工作原理和调优方法。</p>
+
+<h2 id="为什么需要-g1">为什么需要 G1？</h2>
+
+<p>传统的 GC（如 Parallel GC、CMS）都面临两个问题：</p>
+
+<ul>
+  <li><strong>停顿时间不可控</strong>：Parallel GC 追求高吞吐但停顿时间长（Full GC 可达数秒）</li>
+  <li><strong>内存碎片化</strong>：CMS 产生碎片，长期运行后触发 Full GC 整理</li>
+</ul>
+
+<p>G1 的设计目标：<strong>可预测的停顿时间</strong>（Pause Time Target）+ <strong>无内存碎片</strong>。</p>
+
+<h2 id="g1-的核心思想region">G1 的核心思想：Region</h2>
+
+<p>G1 将整个堆划分为<strong>多个等大小的 Region</strong>（每个 Region 大小 = 堆大小 / 2048，默认 1MB~32MB）：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>G1 堆内存划分为 N 个 Region（以 4GB 堆为例，2048 个 Region，每个约 2MB）：
+
+┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐
+│ Eden │ │ Eden │ │ Eden │ │ S0   │ │ S1   │ │ Old  │
+│ (R1) │ │ (R2) │ │ (R3) │ │ (R4) │ │ (R5) │ │ (R6) │
+└──────┘ └──────┘ └──────┘ └──────┘ └──────┘ └──────┘
+┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐
+│ Old  │ │ Old  │ │ Humo │ │ Humo │ │ Free │ │ Free │
+│ (R7) │ │ (R8) │ │ (R9) │ │(R10) │ │(R11) │ │(R12) │
+└──────┘ └──────┘ └──────┘ └──────┘ └──────┘ └──────┘
+
+Eden Region：新建对象分配区
+Survivor Region：存放 Minor GC 后存活的对象
+Old Region：长期存活的对象
+Humongous Region：存放大对象（超过 Region 50% 的对象）
+Free Region：空闲区域
+</code></pre></div></div>
+
+<h3 id="humongous-对象">Humongous 对象</h3>
+
+<p>当对象大小 <strong>超过 Region 大小的 50%</strong> 时，G1 会分配专门的 <strong>Humongous Region</strong>。这些对象直接分配在老年代，会跳过 Minor GC，只有 Full GC 时才会清理。</p>
+
+<blockquote>
+  <p><strong>注意</strong>：Humongous 对象过多会影响 G1 的效率，因为 G1 无法对Humongous Region 做 compaction。如果有大数组场景，建议将 <code class="language-plaintext highlighter-rouge">-XX:G1HeapRegionSize</code> 调大。</p>
+</blockquote>
+
+<h2 id="g1-的垃圾收集周期">G1 的垃圾收集周期</h2>
+
+<p>G1 的收集周期由多个 <strong>Mixed GC</strong> 组成，不是单纯的 Minor GC 或 Major GC。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>G1 收集周期：
+                        ┌─ Full GC ─────────────────┐
+                        │  （发生于回收不及 时）   │
+                        │                          │
+   ┌─ Initial Mark ────┤                          │
+   │  (标记 Old Gen 中   │                          │
+   │   有引用的 Survivor │                          │
+   │   roots)             │                          │
+   │  Stop-the-World      │                          │
+   └──────────────────────┘                          │
+                                                    ▼
+┌─────────────────────────────────────────────────────────────┐
+│  Young GC (Minor GC) — 纯 Copy，到达年龄晋升到 Old        │
+│    └─ Concurrent Marking (并发标记) — 与应用线程并行        │
+│         └─ Mixed GC — Young + 部分 Old Region 一起回收    │
+│              └─ 回到 Young GC 循环                            │
+└─────────────────────────────────────────────────────────────┘
+</code></pre></div></div>
+
+<h3 id="三色标记tri-color-marking">三色标记（Tri-color Marking）</h3>
+
+<p>G1 的并发标记阶段使用三色标记算法：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>白色（White）  ：尚未被扫描的对象，GC 后视为垃圾
+灰色（Gray）   ：已被发现但其引用的对象尚未全部扫描
+黑色（Black）  ：已被完全扫描，所有引用都已记录
+
+GC Roots（黑） ──引用──→ 对象A（灰） ──引用──→ 对象B（白）
+                    ↓                             
+              已发现但引用               尚未发现
+              未完全扫描
+</code></pre></div></div>
+
+<p><strong>并发标记的问题</strong>：在标记过程中，应用线程可能修改引用关系，导致”漏标”或”错标”。G1 通过 <strong>SATB（Snapshot-At-The-Beginning）</strong> 算法解决这个问题——在并发阶段，将引用变更前的状态记录下来，确保不会漏标。</p>
+
+<h2 id="关键调优参数">关键调优参数</h2>
+
+<h3 id="停顿时间目标最重要">停顿时间目标（最重要）</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 设置目标停顿时间（G1 会尽量满足，默认为 200ms）</span>
+<span class="nt">-XX</span>:MaxGCPauseMillis<span class="o">=</span>200
+
+<span class="c"># 设置期望的停顿时间抖动范围</span>
+<span class="nt">-XX</span>:GCPauseIntervalMillis<span class="o">=</span>1000
+</code></pre></div></div>
+
+<blockquote>
+  <p>G1 根据历史数据动态调整回收范围——如果上次停顿时间是 180ms，下次可能只回收一部分 Old Region 来控制时间。</p>
+</blockquote>
+
+<h3 id="堆内存与-region-大小">堆内存与 Region 大小</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 初始堆和最大堆建议保持一致，避免运行时调整</span>
+<span class="nt">-Xms4g</span> <span class="nt">-Xmx4g</span>
+
+<span class="c"># Region 大小，默认为堆大小/2048，最小 1MB，最大 32MB</span>
+<span class="c"># 如果对象较大，适当调大可以减少 Humongous Region 数量</span>
+<span class="nt">-XX</span>:G1HeapRegionSize<span class="o">=</span>4m
+</code></pre></div></div>
+
+<h3 id="mixed-gc-调优">Mixed GC 调优</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Mixed GC 触发时，Old Region 的回收比例</span>
+<span class="c"># 默认 5%，即每次 Mixed GC 回收 5% 的 Old Region</span>
+<span class="nt">-XX</span>:G1OldCSetRegionThresholdPercent<span class="o">=</span>10
+
+<span class="c"># 在 Young GC 后，跟随一次 Mixed GC 之前，Young 区最大占比</span>
+<span class="c"># 防止 Young 区过大导致 Mixed GC 停顿时间超标</span>
+<span class="nt">-XX</span>:G1MaxNewSizePercent<span class="o">=</span>60
+
+<span class="c"># Mixed GC 最少包含多少个 Old Region 才触发</span>
+<span class="nt">-XX</span>:G1MixedGCCountTarget<span class="o">=</span>8
+</code></pre></div></div>
+
+<h3 id="并发标记调优">并发标记调优</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 并发标记线程数，默认 = (ParallelGCThreads + 2) / 4</span>
+<span class="nt">-XX</span>:ConcGCThreads<span class="o">=</span>4
+
+<span class="c"># 标记开始前强制执行一次 Young GC（减少 Remark 的工作量）</span>
+<span class="nt">-XX</span>:+AlwaysPreTouch
+</code></pre></div></div>
+
+<h2 id="常见问题与解决方案">常见问题与解决方案</h2>
+
+<h3 id="1-g1-退化为-full-gc">1. G1 退化为 Full GC</h3>
+
+<p><strong>现象</strong>：<code class="language-plaintext highlighter-rouge">GC pause (Full GC)</code> 日志频繁出现，停顿时间很长。</p>
+
+<p><strong>原因</strong>：</p>
+<ul>
+  <li>对象分配速率过高，Mixed GC 来不及回收</li>
+  <li>Humongous 对象过多，堆碎片化</li>
+  <li>显式调用 <code class="language-plaintext highlighter-rouge">System.gc()</code></li>
+</ul>
+
+<p><strong>解决</strong>：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 增大堆或提高 G1 收集速度</span>
+<span class="nt">-Xms8g</span> <span class="nt">-Xmx8g</span>
+<span class="nt">-XX</span>:MaxGCPauseMillis<span class="o">=</span>300
+<span class="nt">-XX</span>:+UseG1GC
+
+<span class="c"># 减少 Humongous 对象的产生（避免大数组直接分配）</span>
+<span class="c"># 如果无法避免，调大 Region 大小</span>
+<span class="nt">-XX</span>:G1HeapRegionSize<span class="o">=</span>8m
+
+<span class="c"># 添加参数减少显式 GC 的影响</span>
+<span class="nt">-XX</span>:+DisableExplicitGC
+</code></pre></div></div>
+
+<h3 id="2-停顿时间过长">2. 停顿时间过长</h3>
+
+<p><strong>原因</strong>：目标停顿时间设置过短，而老年代数据量大。</p>
+
+<p><strong>解决</strong>：</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 放宽停顿时间目标，允许更长停顿换取更好吞吐</span>
+<span class="nt">-XX</span>:MaxGCPauseMillis<span class="o">=</span>500
+
+<span class="c"># 提高 Mixed GC 频率，减少每次回收的 Region 数量</span>
+<span class="nt">-XX</span>:G1MixedGCCountTarget<span class="o">=</span>16
+<span class="nt">-XX</span>:G1OldCSetRegionThresholdPercent<span class="o">=</span>3
+
+<span class="c"># 减少 HeapRegion 大小，使每次回收粒度更细</span>
+<span class="nt">-XX</span>:G1HeapRegionSize<span class="o">=</span>2m
+</code></pre></div></div>
+
+<h3 id="3-gc-日志分析">3. GC 日志分析</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 开启详细 GC 日志</span>
+<span class="nt">-Xlog</span>:gc<span class="k">*</span><span class="o">=</span>debug:file<span class="o">=</span>gcdetail.log:time,level,tags:filecount<span class="o">=</span>5,filesize<span class="o">=</span>10m
+
+<span class="c"># 简化 GC 日志</span>
+<span class="nt">-Xlog</span>:gc<span class="k">*</span>:file<span class="o">=</span>gc.log:time
+
+<span class="c"># 使用 G1EvacFailure 追踪晋升失败</span>
+<span class="nt">-Xlog</span>:gc+marking<span class="o">=</span>trace:file<span class="o">=</span>marking.log
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 从日志中提取停顿时间分布</span>
+<span class="nb">grep</span> <span class="s2">"pause"</span> gcdetail.log | <span class="nb">awk</span> <span class="s1">'{print $NF}'</span> | <span class="nb">sort</span> <span class="nt">-n</span>
+</code></pre></div></div>
+
+<h2 id="调优检查清单">调优检查清单</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. 确认停顿目标：-XX:MaxGCPauseMillis=XXX
+2. 堆大小一致：-Xms=-Xmx
+3. Region 大小合理：-XX:G1HeapRegionSize
+4. Mixed GC 频率：-XX:G1MixedGCCountTarget
+5. 老年代回收比例：-XX:G1OldCSetRegionThresholdPercent
+6. 监控 Humongous 对象比例（&gt; 3% 需关注）
+7. 避免显式 System.gc()
+</code></pre></div></div>
+
+<h2 id="总结">总结</h2>
+
+<ul>
+  <li>G1 将堆划分为 Region，实现了<strong>可预测停顿时间</strong>和<strong>无内存碎片</strong></li>
+  <li><strong>Humongous 对象</strong>是 G1 的特殊区域，跳过 Minor GC</li>
+  <li>调优核心是 <strong>MaxGCPauseMillis</strong>，G1 会自动调整回收范围</li>
+  <li>避免 Full GC 的关键是<strong>对象分配速率 &lt; 回收速率</strong></li>
+</ul>
+
+<p>下篇将介绍<strong>内存泄漏排查工具与实战</strong>——用 MAT、Async-profiler 定位生产环境中的内存问题。</p>]]></content><author><name>Zhou Xunyou</name></author><category term="java" /><summary type="html"><![CDATA[G1（Garbage-First）GC 是 JDK 9+ 的默认垃圾收集器，也是目前最流行的企业级 GC。本文深入解析 G1 的工作原理和调优方法。]]></summary></entry><entry><title type="html">垃圾回收算法四大门派：标记-清除、复制、标记-整理、分代</title><link href="http://localhost:4000/java/2024/11/08/gc-algorithms.html" rel="alternate" type="text/html" title="垃圾回收算法四大门派：标记-清除、复制、标记-整理、分代" /><published>2024-11-08T00:00:00+08:00</published><updated>2024-11-08T00:00:00+08:00</updated><id>http://localhost:4000/java/2024/11/08/gc-algorithms</id><content type="html" xml:base="http://localhost:4000/java/2024/11/08/gc-algorithms.html"><![CDATA[<p>上一篇文章介绍了 JVM 内存分区，本篇深入讲解 GC 的核心算法。理解算法原理才能真正掌握调优技巧。</p>
+
+<h2 id="标记-清除mark-sweep-最基础但有缺陷">标记-清除（Mark-Sweep）— 最基础但有缺陷</h2>
+
+<h3 id="流程">流程</h3>
+
+<ol>
+  <li><strong>标记（Mark）</strong>：从 GC Roots 出发，遍历所有存活对象，标记为”可达”</li>
+  <li><strong>清除（Sweep）</strong>：扫描整个区域，将未被标记的对象回收，释放内存</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>标记前：                        标记（可达对象）：
+████  ██  ████  █             ████  ██  ████  █     ← 灰色为可达
+     (存活)  (死亡)            (存活)  (死亡)  (存活)  (死亡)
+
+清除后：
+████████████                     ← 留下存活对象，死亡对象被清除
+       ↑                         清除后产生内存碎片
+     空闲内存
+</code></pre></div></div>
+
+<h3 id="优缺点">优缺点</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>优点</th>
+      <th>缺点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>实现简单，不需要移动对象</td>
+      <td><strong>内存碎片化</strong>：清除后空闲内存不连续</td>
+    </tr>
+    <tr>
+      <td>不需要额外空间</td>
+      <td><strong>Stop-the-World 时间长</strong>：需要扫描全部对象</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="适用场景">适用场景</h3>
+
+<p>CMS GC 的<strong>并发清除阶段</strong>使用了改进版标记-清除算法。</p>
+
+<hr />
+
+<h2 id="复制copying-解决碎片化问题">复制（Copying）— 解决碎片化问题</h2>
+
+<h3 id="流程-1">流程</h3>
+
+<p>将内存划分为<strong>两块等大小的区域</strong>（From 和 To，也叫 S0/S1）。每次只使用一块。GC 时将存活对象复制到另一块，然后整体清除原区域。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Minor GC 之前（Eden + S0）：
+┌─────────────────────────┬────────────┐
+│   Eden    │     S0      │     S1    │
+│ ████████  │   ████     │   (空)    │
+└─────────────────────────┴────────────┘
+           ↑
+      使用中
+
+Minor GC 之后：存活对象复制到 S1
+┌─────────────────────────┬────────────┐
+│   Eden    │     S0      │     S1    │
+│ ████ ████ │  (清空)    │ ████ ████ │
+└─────────────────────────┴────────────┘
+</code></pre></div></div>
+
+<h3 id="优缺点-1">优缺点</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>优点</th>
+      <th>缺点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>无内存碎片</strong>：对象紧凑排列</td>
+      <td><strong>可用内存减半</strong>：始终只有一半可用</td>
+    </tr>
+    <tr>
+      <td><strong>分配效率高</strong>：通过指针碰撞即可分配</td>
+      <td><strong>不适合老年代</strong>：老年代对象存活率高，复制开销大</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="适用场景-1">适用场景</h3>
+
+<p>Young 代的 <strong>Minor GC</strong>。因为 Young 代对象生命周期短，存活对象少（通常 &lt;10%），复制开销低。</p>
+
+<hr />
+
+<h2 id="标记-整理mark-compact-兼顾效率与完整内存">标记-整理（Mark-Compact）— 兼顾效率与完整内存</h2>
+
+<h3 id="流程-2">流程</h3>
+
+<p>在标记-清除基础上增加<strong>整理（Compact）阶段</strong>：将存活对象向一端移动，然后清除边界以外的内存。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>标记后：                        整理（Compact）后：
+  存活对象                        存活对象连续排列
+    ↓                               ↓
+  ██    █   ███   █        ██████████
+  (有碎片)              →     (无碎片)
+                    ↑
+              移动到一端
+</code></pre></div></div>
+
+<h3 id="优缺点-2">优缺点</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>优点</th>
+      <th>缺点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>无内存碎片</strong></td>
+      <td><strong>Stop-the-World 时间最长</strong></td>
+    </tr>
+    <tr>
+      <td><strong>内存利用率高</strong>（100%可用）</td>
+      <td><strong>需要移动大量对象</strong>，开销大</td>
+    </tr>
+    <tr>
+      <td>适合老年代</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="适用场景-2">适用场景</h3>
+
+<p>老年代的垃圾回收。经典实现如 <strong>Serial Old GC</strong>、<strong>Parallel Old GC</strong>。</p>
+
+<hr />
+
+<h2 id="分代收集generational-collection-实战主流">分代收集（Generational Collection）— 实战主流</h2>
+
+<h3 id="核心思想">核心思想</h3>
+
+<blockquote>
+  <p><strong>不同生命周期的对象放在不同区域，采用最适合的收集策略</strong></p>
+</blockquote>
+
+<ul>
+  <li><strong>Young 代</strong>：对象朝生夕灭，存活率低 → 用复制算法（成本低）</li>
+  <li><strong>Old 代</strong>：对象存活时间长 → 用标记-整理或标记-清除算法（成本高但频率低）</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                        GC 频率
+                          ↑
+                          │
+              ┌───────────┴───────────┐
+              │      Old Generation   │ ← 低频（几天一次）
+              │   (标记-整理/清除)     │
+              └───────────┬───────────┘
+                          │
+              ┌───────────┴───────────┐
+              │     Young Generation   │ ← 高频（可能每秒多次）
+              │     (复制算法)          │
+              └───────────┬───────────┘
+                          │
+                    ┌─────┴─────┐
+                    │  Eden + S0/S1 │
+                    └─────────────┘
+</code></pre></div></div>
+
+<h3 id="hotspot-jvm-分代详情">Hotspot JVM 分代详情</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Young Generation（通常占堆的 1/3）：
+  - Eden 区：约占 80%，新对象分配地
+  - Survivor S0 / S1：各占 10%，交替使用
+    复制算法在两个 Survivor 区之间复制存活对象
+
+Old Generation（通常占堆的 2/3）：
+  - 长期存活的大对象直接进入老年代
+  - 经历多次 Minor GC 后仍存活的对象晋升
+  - 使用标记-整理算法（Parallel Old）或标记-清除（CMS）
+</code></pre></div></div>
+
+<h3 id="对象晋升规则">对象晋升规则</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>对象年龄计数器：
+  新对象在 Eden 分配 → Age = 1
+  Minor GC 后存活且 S0/S1 有空间 → 复制到 S0 → Age++
+  Age &gt;= MaxTenuringThreshold（默认 15）→ 晋升 Old Gen
+
+JDK 8 默认：
+  -XX:MaxTenuringThreshold=15
+  -XX:TargetSurvivorRatio=50  （Survivor 区使用率达 50% 时提前晋升）
+</code></pre></div></div>
+
+<h2 id="算法对比一览">算法对比一览</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>算法</th>
+      <th>内存碎片</th>
+      <th>停顿时间</th>
+      <th>内存利用率</th>
+      <th>适用区域</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>标记-清除</td>
+      <td>有</td>
+      <td>长</td>
+      <td>100%</td>
+      <td>老年代</td>
+    </tr>
+    <tr>
+      <td>复制</td>
+      <td>无</td>
+      <td>短</td>
+      <td>50%（Young）</td>
+      <td>Young 代</td>
+    </tr>
+    <tr>
+      <td>标记-整理</td>
+      <td>无</td>
+      <td>最长</td>
+      <td>100%</td>
+      <td>老年代</td>
+    </tr>
+    <tr>
+      <td>分代收集</td>
+      <td>取决于子算法</td>
+      <td>综合最优</td>
+      <td>综合最优</td>
+      <td>全部</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="实战验证">实战验证</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 查看分代信息</span>
+java <span class="nt">-XX</span>:+PrintGCDetails <span class="nt">-Xms100m</span> <span class="nt">-Xmx100m</span> <span class="nt">-XX</span>:+UseSerialGC <span class="se">\</span>
+     <span class="nt">-version</span> 2&gt;&amp;1 | <span class="nb">grep</span> <span class="nt">-i</span> <span class="s2">"generation"</span>
+
+<span class="c"># 对比不同 GC 的停顿时间</span>
+java <span class="nt">-Xms512m</span> <span class="nt">-Xmx512m</span> <span class="nt">-XX</span>:+UseSerialGC       <span class="se">\</span>
+     <span class="nt">-XX</span>:+PrintGCApplicationStoppedTime        <span class="se">\</span>
+     <span class="nt">-XX</span>:+PrintGCDateStamps                     <span class="se">\</span>
+     your-app.jar
+
+java <span class="nt">-Xms512m</span> <span class="nt">-Xmx512m</span> <span class="nt">-XX</span>:+UseG1GC           <span class="se">\</span>
+     <span class="nt">-XX</span>:+PrintGCApplicationStoppedTime        <span class="se">\</span>
+     your-app.jar
+</code></pre></div></div>
+
+<h2 id="总结">总结</h2>
+
+<ul>
+  <li><strong>复制算法</strong>最适合 Young 代：存活少、复制成本低</li>
+  <li><strong>标记-整理</strong>适合 Old 代：无碎片、内存利用率高</li>
+  <li><strong>分代收集</strong>是商用 JVM 的主流：不同区域用不同策略</li>
+  <li>理解算法本质才能判断何时该调整哪块区域的参数</li>
+</ul>
+
+<p>下篇将介绍<strong>主流垃圾收集器</strong>（Serial、Parallel、CMS、G1、ZGC）的适用场景与选型原则。</p>]]></content><author><name>Zhou Xunyou</name></author><category term="java" /><summary type="html"><![CDATA[上一篇文章介绍了 JVM 内存分区，本篇深入讲解 GC 的核心算法。理解算法原理才能真正掌握调优技巧。]]></summary></entry><entry><title type="html">JVM 内存模型入门：一文看懂堆与非堆</title><link href="http://localhost:4000/java/2024/11/01/jvm-memory-model-basics.html" rel="alternate" type="text/html" title="JVM 内存模型入门：一文看懂堆与非堆" /><published>2024-11-01T00:00:00+08:00</published><updated>2024-11-01T00:00:00+08:00</updated><id>http://localhost:4000/java/2024/11/01/jvm-memory-model-basics</id><content type="html" xml:base="http://localhost:4000/java/2024/11/01/jvm-memory-model-basics.html"><![CDATA[<p>JVM 运行时数据区是理解 Java 内存管理的基础。本文从整体架构出发，介绍 JVM 如何划分内存、各区域的作用以及常见的内存溢出场景。</p>
+
+<h2 id="jvm-内存全景图">JVM 内存全景图</h2>
+
+<p>JVM 在运行时将内存划分为多个区域，大致可分为<strong>线程共享区域</strong>和<strong>线程私有区域</strong>：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌─────────────────────────────────────────────────────────────┐
+│                        JVM 进程内存                          │
+├─────────────────────────┬───────────────────────────────────┤
+│     线程共享区域         │         线程私有区域               │
+│  ┌─────────────────┐   │   ┌──────────┐ ┌──────────┐       │
+│  │  Heap (堆)     │   │   │ VM Stack │ │ VM Stack │  ... │
+│  │  - Young Gen   │   │   │ (每个    │ │ (每个    │       │
+│  │    - Eden      │   │   │  线程    │ │  线程    │       │
+│  │    - S0 / S1   │   │   │  私有)  │ │  私有)  │       │
+│  │  - Old Gen     │   │   └──────────┘ └──────────┘       │
+│  └─────────────────┘   │   ┌──────────┐                    │
+│  ┌─────────────────┐   │   │Native    │                    │
+│  │  Metaspace     │   │   │Method    │                    │
+│  │  (元空间)       │   │   │Area/     │                    │
+│  └─────────────────┘   │   │Stack     │                    │
+└─────────────────────────┴───────────────────────────────────┘
+</code></pre></div></div>
+
+<h2 id="堆heap-对象的大本营">堆（Heap）— 对象的大本营</h2>
+
+<p>堆是 JVM 最大的一块内存区域，<strong>所有通过 <code class="language-plaintext highlighter-rouge">new</code> 关键字创建的对象都存放在这里</strong>，由所有线程共享。</p>
+
+<h3 id="堆的内部结构">堆的内部结构</h3>
+
+<p>现代 JVM（尤其是 G1GC）将堆划分为多个区域：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──────────────────────────────────────────────┐
+│                   Heap (堆)                    │
+├──────────────────────────┬─────────────────────┤
+│       Young Generation   │   Old Generation    │
+│   ┌──────┬──────┬────┐  │   ┌──────────────┐ │
+│   │ Eden │  S0  │ S1 │  │   │              │ │
+│   │      │ (From)│   │  │   │   (Tenured)   │ │
+│   │      │ (To) │    │  │   │              │ │
+│   └──────┴──────┴────┘  │   └──────────────┘ │
+│      ↓ Minor GC          │      ↓ Major GC    │
+└──────────────────────────┴─────────────────────┘
+</code></pre></div></div>
+
+<h3 id="对象分配流程">对象分配流程</h3>
+
+<ol>
+  <li>新对象首先在 <strong>Eden 区</strong> 分配</li>
+  <li>Eden 区满时触发 <strong>Minor GC</strong>，存活对象复制到 Survivor 区（S0 或 S1）</li>
+  <li>对象在 S0/S1 之间复制交换，每经历一次 Minor GC 年龄计数器 +1</li>
+  <li>年龄达到阈值（默认 15，可通过 <code class="language-plaintext highlighter-rouge">-XX:MaxTenuringThreshold</code> 设置）的对象晋升到 <strong>Old 区</strong></li>
+  <li>Old 区满时触发 <strong>Major GC</strong> 或 <strong>Full GC</strong></li>
+</ol>
+
+<h2 id="方法区metaspace-类的家">方法区（Metaspace）— 类的家</h2>
+
+<p>方法区存储<strong>类的元数据</strong>：类的结构信息（字段、方法、构造函数）、运行时常量池、 JIT 编译后的代码等。</p>
+
+<blockquote>
+  <p><strong>注意</strong>：在 JDK 8 之前，方法区由 <strong>PermGen（永久代）</strong> 实现，存在大小上限且容易 OOM。JDK 8+ 改用 <strong>Metaspace</strong>，使用本地内存（Native Memory），理论上不受堆大小限制，但也会因为加载过多类而导致 OOM。</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>JDK 7 及之前：
+┌─────────────────────────┐
+│         PermGen          │  ← 有固定上限（-XX:PermSize）
+│  - 类元数据             │
+│  - 字符串常量池          │
+│  - JIT 编译代码         │
+└─────────────────────────┘
+
+JDK 8+：
+┌─────────────────────────┐
+│       Metaspace         │  ← 使用本地内存，动态扩展
+│  - 类元数据             │  ← 默认无上限，受 OS 可用内存限制
+│  - 字符串常量池移至堆     │
+│  - JIT 编译代码         │
+└─────────────────────────┘
+</code></pre></div></div>
+
+<h2 id="线程私有区域">线程私有区域</h2>
+
+<h3 id="虚拟机栈vm-stack">虚拟机栈（VM Stack）</h3>
+
+<p>每个线程在创建时拥有一个独立的虚拟机栈，存储<strong>方法调用的栈帧（Stack Frame）</strong>。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>线程 A 的 VM Stack：
+┌────────────┐
+│  Frame: main() │  ← 栈顶（当前执行帧）
+├────────────┤
+│  Frame: foo()  │
+├────────────┤
+│  Frame: bar()  │
+└────────────┘
+
+每个 Frame 包含：
+  - 局部变量表（Local Variables）
+  - 操作数栈（Operand Stack）
+  - 帧数据（Frame Data）
+</code></pre></div></div>
+
+<h3 id="本地方法栈native-method-stack">本地方法栈（Native Method Stack）</h3>
+
+<p>与 VM Stack 类似，但为 <strong>Native（C/C++）方法</strong> 服务。HotSpot JVM 将两者合一实现。</p>
+
+<h2 id="常见内存溢出oom场景">常见内存溢出（OOM）场景</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>区域</th>
+      <th>错误信息</th>
+      <th>常见原因</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Heap</td>
+      <td><code class="language-plaintext highlighter-rouge">java.lang.OutOfMemoryError: Java heap space</code></td>
+      <td>创建过多对象、大数组、内存泄漏</td>
+    </tr>
+    <tr>
+      <td>Metaspace</td>
+      <td><code class="language-plaintext highlighter-rouge">java.lang.OutOfMemoryError: Metaspace</code></td>
+      <td>动态类加载（CGLIB、ByteBuddy）过多</td>
+    </tr>
+    <tr>
+      <td>VM Stack</td>
+      <td><code class="language-plaintext highlighter-rouge">java.lang.StackOverflowError</code></td>
+      <td>递归调用过深（单线程）、线程创建过多</td>
+    </tr>
+    <tr>
+      <td>Direct Memory</td>
+      <td><code class="language-plaintext highlighter-rouge">java.lang.OutOfMemoryError: Direct buffer memory</code></td>
+      <td>NIO <code class="language-plaintext highlighter-rouge">ByteBuffer.allocateDirect()</code> 使用过多</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="快速验证">快速验证</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 查看 JVM 默认内存布局</span>
+java <span class="nt">-XX</span>:+PrintFlagsFinal <span class="nt">-version</span> 2&gt;&amp;1 | <span class="nb">grep</span> <span class="nt">-i</span> HeapSize
+
+<span class="c"># 启动时指定堆大小</span>
+java <span class="nt">-Xms256m</span> <span class="nt">-Xmx512m</span> <span class="nt">-XX</span>:+UseG1GC your-app.jar
+
+<span class="c"># 打印 GC 日志</span>
+java <span class="nt">-Xms256m</span> <span class="nt">-Xmx512m</span> <span class="nt">-XX</span>:+UseG1GC <span class="se">\</span>
+     <span class="nt">-Xlog</span>:gc<span class="k">*</span>:file<span class="o">=</span>gc.log:time,level,tags <span class="se">\</span>
+     your-app.jar
+</code></pre></div></div>
+
+<h2 id="总结">总结</h2>
+
+<ul>
+  <li><strong>堆</strong>是 Java 内存管理的核心，所有对象在堆中分配，由 GC 自动回收</li>
+  <li><strong>Metaspace</strong> 存储类元数据，JDK 8 后使用本地内存</li>
+  <li><strong>VM Stack</strong> 是线程私有的，记录方法调用链路</li>
+  <li>理解各区域职责是排查 OOM 的第一步</li>
+</ul>
+
+<p>下一篇将深入讲解<strong>垃圾回收算法</strong>——标记、清除、复制、压缩各有何优缺点。</p>]]></content><author><name>Zhou Xunyou</name></author><category term="java" /><summary type="html"><![CDATA[JVM 运行时数据区是理解 Java 内存管理的基础。本文从整体架构出发，介绍 JVM 如何划分内存、各区域的作用以及常见的内存溢出场景。]]></summary></entry><entry><title type="html">JVM Memory Model Deep Dive</title><link href="http://localhost:4000/jvm/java/performance/jvm-performance/2024/10/10/jvm-memory-model-deep-dive.html" rel="alternate" type="text/html" title="JVM Memory Model Deep Dive" /><published>2024-10-10T00:00:00+08:00</published><updated>2024-10-10T00:00:00+08:00</updated><id>http://localhost:4000/jvm/java/performance/jvm-performance/2024/10/10/jvm-memory-model-deep-dive</id><content type="html" xml:base="http://localhost:4000/jvm/java/performance/jvm-performance/2024/10/10/jvm-memory-model-deep-dive.html"><![CDATA[<p>Understanding the JVM memory model is essential for writing high-performance Java applications and diagnosing production issues.</p>
+
+<h2 id="memory-regions">Memory Regions</h2>
+
+<p>The JVM divides managed memory into several distinct regions:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Region</th>
+      <th>Purpose</th>
+      <th>OutOfMemoryError</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Heap</td>
+      <td>Object instances</td>
+      <td><code class="language-plaintext highlighter-rouge">Java heap space</code></td>
+    </tr>
+    <tr>
+      <td>Metaspace</td>
+      <td>Class metadata</td>
+      <td><code class="language-plaintext highlighter-rouge">Metaspace</code></td>
+    </tr>
+    <tr>
+      <td>Thread Stacks</td>
+      <td>Per-thread call frames</td>
+      <td><code class="language-plaintext highlighter-rouge">unable to create new native thread</code></td>
+    </tr>
+    <tr>
+      <td>Direct Buffer</td>
+      <td>Off-heap NIO buffers</td>
+      <td><code class="language-plaintext highlighter-rouge">Direct buffer memory</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="heap-structure">Heap Structure</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──────────────────────────────────────────┐
+│                  Heap                     │
+├────────────┬──────────┬─────────────────┤
+│   Young    │          │      Old        │
+│ Generation │          │    Generation   │
+├─────┬──────┤          │                 │
+│ Eden│ S0/S1│          │                 │
+└─────┴──────┴──────────┴─────────────────┘
+</code></pre></div></div>
+
+<h3 id="gc-flow">GC Flow</h3>
+
+<ol>
+  <li>New objects allocated in <strong>Eden</strong></li>
+  <li>Minor GC copies survivors to <strong>Survivor</strong> space</li>
+  <li>After surviving N cycles, promoted to <strong>Old</strong> generation</li>
+  <li>Major GC / Full GC cleans the entire heap</li>
+</ol>
+
+<h2 id="key-jvm-flags">Key JVM Flags</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Heap sizing</span>
+<span class="nt">-Xms2g</span> <span class="nt">-Xmx2g</span>                    <span class="c"># Initial &amp; max heap</span>
+<span class="nt">-XX</span>:MetaspaceSize<span class="o">=</span>256m            <span class="c"># Initial metaspace</span>
+<span class="nt">-XX</span>:MaxMetaspaceSize<span class="o">=</span>512m         <span class="c"># Max metaspace</span>
+
+<span class="c"># GC Selection</span>
+<span class="nt">-XX</span>:+UseG1GC                      <span class="c"># G1 collector (default since JDK 9)</span>
+<span class="nt">-XX</span>:+UseZGC                       <span class="c"># ZGC for low-latency (JDK 15+)</span>
+
+<span class="c"># GC Logging</span>
+<span class="nt">-Xlog</span>:gc<span class="k">*</span>:file<span class="o">=</span>gc.log:time,level,tags
+
+<span class="c"># Useful diagnostics</span>
+<span class="nt">-XX</span>:+HeapDumpOnOutOfMemoryError
+<span class="nt">-XX</span>:HeapDumpPath<span class="o">=</span>/tmp/heapdump.hprof
+</code></pre></div></div>
+
+<h2 id="common-pitfalls">Common Pitfalls</h2>
+
+<ul>
+  <li><strong>OOME from thread creation</strong>: Each thread stack consumes ~1MB. 2000 threads = 2GB off-heap</li>
+  <li><strong>Metaspace leak</strong>: Dynamic class generation (CGLIB, ByteBuddy) without unloading</li>
+  <li><strong>Direct buffer leak</strong>: NIO <code class="language-plaintext highlighter-rouge">ByteBuffer.allocateDirect()</code> not deallocated</li>
+  <li><strong>Finalizer queue</strong>: Objects with <code class="language-plaintext highlighter-rouge">finalize()</code> delay GC and consume heap</li>
+</ul>
+
+<h2 id="profiling-tips">Profiling Tips</h2>
+
+<p>Use async-profiler for production-safe profiling:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># CPU profiling</span>
+asprof <span class="nt">-d</span> 30 <span class="nt">-f</span> cpu.html &lt;pid&gt;
+
+<span class="c"># Allocation profiling</span>
+asprof <span class="nt">-d</span> 30 <span class="nt">-e</span> alloc <span class="nt">-f</span> alloc.html &lt;pid&gt;
+
+<span class="c"># Wall clock (includes blocking)</span>
+asprof <span class="nt">-d</span> 30 <span class="nt">-e</span> wall <span class="nt">-f</span> wall.html &lt;pid&gt;
+</code></pre></div></div>]]></content><author><name>Zhou Xunyou</name></author><category term="jvm-performance" /><summary type="html"><![CDATA[Understanding the JVM memory model is essential for writing high-performance Java applications and diagnosing production issues.]]></summary></entry><entry><title type="html">Kotlin Coroutines: From Basics to Production</title><link href="http://localhost:4000/kotlin/coroutines/async/2024/09/15/kotlin-coroutines-basics-to-production.html" rel="alternate" type="text/html" title="Kotlin Coroutines: From Basics to Production" /><published>2024-09-15T00:00:00+08:00</published><updated>2024-09-15T00:00:00+08:00</updated><id>http://localhost:4000/kotlin/coroutines/async/2024/09/15/kotlin-coroutines-basics-to-production</id><content type="html" xml:base="http://localhost:4000/kotlin/coroutines/async/2024/09/15/kotlin-coroutines-basics-to-production.html"><![CDATA[<p>Kotlin coroutines simplify asynchronous programming on the JVM. This post covers the core concepts and production patterns.</p>
+
+<h2 id="coroutine-builders">Coroutine Builders</h2>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Launch and forget</span>
+<span class="n">scope</span><span class="p">.</span><span class="nf">launch</span> <span class="p">{</span>
+    <span class="nf">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="nf">println</span><span class="p">(</span><span class="s">"Done!"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// Await result</span>
+<span class="kd">val</span> <span class="py">result</span> <span class="p">=</span> <span class="n">scope</span><span class="p">.</span><span class="nf">async</span> <span class="p">{</span>
+    <span class="nf">fetchFromNetwork</span><span class="p">()</span>
+<span class="p">}.</span><span class="nf">await</span><span class="p">()</span>
+
+<span class="c1">// Channel-based producer</span>
+<span class="kd">val</span> <span class="py">channel</span> <span class="p">=</span> <span class="n">scope</span><span class="p">.</span><span class="nf">produce</span> <span class="p">{</span>
+    <span class="nf">repeat</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="p">{</span> <span class="nf">send</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="structured-concurrency">Structured Concurrency</h2>
+
+<p>Coroutines follow a parent-child hierarchy. Cancelling a parent cancels all children:</p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">val</span> <span class="py">job</span> <span class="p">=</span> <span class="n">scope</span><span class="p">.</span><span class="nf">launch</span> <span class="p">{</span>
+    <span class="nf">launch</span> <span class="p">{</span> <span class="nf">slowOperation1</span><span class="p">()</span> <span class="p">}</span>  <span class="c1">// Child 1</span>
+    <span class="nf">launch</span> <span class="p">{</span> <span class="nf">slowOperation2</span><span class="p">()</span> <span class="p">}</span>  <span class="c1">// Child 2</span>
+<span class="p">}</span>
+
+<span class="n">job</span><span class="p">.</span><span class="nf">cancel</span><span class="p">()</span>  <span class="c1">// Both children are cancelled</span>
+</code></pre></div></div>
+
+<h2 id="dispatchers">Dispatchers</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dispatcher</th>
+      <th>Use Case</th>
+      <th>Thread Pool</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Dispatchers.Default</code></td>
+      <td>CPU-bound work</td>
+      <td>Shared pool, cores count</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Dispatchers.IO</code></td>
+      <td>Network/Disk I/O</td>
+      <td>Shared pool, up to 64 threads</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Dispatchers.Main</code></td>
+      <td>UI updates</td>
+      <td>Main/UI thread</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="flow-for-streams">Flow for Streams</h2>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fun</span> <span class="nf">userEvents</span><span class="p">(</span><span class="n">userId</span><span class="p">:</span> <span class="nc">String</span><span class="p">):</span> <span class="nc">Flow</span><span class="p">&lt;</span><span class="nc">Event</span><span class="p">&gt;</span> <span class="p">=</span> <span class="nf">flow</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="nf">currentCoroutineContext</span><span class="p">().</span><span class="n">isActive</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">val</span> <span class="py">events</span> <span class="p">=</span> <span class="nf">pollEvents</span><span class="p">(</span><span class="n">userId</span><span class="p">)</span>
+        <span class="n">events</span><span class="p">.</span><span class="nf">forEach</span> <span class="p">{</span> <span class="nf">emit</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">}</span>
+        <span class="nf">delay</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Usage with operators</span>
+<span class="nf">userEvents</span><span class="p">(</span><span class="s">"user-1"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">filter</span> <span class="p">{</span> <span class="n">it</span><span class="p">.</span><span class="n">type</span> <span class="p">!=</span> <span class="s">"ping"</span> <span class="p">}</span>
+    <span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="nf">transform</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">}</span>
+    <span class="p">.</span><span class="nf">debounce</span><span class="p">(</span><span class="mi">100</span><span class="p">.</span><span class="n">milliseconds</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">collect</span> <span class="p">{</span> <span class="nf">handleEvent</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="production-patterns">Production Patterns</h2>
+
+<h3 id="timeout">Timeout</h3>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">result</span> <span class="p">=</span> <span class="nf">withTimeout</span><span class="p">(</span><span class="mi">5000</span><span class="p">.</span><span class="n">milliseconds</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">callExternalService</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="nc">TimeoutCancellationException</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">fallback</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="retry-with-exponential-backoff">Retry with Exponential Backoff</h3>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">suspend</span> <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">T</span><span class="p">&gt;</span> <span class="nf">retry</span><span class="p">(</span>
+    <span class="n">times</span><span class="p">:</span> <span class="nc">Int</span> <span class="p">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">initialDelay</span><span class="p">:</span> <span class="nc">Duration</span> <span class="p">=</span> <span class="mi">100</span><span class="p">.</span><span class="n">milliseconds</span><span class="p">,</span>
+    <span class="n">factor</span><span class="p">:</span> <span class="nc">Double</span> <span class="p">=</span> <span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">block</span><span class="p">:</span> <span class="k">suspend</span> <span class="p">()</span> <span class="p">-&gt;</span> <span class="nc">T</span>
+<span class="p">):</span> <span class="nc">T</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="py">currentDelay</span> <span class="p">=</span> <span class="n">initialDelay</span>
+    <span class="nf">repeat</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nf">block</span><span class="p">()</span>
+        <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="nc">Exception</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">it</span> <span class="p">==</span> <span class="n">times</span> <span class="p">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">throw</span> <span class="n">e</span>
+            <span class="nf">delay</span><span class="p">(</span><span class="n">currentDelay</span><span class="p">)</span>
+            <span class="n">currentDelay</span> <span class="p">=</span> <span class="p">(</span><span class="n">currentDelay</span> <span class="p">*</span> <span class="n">factor</span><span class="p">).</span><span class="nf">toDuration</span><span class="p">(</span><span class="nc">DurationUnit</span><span class="p">.</span><span class="nc">MILLISECONDS</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">throw</span> <span class="nc">IllegalStateException</span><span class="p">(</span><span class="s">"Unreachable"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>]]></content><author><name>Zhou Xunyou</name></author><category term="kotlin" /><summary type="html"><![CDATA[Kotlin coroutines simplify asynchronous programming on the JVM. This post covers the core concepts and production patterns.]]></summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="http://localhost:4000/jekyll/update/2024/08/03/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2024-08-03T10:36:15+08:00</published><updated>2024-08-03T10:36:15+08:00</updated><id>http://localhost:4000/jekyll/update/2024/08/03/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2024/08/03/welcome-to-jekyll.html"><![CDATA[<p>You’ll find this post in your <code class="language-plaintext highlighter-rouge">_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
 
 <p>Jekyll requires blog post files to be named according to the following format:</p>
 
@@ -14,4 +1793,4 @@
 <span class="n">print_hi</span><span class="p">(</span><span class="s1">'Tom'</span><span class="p">)</span>
 <span class="c1">#=&gt; prints 'Hi, Tom' to STDOUT.</span></code></pre></figure>
 
-<p>Check out the <a href="https://jekyllrb.com/docs/home">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://talk.jekyllrb.com/">Jekyll Talk</a>.</p>]]></content><author><name></name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.]]></summary></entry></feed>
+<p>Check out the <a href="https://jekyllrb.com/docs/home">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://talk.jekyllrb.com/">Jekyll Talk</a>.</p>]]></content><author><name>Zhou Xunyou</name></author><category term="jekyll" /><category term="update" /><summary type="html"><![CDATA[You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.]]></summary></entry></feed>

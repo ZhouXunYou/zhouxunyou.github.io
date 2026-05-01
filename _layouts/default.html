@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: 'zh-CN' }}" data-theme="light">
+  {% include head.html %}
+  <body>
+    {% include header.html %}
+    <div class="gh-layout{% if page.sidebar == false %} gh-layout-full{% endif %}">
+      {% unless page.sidebar == false %}
+        {% include sidebar.html %}
+      {% endunless %}
+      <main class="gh-main" aria-label="Content">
+        <div class="gh-container">
+          {{ content }}
+        </div>
+      </main>
+    </div>
+    {% include footer.html %}
+  </body>
+</html>
