@@ -1,0 +1,6 @@
+{% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+{% if page_lang == 'en' %}
+  {% assign strings = site.data.strings %}
+{% else %}
+  {% assign strings = site.data.strings_zh %}
+{% endif %}

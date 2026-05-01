@@ -4,7 +4,7 @@
     <div class="gh-contribution-week">
       {% for j in (1..7) %}
         {% assign level = forloop.parentloop.index0 | modulo: 4 %}
-        <div class="gh-contribution-cell gh-contribution-level-{{ level }}" title="Contributions"></div>
+        <div class="gh-contribution-cell gh-contribution-level-{{ level }}" title="{{ strings.aria.contributions }}"></div>
       {% endfor %}
     </div>
   {% endfor %}

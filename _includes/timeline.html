@@ -24,13 +24,17 @@
       </div>
       <div class="gh-timeline-body">
         <p class="gh-timeline-text">
+          {% assign entry_text = entry.text %}
+          {% if page_lang != 'en' and entry.text_zh %}
+            {% assign entry_text = entry.text_zh %}
+          {% endif %}
           {% if entry.url %}
-            <a href="{{ entry.url | relative_url }}">{{ entry.text }}</a>
+            <a href="{{ entry.url | relative_url }}">{{ entry_text }}</a>
           {% else %}
-            {{ entry.text }}
+            {{ entry_text }}
           {% endif %}
         </p>
-        <time class="gh-timeline-date">{{ entry.date | date: "%b %-d, %Y" }}</time>
+        <time class="gh-timeline-date">{% if page_lang == 'en' %}{{ entry.date | date: "%b %-d, %Y" }}{% else %}{{ entry.date | date: "%Y年%-m月%d日" }}{% endif %}</time>
       </div>
     </div>
   {% endfor %}

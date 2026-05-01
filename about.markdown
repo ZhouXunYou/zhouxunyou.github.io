@@ -5,21 +5,17 @@ permalink: /about/
 category: about
 ---
 
-Hi, I'm **{{ site.author }}** — a developer and open source enthusiast.
+## 关于本站
 
-## About Me
+这是一个专注于软件工程技术的技术博客，内容涵盖前端开发、后端架构、DevOps 实践以及 JVM 生态等方向。
 
-I build things for the web. I'm passionate about clean code, developer tools, and open source software.
+## 内容范围
 
-## Skills
+- **Frontend** — 现代前端框架与工具链，组件化架构与响应式设计
+- **Backend** — 服务端开发，RESTful API 设计，微服务架构
+- **DevOps** — 容器化、编排、CI/CD 自动化工作流
+- **JVM Ecosystem** — Java、Kotlin、Scala，Spring Boot、Akka、Spark，JVM 性能调优与构建工具
 
-- **Frontend**: React, Vue, TypeScript, CSS/Tailwind/Sass
-- **Backend**: Node.js, Python, Go
-- **DevOps**: Docker, Kubernetes, CI/CD
+## 技术栈
 
-## Contact
-
-- GitHub: [{{ site.github_username }}](https://github.com/{{ site.github_username }})
-{% if site.email %}
-- Email: [{{ site.email }}](mailto:{{ site.email }})
-{% endif %}
+本站基于 Jekyll 构建，使用自定义 GitHub 风格主题，支持深色/浅色主题切换，部署在 GitHub Pages。

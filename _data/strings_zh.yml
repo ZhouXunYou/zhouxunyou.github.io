@@ -1,0 +1,43 @@
+nav:
+  overview: "概览"
+  frontend: "前端"
+  backend: "后端"
+  jvm: "JVM"
+  devops: "DevOps"
+  about: "关于"
+home:
+  overview: "概览"
+  repositories: "仓库"
+  activity: "活动"
+  pinned: "置顶"
+  contributions: "过去一年的贡献"
+  recent_activity: "近期活动"
+  find_repo: "搜索仓库..."
+category:
+  repositories: "仓库"
+repo:
+  code: "代码"
+  readme: "README.md"
+post:
+  date_format: "%Y年%-m月%d日"
+timeline:
+  date_format: "%Y年%-m月%d日"
+not_found:
+  title: "404"
+  message: "页面未找到"
+  back_home: "返回首页"
+aria:
+  content: "内容"
+  toggle_nav: "切换导航"
+  category_nav: "分类导航"
+  toggle_theme: "切换主题"
+  contributions: "贡献"
+categories:
+  frontend: "前端"
+  backend: "后端"
+  jvm: "JVM"
+  jvm-tools: "JVM 工具"
+  jvm-performance: "性能调优"
+  devops: "DevOps"
+  about: "关于"
+description: "开发者 / 开源爱好者"

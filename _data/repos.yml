@@ -1,5 +1,6 @@
 - name: "project-one"
   description: "A TypeScript library for building modern web apps"
+  description_zh: "用于构建现代 Web 应用的 TypeScript 库"
   language: "TypeScript"
   language_color: "#3178c6"
   stars: 42
@@ -14,6 +15,7 @@
 
 - name: "vue-dashboard"
   description: "A Vue 3 admin dashboard template"
+  description_zh: "Vue 3 后台管理仪表盘模板"
   language: "Vue"
   language_color: "#41b883"
   stars: 18
@@ -27,6 +29,7 @@
 
 - name: "css-toolkit"
   description: "A utility-first CSS framework for rapid UI development"
+  description_zh: "用于快速 UI 开发的实用优先 CSS 框架"
   language: "CSS"
   language_color: "#563d7c"
   stars: 25
@@ -40,6 +43,7 @@
 
 - name: "express-api"
   description: "RESTful API boilerplate with Express and TypeScript"
+  description_zh: "基于 Express 和 TypeScript 的 RESTful API 脚手架"
   language: "TypeScript"
   language_color: "#3178c6"
   stars: 31
@@ -54,6 +58,7 @@
 
 - name: "flask-microservice"
   description: "A lightweight Python microservice framework"
+  description_zh: "轻量级 Python 微服务框架"
   language: "Python"
   language_color: "#3572A5"
   stars: 15
@@ -67,6 +72,7 @@
 
 - name: "docker-compose-stacks"
   description: "Production-ready Docker Compose configurations"
+  description_zh: "生产级 Docker Compose 配置"
   language: "Shell"
   language_color: "#89e051"
   stars: 8
@@ -80,6 +86,7 @@
 
 - name: "k8s-manifests"
   description: "Kubernetes deployment manifests and Helm charts"
+  description_zh: "Kubernetes 部署清单和 Helm Charts"
   language: "Go"
   language_color: "#00ADD8"
   stars: 12
@@ -93,6 +100,7 @@
 
 - name: "go-cli"
   description: "A fast CLI tool built with Go"
+  description_zh: "使用 Go 构建的快速 CLI 工具"
   language: "Go"
   language_color: "#00ADD8"
   stars: 20
@@ -106,6 +114,7 @@
 
 - name: "tailwind-components"
   description: "Reusable Tailwind CSS component library"
+  description_zh: "可复用的 Tailwind CSS 组件库"
   language: "CSS"
   language_color: "#563d7c"
   stars: 9
@@ -119,6 +128,7 @@
 
 - name: "sass-mixins"
   description: "A collection of handy Sass mixins and functions"
+  description_zh: "实用的 Sass mixins 和函数集合"
   language: "SCSS"
   language_color: "#c6538c"
   stars: 6
@@ -132,6 +142,7 @@
 
 - name: "ci-pipelines"
   description: "GitHub Actions workflows and CI/CD pipeline templates"
+  description_zh: "GitHub Actions 工作流和 CI/CD 流水线模板"
   language: "YAML"
   language_color: "#cb171e"
   stars: 14
@@ -145,6 +156,7 @@
 
 - name: "spring-boot-starter"
   description: "A Spring Boot starter kit with best practices and auto-configuration"
+  description_zh: "包含最佳实践和自动配置的 Spring Boot 起步套件"
   language: "Java"
   language_color: "#b07219"
   stars: 56
@@ -159,6 +171,7 @@
 
 - name: "kotlin-coroutines-utils"
   description: "Utility library for Kotlin coroutines with common patterns and extensions"
+  description_zh: "Kotlin 协程工具库，包含常用模式和扩展"
   language: "Kotlin"
   language_color: "#A97BFF"
   stars: 33
@@ -173,6 +186,7 @@
 
 - name: "scala-fp-toolkit"
   description: "Functional programming toolkit for Scala with Typelevel stack"
+  description_zh: "基于 Typelevel 技术栈的 Scala 函数式编程工具包"
   language: "Scala"
   language_color: "#c22d40"
   stars: 21
@@ -187,6 +201,7 @@
 
 - name: "akka-cluster-demo"
   description: "Akka Cluster demonstration with distributed worker pattern"
+  description_zh: "使用分布式 Worker 模式的 Akka Cluster 示例"
   language: "Scala"
   language_color: "#c22d40"
   stars: 9
@@ -201,6 +216,7 @@
 
 - name: "spark-etl-pipeline"
   description: "Apache Spark ETL pipeline framework with structured streaming"
+  description_zh: "支持结构化流的 Apache Spark ETL 流水线框架"
   language: "Scala"
   language_color: "#c22d40"
   stars: 17
@@ -215,6 +231,7 @@
 
 - name: "gradle-plugins"
   description: "Custom Gradle plugins for JVM project automation"
+  description_zh: "用于 JVM 项目自动化的自定义 Gradle 插件"
   language: "Groovy"
   language_color: "#4298b8"
   stars: 11
@@ -229,6 +246,7 @@
 
 - name: "jvm-profiler"
   description: "Lightweight JVM profiling tool with flame graph generation"
+  description_zh: "轻量级 JVM 性能分析工具，支持火焰图生成"
   language: "Java"
   language_color: "#b07219"
   stars: 28

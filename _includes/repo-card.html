@@ -2,7 +2,11 @@
   <h3 class="gh-repo-card-title">
     <a href="{{ include.repo.url | relative_url }}">{{ include.repo.name }}</a>
   </h3>
-  <p class="gh-repo-card-desc">{{ include.repo.description }}</p>
+  {% assign repo_desc = include.repo.description %}
+  {% if page_lang != 'en' and include.repo.description_zh %}
+    {% assign repo_desc = include.repo.description_zh %}
+  {% endif %}
+  <p class="gh-repo-card-desc">{{ repo_desc }}</p>
   <div class="gh-repo-card-meta">
     {% if include.repo.language %}
       <span class="gh-repo-lang">

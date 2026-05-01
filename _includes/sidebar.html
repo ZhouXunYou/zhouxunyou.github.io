@@ -1,54 +1,16 @@
 <aside class="gh-sidebar" role="complementary">
-  <!-- Profile section -->
+  <!-- Blog info section -->
   <div class="gh-sidebar-profile">
-    {% if site.avatar %}
-      <img class="gh-avatar"
-           src="{{ site.avatar | relative_url }}"
-           alt="{{ site.author | escape }}"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-      <div class="gh-avatar gh-avatar-default" style="display:none">
-        <svg width="80" height="80" viewBox="0 0 16 16" fill="var(--color-text-tertiary)">
-          <path d="M10.561 8.073a6.005 6.005 0 013.432 5.142.75.75 0 11-1.498.07 4.5 4.5 0 00-8.99 0 .75.75 0 11-1.498-.07 6.005 6.005 0 013.432-5.142 3.999 3.999 0 115.123 0zM10.5 5a2.5 2.5 0 10-5 0 2.5 2.5 0 005 0z"/>
-        </svg>
-      </div>
-    {% else %}
-      <div class="gh-avatar gh-avatar-default">
-        <svg width="80" height="80" viewBox="0 0 16 16" fill="var(--color-text-tertiary)">
-          <path d="M10.561 8.073a6.005 6.005 0 013.432 5.142.75.75 0 11-1.498.07 4.5 4.5 0 00-8.99 0 .75.75 0 11-1.498-.07 6.005 6.005 0 013.432-5.142 3.999 3.999 0 115.123 0zM10.5 5a2.5 2.5 0 10-5 0 2.5 2.5 0 005 0z"/>
-        </svg>
-      </div>
-    {% endif %}
-    <h2 class="gh-sidebar-name">{{ site.author | escape }}</h2>
-    <span class="gh-sidebar-username">
-      {{ site.github_username | prepend: '@' | escape }}
-    </span>
+    <h2 class="gh-sidebar-name">{{ site.title | escape }}</h2>
     {% if site.description %}
-      <p class="gh-sidebar-bio">{{ site.description }}</p>
+      <p class="gh-sidebar-bio">{{ strings.description }}</p>
     {% endif %}
   </div>
 
   <hr class="gh-sidebar-divider">
 
-  <!-- Sidebar metadata -->
-  <ul class="gh-sidebar-meta">
-    {% if site.location %}
-      <li>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a4.5 4.5 0 00-4.5 4.5C3.5 9 8 15 8 15s4.5-6 4.5-9.5A4.5 4.5 0 008 1zm0 6.5a2 2 0 110-4 2 2 0 010 4z"/></svg>
-        <span>{{ site.location | escape }}</span>
-      </li>
-    {% endif %}
-    {% if site.email %}
-      <li>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 2A1.75 1.75 0 000 3.75v8.5C0 13.216.784 14 1.75 14h12.5A1.75 1.75 0 0016 12.25v-8.5A1.75 1.75 0 0014.25 2H1.75zM1.5 3.75a.25.25 0 01.25-.25h12.5a.25.25 0 01.25.25v.042l-6.5 4.397L1.5 3.792v-.042zm0 1.358v7.142a.25.25 0 00.25.25h12.5a.25.25 0 00.25-.25V5.108L8.217 9.397a.75.75 0 01-.434 0L1.5 5.108z"/></svg>
-        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
-      </li>
-    {% endif %}
-  </ul>
-
-  <hr class="gh-sidebar-divider">
-
   <!-- Category tree: show group matching current page category, or all on overview -->
-  <nav class="gh-sidebar-tree" role="navigation" aria-label="Category navigation">
+  <nav class="gh-sidebar-tree" role="navigation" aria-label="{{ strings.aria.category_nav }}">
     {% assign current_cat = page.category | default: 'overview' %}
     {% for category in site.data.categories %}
       <div class="gh-tree-group{% if current_cat == 'overview' or current_cat == category.id %} active{% endif %}" data-category="{{ category.id }}">
@@ -60,7 +22,7 @@
                   <svg class="gh-tree-arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                     <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
                   </svg>
-                  <span>{{ item.name }}</span>
+                  <span>{{ strings.categories[item.id] | default: item.name }}</span>
                 </summary>
                 <div class="gh-tree-children">
                   {% for child in item.children %}
@@ -69,7 +31,7 @@
                       <svg class="gh-tree-dot" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
                         <circle cx="8" cy="8" r="4"/>
                       </svg>
-                      <span>{{ child.name }}</span>
+                      <span>{{ strings.categories[child.id] | default: child.name }}</span>
                     </a>
                   {% endfor %}
                 </div>
@@ -80,13 +42,13 @@
                 <svg class="gh-tree-dot" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
                   <circle cx="8" cy="8" r="4"/>
                 </svg>
-                <span>{{ item.name }}</span>
+                <span>{{ strings.categories[item.id] | default: item.name }}</span>
               </a>
             {% endif %}
           {% endfor %}
         {% else %}
           <a class="gh-tree-link" href="/{{ category.id }}/">
-            {{ category.name }}
+            {{ strings.categories[category.id] | default: category.name }}
           </a>
         {% endif %}
       </div>

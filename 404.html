@@ -5,8 +5,15 @@ category: overview
 sidebar: false
 ---
 
+{% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+{% if page_lang == 'en' %}
+  {% assign strings = site.data.strings %}
+{% else %}
+  {% assign strings = site.data.strings_zh %}
+{% endif %}
+
 <div class="gh-404">
   <h1>404</h1>
-  <p>Page not found.</p>
-  <a href="{{ '/' | relative_url }}" class="gh-btn gh-btn-primary">Back to home</a>
+  <p>{{ strings.not_found.message }}</p>
+  <a href="{{ '/' | relative_url }}" class="gh-btn gh-btn-primary">{{ strings.not_found.back_home }}</a>
 </div>

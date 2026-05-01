@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ page.lang | default: site.lang | default: 'zh-CN' }}" data-theme="light">
+  {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+  {% if page_lang == 'en' %}
+    {% assign strings = site.data.strings %}
+  {% else %}
+    {% assign strings = site.data.strings_zh %}
+  {% endif %}
   {% include head.html %}
   <body>
     {% include header.html %}
@@ -7,7 +13,7 @@
       {% unless page.sidebar == false %}
         {% include sidebar.html %}
       {% endunless %}
-      <main class="gh-main" aria-label="Content">
+      <main class="gh-main" aria-label="{{ strings.aria.content }}">
         <div class="gh-container">
           {{ content }}
         </div>

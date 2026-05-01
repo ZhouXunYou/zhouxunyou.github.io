@@ -3,18 +3,25 @@ layout: default
 category: overview
 ---
 
+{% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+{% if page_lang == 'en' %}
+  {% assign strings = site.data.strings %}
+{% else %}
+  {% assign strings = site.data.strings_zh %}
+{% endif %}
+
 <div class="gh-profile">
   <!-- Tab navigation -->
   <nav class="gh-tabs">
-    <a class="gh-tab active" data-tab="overview">Overview</a>
-    <a class="gh-tab" data-tab="repositories">Repositories</a>
-    <a class="gh-tab" data-tab="activity">Activity</a>
+      <a class="gh-tab active" data-tab="overview">{{ strings.home.overview }}</a>
+      <a class="gh-tab" data-tab="repositories">{{ strings.home.repositories }}</a>
+      <a class="gh-tab" data-tab="activity">{{ strings.home.activity }}</a>
   </nav>
 
   <!-- Overview section -->
   <section id="overview" class="gh-section">
     <!-- Pinned repos -->
-    <h2 class="gh-section-title">Pinned</h2>
+    <h2 class="gh-section-title">{{ strings.home.pinned }}</h2>
     <div class="gh-pinned-grid">
       {% for repo in site.data.repos %}
         {% if repo.pinned %}
@@ -26,21 +33,21 @@ category: overview
     <!-- Contribution summary -->
     <div class="gh-contribution-summary">
       <span class="gh-contribution-count">{{ site.data.timeline | size }}</span>
-      contributions in the last year
+      {{ strings.home.contributions }}
     </div>
     <div class="gh-contribution-graph">
       {% include contribution-graph.html %}
     </div>
 
     <!-- Recent activity -->
-    <h2 class="gh-section-title">Recent activity</h2>
+    <h2 class="gh-section-title">{{ strings.home.recent_activity }}</h2>
     {% include timeline.html limit=5 %}
   </section>
 
   <!-- Repositories section (hidden by default) -->
   <section id="repositories" class="gh-section" style="display:none;">
     <div class="gh-repo-search">
-      <input type="text" placeholder="Find a repository..." class="gh-input gh-repo-filter" id="repo-search">
+      <input type="text" placeholder="{{ strings.home.find_repo }}" class="gh-input gh-repo-filter" id="repo-search">
     </div>
     <div class="gh-repo-list">
       {% for repo in site.data.repos %}

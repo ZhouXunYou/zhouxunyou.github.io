@@ -1,19 +1,25 @@
 header:
   - name: Overview
+    key: overview
     url: "/"
     category: overview
   - name: Frontend
+    key: frontend
     url: "/frontend/"
     category: frontend
   - name: Backend
+    key: backend
     url: "/backend/"
     category: backend
   - name: JVM
+    key: jvm
     url: "/jvm/"
     category: jvm
   - name: DevOps
+    key: devops
     url: "/devops/"
     category: devops
   - name: About
+    key: about
     url: "/about/"
     category: about

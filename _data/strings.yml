@@ -1,0 +1,43 @@
+nav:
+  overview: "Overview"
+  frontend: "Frontend"
+  backend: "Backend"
+  jvm: "JVM"
+  devops: "DevOps"
+  about: "About"
+home:
+  overview: "Overview"
+  repositories: "Repositories"
+  activity: "Activity"
+  pinned: "Pinned"
+  contributions: "contributions in the last year"
+  recent_activity: "Recent activity"
+  find_repo: "Find a repository..."
+category:
+  repositories: "Repositories"
+repo:
+  code: "Code"
+  readme: "README.md"
+post:
+  date_format: "%b %-d, %Y"
+timeline:
+  date_format: "%b %-d, %Y"
+not_found:
+  title: "404"
+  message: "Page not found."
+  back_home: "Back to home"
+aria:
+  content: "Content"
+  toggle_nav: "Toggle navigation"
+  category_nav: "Category navigation"
+  toggle_theme: "Toggle theme"
+  contributions: "Contributions"
+categories:
+  frontend: "Frontend"
+  backend: "Backend"
+  jvm: "JVM"
+  jvm-tools: "JVM Tools"
+  jvm-performance: "Performance Tuning"
+  devops: "DevOps"
+  about: "About"
+description: "Developer / Open Source Enthusiast"

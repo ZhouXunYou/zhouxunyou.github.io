@@ -8,6 +8,14 @@ github_username: zhouxunyou
 location: "China"
 # avatar: "/assets/images/avatar.png"  # Uncomment and set path when adding a real avatar image
 
+# i18n
+default_lang: zh
+languages:
+  - code: zh
+    name: 中文
+  - code: en
+    name: English
+
 # Build settings
 theme: minima
 plugins:

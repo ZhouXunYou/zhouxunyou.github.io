@@ -1,6 +1,14 @@
 ---
 layout: default
 ---
+
+{% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+{% if page_lang == 'en' %}
+  {% assign strings = site.data.strings %}
+{% else %}
+  {% assign strings = site.data.strings_zh %}
+{% endif %}
+
 <article class="gh-issue">
   <header class="gh-issue-header">
     <h1 class="gh-issue-title">{{ page.title | escape }}</h1>
@@ -10,9 +18,9 @@ layout: default
         {{ page.author | default: site.author | escape }}
       </span>
       <span class="gh-issue-date">
-        <time datetime="{{ page.date | date_to_xmlschema }}">
-          {{ page.date | date: "%b %-d, %Y" }}
-        </time>
+          <time datetime="{{ page.date | date_to_xmlschema }}">
+            {% if page_lang == 'en' %}{{ page.date | date: "%b %-d, %Y" }}{% else %}{{ page.date | date: "%Y年%-m月%d日" }}{% endif %}
+          </time>
       </span>
       {% if page.categories %}
         {% for cat in page.categories %}

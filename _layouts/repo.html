@@ -1,6 +1,14 @@
 ---
 layout: default
 ---
+
+{% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+{% if page_lang == 'en' %}
+  {% assign strings = site.data.strings %}
+{% else %}
+  {% assign strings = site.data.strings_zh %}
+{% endif %}
+
 <div class="gh-repo-page">
   <!-- Repo header -->
   <div class="gh-repo-header">

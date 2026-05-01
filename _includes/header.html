@@ -14,18 +14,19 @@
         <a class="gh-header-link{% if page.category == item.category or page.url == item.url %} active{% endif %}"
            href="{{ item.url | relative_url }}"
            data-category="{{ item.category }}">
-          {{ item.name }}
+          {{ strings.nav[item.key] | default: item.name }}
         </a>
       {% endfor %}
     </nav>
 
     <!-- Right side actions -->
     <div class="gh-header-actions">
+      {% include lang-switch.html %}
       {% include theme-toggle.html %}
     </div>
 
     <!-- Mobile hamburger -->
-    <button class="gh-header-hamburger" aria-label="Toggle navigation" aria-expanded="false">
+    <button class="gh-header-hamburger" aria-label="{{ strings.aria.toggle_nav }}" aria-expanded="false">
       <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
         <path d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 010 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 010 1.5H1.75A.75.75 0 011 7.75zM1.75 12h12.5a.75.75 0 010 1.5H1.75a.75.75 0 010-1.5z"/>
       </svg>
