@@ -34,11 +34,13 @@ defaults:
       type: "projects"
     values:
       layout: "repo"
+      sidebar: false
   - scope:
       path: ""
       type: "posts"
     values:
       layout: "post"
+      sidebar: false
   - scope:
       path: ""
     values:

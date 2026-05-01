@@ -1,14 +1,4 @@
 <aside class="gh-sidebar" role="complementary">
-  <!-- Blog info section -->
-  <div class="gh-sidebar-profile">
-    <h2 class="gh-sidebar-name">{{ site.title | escape }}</h2>
-    {% if site.description %}
-      <p class="gh-sidebar-bio">{{ strings.description }}</p>
-    {% endif %}
-  </div>
-
-  <hr class="gh-sidebar-divider">
-
   <!-- Category tree: show group matching current page category, or all on overview -->
   <nav class="gh-sidebar-tree" role="navigation" aria-label="{{ strings.aria.category_nav }}">
     {% assign current_cat = page.category | default: 'overview' %}

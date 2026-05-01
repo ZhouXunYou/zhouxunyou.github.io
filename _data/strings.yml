@@ -20,6 +20,7 @@ repo:
   readme: "README.md"
 post:
   date_format: "%b %-d, %Y"
+back: "Back"
 timeline:
   date_format: "%b %-d, %Y"
 not_found:
