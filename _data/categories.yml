@@ -11,7 +11,39 @@
 - id: jvm
   name: JVM
   icon: cpu
-  children: []
+  children:
+    - id: jvm-basics
+      name: 基础原理
+      children:
+        - id: jvm-architecture
+          name: JVM 架构概览
+        - id: jvm-memory
+          name: 内存模型与运行时数据区
+        - id: jvm-object
+          name: 对象的创建与内存布局
+    - id: jvm-gc
+      name: 垃圾回收
+      children:
+        - id: jvm-gc-algorithms
+          name: 垃圾回收算法
+        - id: jvm-gc-collectors
+          name: 垃圾收集器详解
+        - id: jvm-gc-logging
+          name: GC 日志与分析
+    - id: jvm-monitoring
+      name: 监控诊断
+      children:
+        - id: jvm-tools
+          name: JVM 性能监控工具
+        - id: jvm-diagnostics
+          name: 诊断与故障排查
+    - id: jvm-tuning
+      name: 调优实战
+      children:
+        - id: jvm-parameters
+          name: JVM 调优参数详解
+        - id: jvm-tuning-practice
+          name: 综合调优实战案例
 
 - id: devops
   name: DevOps

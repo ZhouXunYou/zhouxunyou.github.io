@@ -2,8 +2,21 @@
   <!-- Category tree: show group matching current page category, or all on overview -->
   <nav class="gh-sidebar-tree" role="navigation" aria-label="{{ strings.aria.category_nav }}">
     {% assign current_cat = page.category | default: 'overview' %}
+    {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+    {% assign link_prefix = '' %}
+    {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
+
     {% for category in site.data.categories %}
-      <div class="gh-tree-group{% if current_cat == 'overview' or current_cat == category.id %} active{% endif %}" data-category="{{ category.id }}">
+      {% assign is_descendant = false %}
+      {% for item in category.children %}
+        {% if current_cat == item.id %}{% assign is_descendant = true %}{% endif %}
+        {% if item.children %}
+          {% for child in item.children %}
+            {% if current_cat == child.id %}{% assign is_descendant = true %}{% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+      <div class="gh-tree-group{% if current_cat == 'overview' or current_cat == category.id or is_descendant %} active{% endif %}" data-category="{{ category.id }}">
         {% if category.children and category.children.size > 0 %}
           {% for item in category.children %}
             {% if item.children and item.children.size > 0 %}
@@ -17,7 +30,7 @@
                 <div class="gh-tree-children">
                   {% for child in item.children %}
                     <a class="gh-tree-link{% if page.category == child.id %} active{% endif %}"
-                       href="/{{ child.id }}/">
+                       href="{{ link_prefix }}/{{ child.id }}/">
                       <svg class="gh-tree-dot" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
                         <circle cx="8" cy="8" r="4"/>
                       </svg>
@@ -28,7 +41,7 @@
               </details>
             {% else %}
               <a class="gh-tree-link{% if page.category == item.id %} active{% endif %}"
-                 href="/{{ item.id }}/">
+                 href="{{ link_prefix }}/{{ item.id }}/">
                 <svg class="gh-tree-dot" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
                   <circle cx="8" cy="8" r="4"/>
                 </svg>
@@ -37,7 +50,7 @@
             {% endif %}
           {% endfor %}
         {% else %}
-          <a class="gh-tree-link" href="/{{ category.id }}/">
+          <a class="gh-tree-link" href="{{ link_prefix }}/{{ category.id }}/">
             {{ strings.categories[category.id] | default: category.name }}
           </a>
         {% endif %}
