@@ -1,0 +1,31 @@
+{% comment %} 统计指定语言的分类和项目数 {% endcomment %}
+{% assign page_lang = include.lang | default: page.lang | default: site.default_lang | default: 'zh' %}
+{% assign project_count = 0 %}
+{% assign active_count = 0 %}
+{% for category in site.data.categories %}
+  {% assign cat_project_count = 0 %}
+  {% for project in site.projects %}
+    {% if project.lang == page_lang %}
+      {% if project.category == category.id %}
+        {% assign cat_project_count = cat_project_count | plus: 1 %}
+      {% endif %}
+      {% if category.children %}
+        {% for child in category.children %}
+          {% if project.category == child.id %}
+            {% assign cat_project_count = cat_project_count | plus: 1 %}
+          {% endif %}
+          {% if child.children %}
+            {% for grandchild in child.children %}
+              {% if project.category == grandchild.id %}
+                {% assign cat_project_count = cat_project_count | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% assign project_count = project_count | plus: cat_project_count %}
+  {% if cat_project_count > 0 %}{% assign active_count = active_count | plus: 1 %}{% endif %}
+{% endfor %}
+{% assign domain_count = site.data.categories | size %}

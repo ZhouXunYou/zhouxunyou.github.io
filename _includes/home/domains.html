@@ -1,4 +1,5 @@
 {% include home/i18n.html %}
+{% include home/stats.html lang=page_lang %}
 <section class="gh-domains">
   <h2 class="gh-section-title">{{ s.home.domains_title }}</h2>
   <div class="gh-domains-grid">
@@ -7,27 +8,6 @@
     {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
     {% for category in site.data.categories %}
       {% assign cat_project_count = 0 %}
-      {% for project in site.projects %}
-        {% if project.lang == page_lang %}
-          {% if project.category == category.id %}
-            {% assign cat_project_count = cat_project_count | plus: 1 %}
-          {% endif %}
-          {% if category.children %}
-            {% for child in category.children %}
-              {% if project.category == child.id %}
-                {% assign cat_project_count = cat_project_count | plus: 1 %}
-              {% endif %}
-              {% if child.children %}
-                {% for grandchild in child.children %}
-                  {% if project.category == grandchild.id %}
-                    {% assign cat_project_count = cat_project_count | plus: 1 %}
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
       <a class="gh-domain-card{% if cat_project_count == 0 %} gh-domain-empty{% endif %}"
          href="{% if cat_project_count > 0 %}{{ link_prefix }}/{{ category.id }}/{% else %}#{% endif %}">
         <div class="gh-domain-header">
@@ -52,7 +32,19 @@
               <strong>{{ cat_project_count }}</strong> {{ s.home.domains_articles }}
             </span>
             {% if category.children and category.children.size > 0 %}
-              <span class="gh-domain-hint">{{ s.categories[category.children.first.id] | default: category.children.first.name }} →</span>
+              <div class="gh-domain-children">
+                {% for child in category.children %}
+                  {% assign child_count = 0 %}
+                  {% for project in site.projects %}
+                    {% if project.lang == page_lang and project.category == child.id %}
+                      {% assign child_count = child_count | plus: 1 %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if child_count > 0 %}
+                    <span class="gh-domain-child-link">{{ s.categories[child.id] | default: child.name }} ({{ child_count }})</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
             {% endif %}
           {% else %}
             <span class="gh-domain-coming">{{ s.home.domains_coming_soon }}</span>
