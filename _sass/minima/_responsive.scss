@@ -134,6 +134,10 @@
     grid-template-columns: $sidebar-width 1fr;
   }
 
+  .gh-layout-full {
+    grid-template-columns: 1fr;
+  }
+
   .gh-sidebar {
     display: block;
   }
@@ -166,6 +170,10 @@
 @media (min-width: $on-wide) {
   .gh-layout {
     grid-template-columns: 280px 1fr;
+  }
+
+  .gh-layout-full {
+    grid-template-columns: 1fr;
   }
 
   .gh-sidebar {
