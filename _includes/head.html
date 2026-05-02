@@ -45,16 +45,15 @@
   <script src="{{ '/assets/js/search.js' | relative_url }}" defer></script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <script type="module">
-    // Only load Mermaid if the page contains mermaid code blocks
     if (document.querySelector('code.language-mermaid')) {
-      import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs').then(function(mermaid) {
-        document.querySelectorAll('code.language-mermaid').forEach(function(code) {
-          var pre = code.parentElement;
-          pre.classList.add('mermaid');
-          pre.innerHTML = code.textContent;
-        });
-        mermaid.default.initialize({ startOnLoad: true, theme: 'default' });
+      const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+      mermaid.initialize({ theme: 'default' });
+      document.querySelectorAll('code.language-mermaid').forEach(function(code) {
+        var pre = code.parentElement;
+        pre.classList.add('mermaid');
+        pre.innerHTML = code.textContent;
       });
+      mermaid.run();
     }
   </script>
 </head>
