@@ -44,6 +44,7 @@ aria:
   category_nav: "分类导航"
   toggle_theme: "切换主题"
   contributions: "贡献"
+  search: "搜索"
 categories:
   frontend: "前端"
   backend: "后端"

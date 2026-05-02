@@ -1,0 +1,245 @@
+// Search Modal — GitHub Cmd+K style
+
+// Overlay
+.gh-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+
+  &.active {
+    display: flex;
+  }
+}
+
+// Modal
+.gh-search-modal {
+  width: 90%;
+  max-width: 640px;
+  max-height: 70vh;
+  background: var(--color-bg-overlay);
+  border: 1px solid var(--color-border-default);
+  border-radius: $border-radius-lg;
+  box-shadow: var(--color-shadow-large);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: gh-search-in 0.15s ease;
+
+  @media (max-width: $on-mobile) {
+    max-height: 60vh;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+}
+
+@keyframes gh-search-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Header (search input)
+.gh-search-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-4;
+  border-bottom: 1px solid var(--color-border-muted);
+
+  svg {
+    flex-shrink: 0;
+    color: var(--color-text-tertiary);
+  }
+}
+
+.gh-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: $font-size-16;
+  font-family: $base-font-family;
+  color: var(--color-text-primary);
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}
+
+.gh-search-kbd {
+  display: none;
+  font-family: $mono-font-family;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border-default);
+  border-radius: $border-radius-sm;
+  padding: 2px 6px;
+  line-height: 1;
+
+  @media (min-width: $on-tablet + 1) {
+    display: inline-block;
+  }
+}
+
+// Body (results)
+.gh-search-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.gh-search-results {
+  list-style: none;
+  margin: 0;
+  padding: $spacing-2 0;
+}
+
+.gh-search-result {
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: $spacing-2 $spacing-4;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    border-left: 2px solid transparent;
+    transition: background-color 0.1s ease;
+
+    &:hover,
+    &.active {
+      background: var(--color-sidebar-item-hover);
+      border-left-color: var(--color-accent-fg);
+    }
+  }
+}
+
+.gh-search-result-title {
+  font-size: $base-font-size;
+  font-weight: $font-weight-semibold;
+  line-height: 1.4;
+}
+
+.gh-search-result-meta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  font-size: $font-size-small;
+  color: var(--color-text-secondary);
+}
+
+.gh-search-result-category {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: $border-radius-xl;
+  font-size: 11px;
+  font-weight: $font-weight-semibold;
+  line-height: 1.5;
+
+  &.cat-frontend {
+    color: var(--color-domain-frontend);
+    background: var(--color-domain-frontend-bg);
+  }
+  &.cat-backend {
+    color: var(--color-domain-backend);
+    background: var(--color-domain-backend-bg);
+  }
+  &.cat-jvm {
+    color: var(--color-domain-jvm);
+    background: var(--color-domain-jvm-bg);
+  }
+  &.cat-devops {
+    color: var(--color-domain-devops);
+    background: var(--color-domain-devops-bg);
+  }
+  &.cat-other {
+    color: var(--color-text-secondary);
+    background: var(--color-badge-lang-bg);
+  }
+}
+
+.gh-search-result-url {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  font-family: $mono-font-family;
+  word-break: break-all;
+}
+
+// Empty state
+.gh-search-empty {
+  padding: $spacing-8 $spacing-4;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: $base-font-size;
+  display: none;
+
+  &.visible {
+    display: block;
+  }
+}
+
+// Hint (before first search)
+.gh-search-hint {
+  padding: $spacing-8 $spacing-4;
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: $base-font-size;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+// Footer
+.gh-search-footer {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-2 $spacing-4;
+  border-top: 1px solid var(--color-border-muted);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+
+  kbd {
+    display: inline-block;
+    font-family: $mono-font-family;
+    font-size: 10px;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border-default);
+    border-radius: $border-radius-sm;
+    padding: 1px 5px;
+    line-height: 1.4;
+    margin: 0 1px;
+  }
+
+  @media (max-width: $on-mobile) {
+    display: none;
+  }
+}
+
+// Search button in header
+.gh-search-btn {
+  background: none;
+  border: none;
+  color: var(--color-header-text);
+  cursor: pointer;
+  padding: $spacing-2;
+  border-radius: $border-radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}

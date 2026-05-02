@@ -1,0 +1,36 @@
+{% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+{% if page_lang == 'en' %}
+  {% assign search_placeholder = "Search docs..." %}
+  {% assign search_empty = "No results found" %}
+  {% assign search_hint = "Type to search" %}
+{% else %}
+  {% assign search_placeholder = "搜索文档..." %}
+  {% assign search_empty = "没有找到相关内容" %}
+  {% assign search_hint = "输入关键词开始搜索" %}
+{% endif %}
+
+<div class="gh-search-overlay" id="gh-search-overlay">
+  <div class="gh-search-modal">
+    <div class="gh-search-header">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.08 7.02a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"/>
+      </svg>
+      <input type="text" class="gh-search-input" id="gh-search-input" placeholder="{{ search_placeholder }}" autocomplete="off" spellcheck="false">
+      <kbd class="gh-search-kbd">ESC</kbd>
+    </div>
+    <div class="gh-search-body">
+      <ul class="gh-search-results" id="gh-search-results"></ul>
+      <div class="gh-search-empty" id="gh-search-empty">
+        <p>{{ search_empty }}</p>
+      </div>
+      <div class="gh-search-hint" id="gh-search-hint">
+        <p>{{ search_hint }}</p>
+      </div>
+    </div>
+    <div class="gh-search-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> {% if page_lang == 'en' %}Navigate{% else %}导航{% endif %}</span>
+      <span><kbd>↵</kbd> {% if page_lang == 'en' %}Open{% else %}打开{% endif %}</span>
+      <span><kbd>esc</kbd> {% if page_lang == 'en' %}Close{% else %}关闭{% endif %}</span>
+    </div>
+  </div>
+</div>

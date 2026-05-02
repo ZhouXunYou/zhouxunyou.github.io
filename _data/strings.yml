@@ -44,6 +44,7 @@ aria:
   category_nav: "Category navigation"
   toggle_theme: "Toggle theme"
   contributions: "Contributions"
+  search: "Search"
 categories:
   frontend: "Frontend"
   backend: "Backend"
