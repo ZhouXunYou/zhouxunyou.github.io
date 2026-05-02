@@ -1,12 +1,88 @@
 - id: frontend
   name: Frontend
   icon: globe
-  children: []
+  children:
+    - id: frontend-fundamentals
+      name: Web 基础
+      children:
+        - id: frontend-html-css
+          name: HTML 与 CSS 核心原理
+        - id: frontend-javascript
+          name: JavaScript 语言精粹
+        - id: frontend-async
+          name: 异步编程与事件循环
+        - id: frontend-browser
+          name: 浏览器渲染原理
+    - id: frontend-frameworks
+      name: 现代框架
+      children:
+        - id: frontend-react
+          name: React 核心机制
+        - id: frontend-vue
+          name: Vue 响应式体系
+        - id: frontend-component
+          name: 组件化架构设计
+    - id: frontend-engineering
+      name: 工程化实践
+      children:
+        - id: frontend-build
+          name: 构建工具体系
+        - id: frontend-testing
+          name: 前端测试策略
+        - id: frontend-performance
+          name: 性能优化实战
+    - id: frontend-advanced
+      name: 进阶专题
+      children:
+        - id: frontend-ssr
+          name: 服务端渲染与同构
+        - id: frontend-micro
+          name: 微前端架构
+        - id: frontend-webassembly
+          name: WebAssembly 与跨端技术
 
 - id: backend
   name: Backend
   icon: server
-  children: []
+  children:
+    - id: backend-fundamentals
+      name: 服务端基础
+      children:
+        - id: backend-http
+          name: HTTP 协议深度解析
+        - id: backend-restful
+          name: RESTful API 设计规范
+        - id: backend-database
+          name: 数据库核心原理
+    - id: backend-languages
+      name: 语言与运行时
+      children:
+        - id: backend-nodejs
+          name: Node.js 运行时机制
+        - id: backend-python
+          name: Python 运行时与生态
+        - id: backend-go
+          name: Go 并发模型
+        - id: backend-golang-web
+          name: Go Web 开发实践
+    - id: backend-architecture
+      name: 架构设计
+      children:
+        - id: backend-microservice
+          name: 微服务架构设计
+        - id: backend-mq
+          name: 消息队列与事件驱动
+        - id: backend-caching
+          name: 缓存架构与策略
+    - id: backend-security
+      name: 安全与性能
+      children:
+        - id: backend-auth
+          name: 认证与授权体系
+        - id: backend-security
+          name: Web 安全防护
+        - id: backend-perf
+          name: 后端性能调优
 
 - id: jvm
   name: JVM
@@ -48,7 +124,45 @@
 - id: devops
   name: DevOps
   icon: tools
-  children: []
+  children:
+    - id: devops-container
+      name: 容器基础
+      children:
+        - id: devops-docker
+          name: Docker 核心原理
+        - id: devops-docker-compose
+          name: Docker Compose 编排
+        - id: devops-container-security
+          name: 容器安全实践
+    - id: devops-orchestration
+      name: 容器编排
+      children:
+        - id: devops-k8s-basics
+          name: Kubernetes 架构与核心概念
+        - id: devops-k8s-network
+          name: Kubernetes 网络与服务暴露
+        - id: devops-k8s-storage
+          name: Kubernetes 存储与调度
+        - id: devops-k8s-troubleshoot
+          name: Kubernetes 运维与排障
+    - id: devops-cicd
+      name: CI/CD 流水线
+      children:
+        - id: devops-github-actions
+          name: GitHub Actions 工作流
+        - id: devops-gitops
+          name: GitOps 与持续部署
+        - id: devops-pipeline
+          name: 流水线设计模式
+    - id: devops-infra
+      name: 基础设施与监控
+      children:
+        - id: devops-iac
+          name: 基础设施即代码
+        - id: devops-observability
+          name: 可观测性体系
+        - id: devops-sre
+          name: SRE 实践与可靠性工程
 
 - id: about
   name: About

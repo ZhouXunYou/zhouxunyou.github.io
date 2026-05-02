@@ -22,4 +22,19 @@
 
   <script src="{{ '/assets/js/theme-toggle.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/sidebar.js' | relative_url }}" defer></script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Jekyll renders ```mermaid as <pre><code class="language-mermaid">
+      // Mermaid needs <pre class="mermaid"> or <div class="mermaid">
+      document.querySelectorAll('code.language-mermaid').forEach(function(code) {
+        var pre = code.parentElement;
+        pre.classList.add('mermaid');
+        pre.innerHTML = code.textContent;
+      });
+
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    });
+  </script>
 </head>
