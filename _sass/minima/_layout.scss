@@ -160,10 +160,12 @@
 .gh-footer-inner {
   max-width: $content-width;
   margin: 0 auto;
+  text-align: center;
 }
 
 .gh-footer-links {
   display: flex;
+  justify-content: center;
   gap: $spacing-4;
   flex-wrap: wrap;
 
