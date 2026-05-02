@@ -1,7 +1,7 @@
 <div class="gh-lang-switch">
   {% if page_lang == 'zh' %}
-    <a href="{{ page.lang_alt | default: '?lang=en' }}" lang="en">EN</a>
+    <a href="{{ page.lang_alt | default: '/en/' }}" lang="en">EN</a>
   {% else %}
-    <a href="{{ page.lang_alt | default: '?lang=zh' }}" lang="zh">中文</a>
+    <a href="{{ page.lang_alt | default: '/' }}" lang="zh">中文</a>
   {% endif %}
 </div>

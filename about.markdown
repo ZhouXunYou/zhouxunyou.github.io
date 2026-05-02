@@ -3,6 +3,8 @@ layout: page
 title: About
 permalink: /about/
 category: about
+lang: zh
+lang_alt: /en/about/
 ---
 
 ## 关于本站

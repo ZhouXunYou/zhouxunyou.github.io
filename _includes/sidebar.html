@@ -18,9 +18,23 @@
       {% endfor %}
       <div class="gh-tree-group{% if current_cat == 'overview' or current_cat == category.id or is_descendant %} active{% endif %}" data-category="{{ category.id }}">
         {% if category.children and category.children.size > 0 %}
+          <details class="gh-tree-details"{% if current_cat == 'overview' or current_cat == category.id or is_descendant %} open{% endif %}>
+            <summary class="gh-tree-item">
+              <svg class="gh-tree-arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
+              </svg>
+              <span>{{ strings.categories[category.id] | default: category.name }}</span>
+            </summary>
+            <div class="gh-tree-children">
           {% for item in category.children %}
             {% if item.children and item.children.size > 0 %}
-              <details class="gh-tree-details">
+      {% assign is_child_active = false %}
+      {% if item.children %}
+        {% for child in item.children %}
+          {% if current_cat == child.id %}{% assign is_child_active = true %}{% endif %}
+        {% endfor %}
+      {% endif %}
+              <details class="gh-tree-details"{% if is_child_active %} open{% endif %}>
                 <summary class="gh-tree-item">
                   <svg class="gh-tree-arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                     <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
@@ -49,6 +63,8 @@
               </a>
             {% endif %}
           {% endfor %}
+            </div>
+          </details>
         {% else %}
           <a class="gh-tree-link" href="{{ link_prefix }}/{{ category.id }}/">
             {{ strings.categories[category.id] | default: category.name }}
@@ -57,9 +73,4 @@
       </div>
     {% endfor %}
   </nav>
-
-  <hr class="gh-sidebar-divider">
-
-  <!-- Social links -->
-  {% include social-links.html %}
 </aside>

@@ -1,0 +1,259 @@
+// Home page specific styles
+
+// ============================================
+// Hero
+// ============================================
+.gh-hero {
+  padding: $spacing-8 0 $spacing-6;
+  border-bottom: 1px solid var(--color-border-default);
+  margin-bottom: $spacing-6;
+}
+
+.gh-hero-brand {
+  font-size: $font-size-32;
+  font-weight: $font-weight-semibold;
+  color: #f78166;
+  margin: 0 0 $spacing-1;
+  letter-spacing: 2px;
+}
+
+.gh-hero-tagline {
+  font-size: $font-size-20;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-2;
+}
+
+.gh-hero-subtitle {
+  font-size: $base-font-size;
+  color: var(--color-text-secondary);
+  margin: 0 0 $spacing-4;
+}
+
+.gh-hero-stats {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  font-size: $base-font-size;
+  color: var(--color-text-secondary);
+}
+
+.gh-hero-stat strong {
+  color: var(--color-text-primary);
+  font-weight: $font-weight-semibold;
+}
+
+.gh-hero-stat-divider {
+  color: var(--color-text-tertiary);
+}
+
+// ============================================
+// Domains
+// ============================================
+.gh-domains-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-3;
+}
+
+.gh-domain-card {
+  display: block;
+  border: 1px solid var(--color-card-border);
+  border-radius: $border-radius-md;
+  padding: $spacing-4;
+  background-color: var(--color-card-bg);
+  transition: border-color 0.15s ease;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    border-color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+}
+
+.gh-domain-empty {
+  opacity: 0.6;
+
+  .gh-domain-coming {
+    color: var(--color-text-tertiary);
+    font-size: $font-size-small;
+  }
+}
+
+.gh-domain-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  margin-bottom: $spacing-2;
+}
+
+.gh-domain-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $border-radius-md;
+  flex-shrink: 0;
+}
+
+.gh-domain-icon-frontend {
+  color: var(--color-domain-frontend);
+  background-color: var(--color-domain-frontend-bg);
+}
+
+.gh-domain-icon-backend {
+  color: var(--color-domain-backend);
+  background-color: var(--color-domain-backend-bg);
+}
+
+.gh-domain-icon-jvm {
+  color: var(--color-domain-jvm);
+  background-color: var(--color-domain-jvm-bg);
+}
+
+.gh-domain-icon-devops {
+  color: var(--color-domain-devops);
+  background-color: var(--color-domain-devops-bg);
+}
+
+.gh-domain-icon-about {
+  color: var(--color-domain-about);
+  background-color: var(--color-domain-about-bg);
+}
+
+.gh-domain-name {
+  font-size: $base-font-size;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+}
+
+.gh-domain-body {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  font-size: $font-size-small;
+  color: var(--color-text-secondary);
+}
+
+.gh-domain-count strong {
+  color: var(--color-text-primary);
+}
+
+.gh-domain-hint {
+  color: var(--color-text-link);
+  font-size: $font-size-small;
+}
+
+// ============================================
+// Featured
+// ============================================
+.gh-featured-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.gh-featured-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-2;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.gh-featured-link {
+  font-size: $base-font-size;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-link);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.gh-featured-meta {
+  font-size: $font-size-small;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.gh-featured-none {
+  color: var(--color-text-tertiary);
+  font-size: $base-font-size;
+}
+
+// ============================================
+// Changelog
+// ============================================
+.gh-changelog-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.gh-changelog-item {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-3;
+  padding: $spacing-2 0;
+  position: relative;
+}
+
+.gh-changelog-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-timeline-dot);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.gh-changelog-date {
+  font-size: $font-size-small;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  min-width: 90px;
+}
+
+.gh-changelog-link {
+  font-size: $base-font-size;
+  color: var(--color-text-link);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.gh-changelog-text {
+  font-size: $base-font-size;
+  color: var(--color-text-primary);
+}
+
+// ============================================
+// Responsive
+// ============================================
+@media (max-width: $on-mobile) {
+  .gh-domains-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gh-hero-brand {
+    font-size: $font-size-24;
+  }
+
+  .gh-hero-tagline {
+    font-size: $font-size-16;
+  }
+
+  .gh-featured-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-1;
+  }
+}

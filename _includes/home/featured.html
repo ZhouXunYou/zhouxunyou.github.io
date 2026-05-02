@@ -1,0 +1,51 @@
+{% include home/i18n.html %}
+<section class="gh-featured">
+  <h2 class="gh-section-title">{{ s.home.featured_title }}</h2>
+  {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+  {% assign lang_projects = site.projects | where_exp: "p", "p.lang == page_lang" | sort: "sort_order" %}
+  {% if lang_projects.size > 0 %}
+    <ul class="gh-featured-list">
+      {% for project in lang_projects limit: 5 %}
+        {% assign link_prefix = '' %}
+        {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
+        {% assign cat_label = '' %}
+        {% assign sub_label = '' %}
+        {% for category in site.data.categories %}
+          {% if project.category == category.id %}
+            {% assign cat_label = s.categories[category.id] | default: category.name %}
+          {% endif %}
+          {% if category.children %}
+            {% for child in category.children %}
+              {% if project.category == child.id %}
+                {% assign cat_label = s.categories[category.id] | default: category.name %}
+                {% assign sub_label = s.categories[child.id] | default: child.name %}
+              {% endif %}
+              {% if child.children %}
+                {% for grandchild in child.children %}
+                  {% if project.category == grandchild.id %}
+                    {% assign cat_label = s.categories[category.id] | default: category.name %}
+                    {% assign sub_label = s.categories[child.id] | default: child.name %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+        <li class="gh-featured-item">
+          <a class="gh-featured-link" href="{{ link_prefix }}{{ project.url }}">{{ project.title }}</a>
+          {% if cat_label != '' %}
+            <span class="gh-featured-meta">
+              {% if sub_label != '' %}
+                {{ cat_label }} · {{ sub_label }}
+              {% else %}
+                {{ cat_label }}
+              {% endif %}
+            </span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="gh-featured-none">{{ s.home.featured_none }}</p>
+  {% endif %}
+</section>

@@ -1,0 +1,64 @@
+{% include home/i18n.html %}
+<section class="gh-domains">
+  <h2 class="gh-section-title">{{ s.home.domains_title }}</h2>
+  <div class="gh-domains-grid">
+    {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+    {% assign link_prefix = '' %}
+    {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
+    {% for category in site.data.categories %}
+      {% assign cat_project_count = 0 %}
+      {% for project in site.projects %}
+        {% if project.lang == page_lang %}
+          {% if project.category == category.id %}
+            {% assign cat_project_count = cat_project_count | plus: 1 %}
+          {% endif %}
+          {% if category.children %}
+            {% for child in category.children %}
+              {% if project.category == child.id %}
+                {% assign cat_project_count = cat_project_count | plus: 1 %}
+              {% endif %}
+              {% if child.children %}
+                {% for grandchild in child.children %}
+                  {% if project.category == grandchild.id %}
+                    {% assign cat_project_count = cat_project_count | plus: 1 %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      <a class="gh-domain-card{% if cat_project_count == 0 %} gh-domain-empty{% endif %}"
+         href="{% if cat_project_count > 0 %}{{ link_prefix }}/{{ category.id }}/{% else %}#{% endif %}">
+        <div class="gh-domain-header">
+          <span class="gh-domain-icon gh-domain-icon-{{ category.id }}">
+            {% if category.icon == 'globe' %}
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zM5.785 1.5a6.986 6.986 0 00-2.8 3.5h2.33A11.4 11.4 0 015.785 1.5zm1.3 0a10.1 10.1 0 00-.7 3.5h3.23a10.1 10.1 0 00-.7-3.5H7.085zm1.62 0a11.4 11.4 0 01.47 3.5h2.33a6.986 6.986 0 00-2.8-3.5zm-5.9 5a6.96 6.96 0 000 3h2.56a13.2 13.2 0 010-3H2.805zm3.56 0a11.7 11.7 0 000 3h3.27a11.7 11.7 0 000-3h-3.27zm4.27 0a13.2 13.2 0 010 3h2.56a6.96 6.96 0 000-3h-2.56zm-8.65 5a6.986 6.986 0 002.8 3.5 11.4 11.4 0 01-.47-3.5H1.985zm1.85 0a10.1 10.1 0 00.7 3.5h1.83a10.1 10.1 0 00.7-3.5h-3.23zm4.23 0a10.1 10.1 0 00.7 3.5h1.83a10.1 10.1 0 00.7-3.5h-3.23zm1.85 0a11.4 11.4 0 01-.47 3.5 6.986 6.986 0 002.8-3.5h-2.33z"/></svg>
+            {% elsif category.icon == 'server' %}
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 1.75A.75.75 0 012.25 1h11.5a.75.75 0 010 1.5H2.25a.75.75 0 01-.75-.75zm0 4A.75.75 0 012.25 5h11.5a.75.75 0 010 1.5H2.25a.75.75 0 01-.75-.75zm0 4A.75.75 0 012.25 9h11.5a.75.75 0 010 1.5H2.25a.75.75 0 01-.75-.75zm0 4a.75.75 0 01.75-.75h11.5a.75.75 0 010 1.5H2.25a.75.75 0 01-.75-.75z"/></svg>
+            {% elsif category.icon == 'cpu' %}
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M6.5 0a.75.75 0 01.75.75V2h1V.75a.75.75 0 011.5 0V2h1V.75a.75.75 0 011.5 0V2h.25A1.75 1.75 0 0114 3.75v.25h1.25a.75.75 0 010 1.5H14v1h1.25a.75.75 0 010 1.5H14v1h1.25a.75.75 0 010 1.5H14v.25A1.75 1.75 0 0112.25 14h-.25v1.25a.75.75 0 01-1.5 0V14h-1v1.25a.75.75 0 01-1.5 0V14h-1v1.25a.75.75 0 01-1.5 0V14h-.25A1.75 1.75 0 012 12.25v-.25H.75a.75.75 0 010-1.5H2v-1H.75a.75.75 0 010-1.5H2v-1H.75a.75.75 0 010-1.5H2v-.25A1.75 1.75 0 013.75 2h.25V.75A.75.75 0 015.5.75V2h1V.75A.75.75 0 016.5 0zM3.5 3.75a.25.25 0 01.25-.25h8.5a.25.25 0 01.25.25v8.5a.25.25 0 01-.25.25h-8.5a.25.25 0 01-.25-.25v-8.5z"/></svg>
+            {% elsif category.icon == 'tools' %}
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M9.396 3.024a3.5 3.5 0 00-4.95 0l-.273.273a.75.75 0 001.06 1.06l.274-.273a2 2 0 012.828 0l.026.026a2 2 0 010 2.828l-2.475 2.475a2 2 0 01-2.828 0l-.026-.026a2 2 0 010-2.828.75.75 0 00-1.06-1.06 3.5 3.5 0 000 4.95l.026.025a3.5 3.5 0 004.95 0l2.475-2.475a3.5 3.5 0 000-4.95l-.026-.025zm3.95 2.026a3.5 3.5 0 00-1.06-1.06l-.026-.026a3.5 3.5 0 00-4.95 0 .75.75 0 001.06 1.06 2 2 0 012.828 0l.026.026a2 2 0 010 2.828l-2.475 2.475a2 2 0 01-2.828 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l.026-.026a3.5 3.5 0 000-4.95l2.475-2.475z"/></svg>
+            {% elsif category.icon == 'person' %}
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M10.561 8.073a6.005 6.005 0 013.432 5.142.75.75 0 11-1.498.07 4.5 4.5 0 00-8.99 0 .75.75 0 11-1.498-.07 6.004 6.004 0 013.431-5.142 3.999 3.999 0 115.123 0zM10.5 5a2.5 2.5 0 10-5 0 2.5 2.5 0 005 0z"/></svg>
+            {% endif %}
+          </span>
+          <span class="gh-domain-name">{{ s.categories[category.id] | default: category.name }}</span>
+        </div>
+        <div class="gh-domain-body">
+          {% if cat_project_count > 0 %}
+            <span class="gh-domain-count">
+              <strong>{{ cat_project_count }}</strong> {{ s.home.domains_articles }}
+            </span>
+            {% if category.children and category.children.size > 0 %}
+              <span class="gh-domain-hint">{{ s.categories[category.children.first.id] | default: category.children.first.name }} →</span>
+            {% endif %}
+          {% else %}
+            <span class="gh-domain-coming">{{ s.home.domains_coming_soon }}</span>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>

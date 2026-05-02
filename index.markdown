@@ -1,5 +1,7 @@
 ---
 layout: home
-title: Home
+title: 概览
 category: overview
+lang: zh
+lang_alt: /en/
 ---

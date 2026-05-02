@@ -1,0 +1,11 @@
+{% comment %}
+  Resolve i18n strings for home page components.
+  The `strings` variable from default.html's i18n.html is NOT available
+  in page-content includes (rendered before layout). Use site.data directly.
+{% endcomment %}
+{% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+{% if page_lang == 'en' %}
+  {% assign s = site.data.strings %}
+{% else %}
+  {% assign s = site.data.strings_zh %}
+{% endif %}

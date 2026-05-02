@@ -1,0 +1,49 @@
+{% include home/i18n.html %}
+<section class="gh-hero">
+  <h1 class="gh-hero-brand">GWZZ</h1>
+  <p class="gh-hero-tagline">{{ s.home.hero_tagline }}</p>
+  <p class="gh-hero-subtitle">{{ s.home.hero_subtitle }}</p>
+  <div class="gh-hero-stats">
+    {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+    {% assign project_count = 0 %}
+    {% assign active_count = 0 %}
+    {% for category in site.data.categories %}
+      {% assign cat_project_count = 0 %}
+      {% for project in site.projects %}
+        {% if project.lang == page_lang %}
+          {% if project.category == category.id %}
+            {% assign cat_project_count = cat_project_count | plus: 1 %}
+          {% endif %}
+          {% if category.children %}
+            {% for child in category.children %}
+              {% if project.category == child.id %}
+                {% assign cat_project_count = cat_project_count | plus: 1 %}
+              {% endif %}
+              {% if child.children %}
+                {% for grandchild in child.children %}
+                  {% if project.category == grandchild.id %}
+                    {% assign cat_project_count = cat_project_count | plus: 1 %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {% assign project_count = project_count | plus: cat_project_count %}
+      {% if cat_project_count > 0 %}{% assign active_count = active_count | plus: 1 %}{% endif %}
+    {% endfor %}
+    {% assign domain_count = site.data.categories | size %}
+    <span class="gh-hero-stat">
+      <strong>{{ project_count }}</strong> {{ s.home.hero_articles }}
+    </span>
+    <span class="gh-hero-stat-divider">·</span>
+    <span class="gh-hero-stat">
+      <strong>{{ domain_count }}</strong> {{ s.home.hero_domains }}
+    </span>
+    <span class="gh-hero-stat-divider">·</span>
+    <span class="gh-hero-stat">
+      <strong>{{ active_count }}</strong> {{ s.home.hero_categories }}
+    </span>
+  </div>
+</section>

@@ -72,6 +72,18 @@
   --color-calendar-graph-3:  #30a14e;
   --color-calendar-graph-4:  #216e39;
   --color-calendar-graph-0:  #ebedf0;
+
+  // Domain colors
+  --color-domain-frontend:   #3178c6;
+  --color-domain-backend:    #b07219;
+  --color-domain-jvm:        #f78166;
+  --color-domain-devops:     #41bdc3;
+  --color-domain-about:      #8b949e;
+  --color-domain-frontend-bg:   rgba(49, 120, 198, 0.1);
+  --color-domain-backend-bg:    rgba(176, 114, 25, 0.1);
+  --color-domain-jvm-bg:        rgba(247, 129, 102, 0.1);
+  --color-domain-devops-bg:     rgba(65, 189, 195, 0.1);
+  --color-domain-about-bg:      rgba(139, 148, 158, 0.1);
 }
 
 // ============================================
@@ -134,4 +146,16 @@
   --color-calendar-graph-3:  #26a641;
   --color-calendar-graph-4:  #39d353;
   --color-calendar-graph-0:  #161b22;
+
+  // Domain colors
+  --color-domain-frontend:   #5a9fd4;
+  --color-domain-backend:    #d4a853;
+  --color-domain-jvm:        #f78166;
+  --color-domain-devops:     #5fd4d9;
+  --color-domain-about:      #8b949e;
+  --color-domain-frontend-bg:   rgba(90, 159, 212, 0.15);
+  --color-domain-backend-bg:    rgba(212, 168, 83, 0.15);
+  --color-domain-jvm-bg:        rgba(247, 129, 102, 0.15);
+  --color-domain-devops-bg:     rgba(95, 212, 217, 0.15);
+  --color-domain-about-bg:      rgba(139, 148, 158, 0.15);
 }
