@@ -6,8 +6,6 @@
   {% if lang_projects.size > 0 %}
     <ul class="gh-featured-list">
       {% for project in lang_projects limit: 5 %}
-        {% assign link_prefix = '' %}
-        {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
         {% assign cat_label = '' %}
         {% assign sub_label = '' %}
         {% for category in site.data.categories %}
@@ -32,7 +30,7 @@
           {% endif %}
         {% endfor %}
         <li class="gh-featured-item">
-          <a class="gh-featured-link" href="{{ link_prefix }}{{ project.url }}">{{ project.title }}</a>
+          <a class="gh-featured-link" href="{{ project.url }}">{{ project.title }}</a>
           {% if cat_label != '' %}
             <span class="gh-featured-meta">
               {% if sub_label != '' %}
