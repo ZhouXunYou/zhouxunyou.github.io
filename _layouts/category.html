@@ -2,6 +2,7 @@
 layout: default
 ---
 
+{% include i18n.html %}
 {% assign link_prefix = '' %}
 {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
 
@@ -33,13 +34,13 @@ layout: default
   {% endfor %}
 
   {% if current_cat %}
-  <h1 class="gh-category-title">{{ current_cat.name }}</h1>
+  <h1 class="gh-category-title">{{ strings.categories[cat_id] | default: current_cat.name }}</h1>
 
   {% if parent_cat %}
   <div class="gh-breadcrumb">
-    <a href="{{ link_prefix }}/{{ parent_cat.id }}/">{{ parent_cat.name }}</a>
+    <a href="{{ link_prefix }}/{{ parent_cat.id }}/">{{ strings.categories[parent_cat.id] | default: parent_cat.name }}</a>
     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/></svg>
-    <span>{{ current_cat.name }}</span>
+    <span>{{ strings.categories[cat_id] | default: current_cat.name }}</span>
   </div>
   {% endif %}
 
@@ -71,7 +72,7 @@ layout: default
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
           <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
         </svg>
-        <span>{{ child.name }}</span>
+        <span>{{ strings.categories[child.id] | default: child.name }}</span>
       </a>
       {% endif %}
     </div>
