@@ -1,14 +1,14 @@
 ---
 # Only the main Sass file needs front matter
 ---
-@import "theme";
-@import "minima/variables";
-@import "minima/base";
-@import "minima/layout";
-@import "minima/sidebar";
-@import "minima/components";
-@import "minima/markdown";
-@import "minima/syntax-highlighting";
-@import "minima/responsive";
-@import "minima/home";
-@import "minima/search";
+@use "theme";
+@use "minima/variables";
+@use "minima/base";
+@use "minima/layout";
+@use "minima/sidebar";
+@use "minima/components";
+@use "minima/markdown";
+@use "minima/syntax-highlighting";
+@use "minima/responsive";
+@use "minima/home";
+@use "minima/search";
