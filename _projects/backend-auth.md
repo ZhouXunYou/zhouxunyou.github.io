@@ -27,16 +27,16 @@ nav:
 sequenceDiagram
     participant C as 浏览器
     participant S as 服务器
-    participant Store as Session 存储
+    participant Store as Session存储
 
-    C->>S: POST /login (username, password)
-    S->>Store: 创建 Session {user_id: 123}
-    Store-->>S: session_id: abc123
-    S-->>C: Set-Cookie: sid=abc123; HttpOnly; Secure
+    C->>S: POST /login username & password
+    S->>Store: 创建Session user_id=123
+    Store-->>S: session_id=abc123
+    S-->>C: Set-Cookie: sid=abc123
     C->>S: GET /profile Cookie: sid=abc123
     S->>Store: 查询 session_id=abc123
-    Store-->>S: {user_id: 123}
-    S-->>C: 200 OK (用户数据)
+    Store-->>S: 返回 user_id=123
+    S-->>C: 200 OK 用户数据
 ```
 
 Session 机制的核心问题：
@@ -51,10 +51,10 @@ JWT（JSON Web Token）由三部分组成，用 `.` 分隔：
 
 ```mermaid
 graph LR
-    subgraph "JWT 结构"
-        H["Header<br/>{alg: HS256, typ: JWT}<br/>Base64URL 编码"]
-        P["Payload<br/>{sub: user123, exp: 1700000000}<br/>Base64URL 编码"]
-        S["Signature<br/>HMAC(header.payload, secret)<br/>不可逆"]
+    subgraph JWT结构
+        H["Header: alg=HS256, typ=JWT\nBase64URL 编码"]
+        P["Payload: sub=user123, exp=1700000000\nBase64URL 编码"]
+        S["Signature: HMAC header.payload, secret\n不可逆"]
     end
     H --> P --> S
 ```

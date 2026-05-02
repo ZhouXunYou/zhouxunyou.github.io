@@ -28,16 +28,16 @@ Authentication answers "who are you," while Authorization answers "what can you 
 sequenceDiagram
     participant C as Browser
     participant S as Server
-    participant Store as Session Store
+    participant Store as SessionStore
 
-    C->>S: POST /login (username, password)
-    S->>Store: Create Session {user_id: 123}
-    Store-->>S: session_id: abc123
-    S-->>C: Set-Cookie: sid=abc123; HttpOnly; Secure
+    C->>S: POST /login username and password
+    S->>Store: CreateSession user_id=123
+    Store-->>S: session_id=abc123
+    S-->>C: Set-Cookie: sid=abc123
     C->>S: GET /profile Cookie: sid=abc123
     S->>Store: Query session_id=abc123
-    Store-->>S: {user_id: 123}
-    S-->>C: 200 OK (user data)
+    Store-->>S: Return user_id=123
+    S-->>C: 200 OK user data
 ```
 
 Core issues with the Session mechanism:
@@ -52,10 +52,10 @@ JWT (JSON Web Token) consists of three parts separated by `.`:
 
 ```mermaid
 graph LR
-    subgraph "JWT Structure"
-        H["Header<br/>{alg: HS256, typ: JWT}<br/>Base64URL encoded"]
-        P["Payload<br/>{sub: user123, exp: 1700000000}<br/>Base64URL encoded"]
-        S["Signature<br/>HMAC(header.payload, secret)<br/>Irreversible"]
+    subgraph JWTStructure
+        H["Header: alg=HS256, typ=JWT\nBase64URL encoded"]
+        P["Payload: sub=user123, exp=1700000000\nBase64URL encoded"]
+        S["Signature: HMAC header.payload, secret\nIrreversible"]
     end
     H --> P --> S
 ```
