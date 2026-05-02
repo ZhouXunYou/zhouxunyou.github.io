@@ -172,6 +172,12 @@
   }
 }
 
+.gh-footer-motto {
+  margin: $spacing-2 0 0;
+  color: var(--color-text-tertiary);
+  font-size: $font-size-small;
+}
+
 // Back button
 .gh-back-btn {
   display: inline-flex;
