@@ -148,7 +148,7 @@
 }
 
 .gh-container {
-  max-width: calc(#{$content-width} - #{$sidebar-width});
+  max-width: $content-max-width;
 }
 
 // Footer

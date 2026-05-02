@@ -86,11 +86,16 @@
     grid-template-columns: 1fr;
   }
 
+  .gh-sidebar-toggle {
+    display: flex;
+  }
+
   .gh-sidebar {
-    position: static;
-    height: auto;
-    border-bottom: 1px solid var(--color-border-default);
-    border-right: none;
+    display: none;
+
+    &.gh-sidebar-open {
+      display: block;
+    }
   }
 
   .gh-main {
@@ -148,7 +153,38 @@
 
 // Wide: >= 1012px
 @media (min-width: $on-desktop) {
-  .gh-container {
-    max-width: calc(#{$content-width} - #{$sidebar-width} - #{$spacing-6} * 3);
+  .gh-pinned-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .gh-domains-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Ultra-wide: >= 1280px
+@media (min-width: $on-wide) {
+  .gh-layout {
+    grid-template-columns: 280px 1fr;
+  }
+
+  .gh-sidebar {
+    padding: $spacing-6 $spacing-5;
+  }
+
+  .gh-main {
+    padding: $spacing-8 $spacing-10 $spacing-10;
+  }
+
+  .gh-pinned-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .gh-domains-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .markdown-body {
+    font-size: 15px;
   }
 }
