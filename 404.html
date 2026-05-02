@@ -15,5 +15,19 @@ sidebar: false
 <div class="gh-404">
   <h1>404</h1>
   <p>{{ strings.not_found.message }}</p>
-  <a href="{{ '/' | relative_url }}" class="gh-btn gh-btn-primary">{{ strings.not_found.back_home }}</a>
+  <div class="gh-404-actions">
+    <a href="{{ '/' | relative_url }}" class="gh-btn gh-btn-primary">{{ strings.not_found.back_home }}</a>
+    <button class="gh-btn" onclick="document.getElementById('gh-search-btn').click()" aria-label="{{ strings.aria.search | default: '搜索' }}">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.08 7.02a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"/></svg>
+      {% if page_lang == 'en' %}Search{% else %}搜索{% endif %}
+    </button>
+  </div>
+  <div class="gh-404-sitemap">
+    <p>{% if page_lang == 'en' %}Browse by category:{% else %}按分类浏览：{% endif %}</p>
+    <ul>
+      {% for cat in site.data.categories %}
+      <li><a href="{% if page_lang == 'en' %}/en{% endif %}/{{ cat.id }}/">{{ strings.categories[cat.id] | default: cat.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>

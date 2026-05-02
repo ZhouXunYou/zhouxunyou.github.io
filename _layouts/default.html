@@ -3,12 +3,18 @@
   {% include i18n.html %}
   {% include head.html %}
   <body>
+    <a href="#main-content" class="gh-skip-link">{% if page_lang == 'en' %}Skip to content{% else %}跳到主要内容{% endif %}</a>
     {% include header.html %}
     <div class="gh-layout{% if page.sidebar == false %} gh-layout-full{% endif %}">
       {% unless page.sidebar == false %}
+        <button class="gh-sidebar-toggle" aria-label="{% if page_lang == 'en' %}Toggle sidebar{% else %}切换侧边栏{% endif %}">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 010 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 010 1.5H1.75A.75.75 0 011 7.75zM1.75 12h12.5a.75.75 0 010 1.5H1.75a.75.75 0 010-1.5z"/>
+          </svg>
+        </button>
         {% include sidebar.html %}
       {% endunless %}
-      <main class="gh-main" aria-label="{{ strings.aria.content }}">
+      <main class="gh-main" id="main-content" aria-label="{{ strings.aria.content }}">
         <div class="gh-container">
           {{ content }}
         </div>

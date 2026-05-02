@@ -196,3 +196,21 @@ hr {
     color: var(--color-text-tertiary);
   }
 }
+
+// Skip link
+.gh-skip-link {
+  position: absolute;
+  top: -100%;
+  left: $spacing-2;
+  z-index: 9999;
+  padding: $spacing-2 $spacing-3;
+  background: var(--color-accent-emphasis);
+  color: #fff;
+  font-size: $base-font-size;
+  border-radius: $border-radius-md;
+  text-decoration: none;
+
+  &:focus {
+    top: $spacing-2;
+  }
+}

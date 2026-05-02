@@ -2,7 +2,7 @@
   <div class="gh-header-inner">
     <!-- Logo / Site name -->
     <a class="gh-header-logo" href="{% if page_lang == 'en' %}/en/{% else %}/{% endif %}">
-      <img class="gh-octicon" src="{{ '/assets/images/favicon-96x96.png' | relative_url }}" width="28" height="28" alt="">
+      <img class="gh-octicon" src="{{ '/assets/images/favicon-96x96.png' | relative_url }}" width="28" height="28" alt="" aria-hidden="true">
       <span class="gh-header-title">{{ site.title | default: site.github_username | escape }}</span>
     </a>
 
@@ -28,7 +28,7 @@
     <!-- Right side actions -->
     <div class="gh-header-actions">
       <button class="gh-search-btn" aria-label="{{ strings.aria.search | default: '搜索' }}" id="gh-search-btn">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
           <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.08 7.02a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"/>
         </svg>
       </button>
@@ -38,7 +38,7 @@
 
     <!-- Mobile hamburger -->
     <button class="gh-header-hamburger" aria-label="{{ strings.aria.toggle_nav }}" aria-expanded="false">
-      <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+      <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
         <path d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 010 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 010 1.5H1.75A.75.75 0 011 7.75zM1.75 12h12.5a.75.75 0 010 1.5H1.75a.75.75 0 010-1.5z"/>
       </svg>
     </button>

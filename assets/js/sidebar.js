@@ -56,6 +56,14 @@
       hamburger.setAttribute('aria-expanded', !expanded);
       nav.classList.toggle('gh-header-nav-open');
     });
+
+    // Close hamburger menu when a nav link is clicked
+    nav.querySelectorAll('.gh-header-link').forEach(function(link) {
+      link.addEventListener('click', function() {
+        hamburger.setAttribute('aria-expanded', 'false');
+        nav.classList.remove('gh-header-nav-open');
+      });
+    });
   }
 
   // Mobile sidebar toggle

@@ -1,6 +1,7 @@
 (function() {
   var searchIndex = null;
   var documents = [];
+  var docMap = {};  // url -> doc lookup for O(1) access
   var isLoading = false;
   var activeIndex = -1;
   var pendingCallbacks = [];
@@ -82,11 +83,16 @@
     // Load lunr.js from CDN
     var script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js';
+    script.integrity = 'sha384-203J0SNzyqHby3iU6hzvzltrWi/M41wOP5Gu+BiJMz5nwKykbkUx8Kp7iti0Lpli';
+    script.crossOrigin = 'anonymous';
     script.onload = function() {
       fetch('/search.json')
         .then(function(res) { return res.json(); })
         .then(function(data) {
           documents = data;
+          // Build url -> doc map for O(1) lookups
+          docMap = {};
+          data.forEach(function(doc) { docMap[doc.url] = doc; });
 
           // Pre-process documents: convert text to bigram-tokenized strings
           var processedDocs = data.map(function(doc) {
@@ -141,6 +147,15 @@
       return;
     }
 
+    // Minimum 2 characters for meaningful search
+    if (query.trim().length < 2) {
+      resultsList.innerHTML = '';
+      emptyEl.classList.remove('visible');
+      hintEl.classList.remove('hidden');
+      activeIndex = -1;
+      return;
+    }
+
     hintEl.classList.add('hidden');
 
     // Tokenize query with bigram and search using query API
@@ -158,9 +173,9 @@
 
     var lang = getCurrentLang();
 
-    // Filter by current language
+    // Filter by current language using O(1) docMap lookup
     var filtered = results.filter(function(r) {
-      var doc = documents.find(function(d) { return d.url === r.ref; });
+      var doc = docMap[r.ref];
       return doc && doc.lang === lang;
     }).slice(0, 10);
 
@@ -202,7 +217,7 @@
     var html = '';
 
     results.forEach(function(r, i) {
-      var doc = documents.find(function(d) { return d.url === r.ref; });
+      var doc = docMap[r.ref];
       if (!doc) return;
 
       var catClass = getCategoryClass(doc.category);

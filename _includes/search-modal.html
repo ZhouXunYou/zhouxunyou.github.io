@@ -10,9 +10,9 @@
 {% endif %}
 
 <div class="gh-search-overlay" id="gh-search-overlay">
-  <div class="gh-search-modal">
+  <div class="gh-search-modal" role="dialog" aria-modal="true" aria-label="{{ search_placeholder }}">
     <div class="gh-search-header">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
         <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.08 7.02a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"/>
       </svg>
       <input type="text" class="gh-search-input" id="gh-search-input" placeholder="{{ search_placeholder }}" autocomplete="off" spellcheck="false">

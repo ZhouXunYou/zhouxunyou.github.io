@@ -39,7 +39,7 @@ layout: default
   {% if parent_cat %}
   <div class="gh-breadcrumb">
     <a href="{{ link_prefix }}/{{ parent_cat.id }}/">{{ strings.categories[parent_cat.id] | default: parent_cat.name }}</a>
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/></svg>
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/></svg>
     <span>{{ strings.categories[cat_id] | default: current_cat.name }}</span>
   </div>
   {% endif %}
@@ -51,7 +51,7 @@ layout: default
       {% if child.children and child.children.size > 0 %}
       <details class="gh-tree-details" open>
         <summary class="gh-tree-item">
-          <svg class="gh-tree-arrow" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="gh-tree-arrow" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
           </svg>
             <span>{{ strings.categories[child.id] | default: child.name }}</span>
@@ -59,7 +59,7 @@ layout: default
           <div class="gh-tree-children">
             {% for grandchild in child.children %}
           <a class="gh-tree-link" href="{{ link_prefix }}/{{ grandchild.id }}/">
-            <svg class="gh-tree-dot" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
+            <svg class="gh-tree-dot" aria-hidden="true" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
               <circle cx="8" cy="8" r="4"/>
             </svg>
             <span>{{ strings.categories[grandchild.id] | default: grandchild.name }}</span>
@@ -69,7 +69,7 @@ layout: default
       </details>
       {% else %}
       <a class="gh-category-link" href="{{ link_prefix }}/{{ child.id }}/">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
           <path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/>
         </svg>
         <span>{{ strings.categories[child.id] | default: child.name }}</span>

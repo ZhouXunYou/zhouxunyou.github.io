@@ -204,3 +204,20 @@
     flex-shrink: 0;
   }
 }
+
+// "Edit this page" link
+.gh-edit-link {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  padding: $spacing-2 0;
+  margin-top: $spacing-4;
+  color: var(--color-text-secondary);
+  font-size: $font-size-small;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-text-link);
+    text-decoration: none;
+  }
+}
