@@ -1,10 +1,10 @@
 ---
 layout: page
 title: "Web 安全防护"
-category: backend-security
+category: backend-web-security
 sidebar: true
 lang: zh
-lang_alt: /en/backend-security/
+lang_alt: /en/backend-web-security/
 sort_order: 12
 nav:
   prev: /backend-auth/

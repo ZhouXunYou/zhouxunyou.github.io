@@ -1,11 +1,11 @@
 ---
 layout: page
 title: "Web Security Defense"
-category: backend-security
+category: backend-web-security
 sidebar: true
 lang: en
-lang_alt: /backend-security/
-permalink: /en/backend-security/
+lang_alt: /backend-web-security/
+permalink: /en/backend-web-security/
 sort_order: 12
 nav:
   prev: /en/backend-auth/

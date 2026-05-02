@@ -8,7 +8,7 @@ lang_alt: /en/backend-auth/
 sort_order: 11
 nav:
   prev: /backend-caching/
-  next: /backend-security/
+  next: /backend-web-security/
 ---
 
 ## 认证方案对比
