@@ -18,7 +18,7 @@ Observability refers to the ability to infer internal state from a system's exte
 
 ```mermaid
 graph TB
-    subgraph Three Pillars of Observability
+    subgraph "Three Pillars of Observability"
         Metrics[Metrics<br/>Quantify system state]
         Logs[Logs<br/>Record discrete events]
         Traces[Traces<br/>Track request paths]
@@ -49,7 +49,7 @@ Prometheus is the cornerstone of cloud-native observability, using a pull model 
 
 ```mermaid
 graph TB
-    subgraph Prometheus Architecture
+    subgraph "Prometheus Architecture"
         Prom[Prometheus Server]
         TSDB[TSDB Time-Series Database]
         SD[Service Discovery]
@@ -250,7 +250,7 @@ OpenTelemetry is the unified standard for observability, merging OpenTracing and
 
 ```mermaid
 graph TB
-    subgraph OpenTelemetry Architecture
+    subgraph "OpenTelemetry Architecture"
         SDK[OTel SDK<br/>Auto/Manual Instrumentation]
         SDK --> Exporter[OTel Exporter<br/>OTLP Protocol]
         Exporter --> Collector[OTel Collector<br/>Data Processing Pipeline]
@@ -269,7 +269,7 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph Request Trace
+    subgraph "Request Trace"
         GW[API Gateway<br/>Span: 50ms]
         GW --> User[User Service<br/>Span: 20ms]
         GW --> Order[Order Service<br/>Span: 30ms]

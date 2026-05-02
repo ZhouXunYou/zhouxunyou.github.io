@@ -333,7 +333,7 @@ test:
 
 ```mermaid
 graph TB
-    subgraph Matrix Execution
+    subgraph "Matrix Execution"
         M1["Ubuntu + Node 18"]
         M2["Ubuntu + Node 20"]
         M3["Ubuntu + Node 22"]

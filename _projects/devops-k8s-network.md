@@ -21,11 +21,11 @@ K8s 网络遵循一个基本原则：每个 Pod 拥有独立 IP，Pod 间可以�
 
 ```mermaid
 graph TB
-    subgraph Node A
+    subgraph "Node A"
         PA1[Pod 10.244.1.2]
         PA2[Pod 10.244.1.3]
     end
-    subgraph Node B
+    subgraph "Node B"
         PB1[Pod 10.244.2.2]
         PB2[Pod 10.244.2.3]
     end
@@ -254,12 +254,12 @@ spec:
 
 ```mermaid
 graph TB
-    subgraph production 命名空间
+    subgraph "production 命名空间"
         Web[Web Pod]
         API[API Pod]
         DB[DB Pod]
     end
-    subgraph staging 命名空间
+    subgraph "staging 命名空间"
         Test[Test Pod]
     end
     Web -->|✅ 允许 8080| API
@@ -275,11 +275,11 @@ graph TB
 ```mermaid
 graph TB
     subgraph 服务网格架构
-        subgraph Pod A
+        subgraph "Pod A"
             App1[应用容器]
             Proxy1[Envoy Sidecar]
         end
-        subgraph Pod B
+        subgraph "Pod B"
             App2[应用容器]
             Proxy2[Envoy Sidecar]
         end

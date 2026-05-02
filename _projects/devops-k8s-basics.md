@@ -17,7 +17,7 @@ Kubernetes（K8s）是容器编排领域的事实标准，它自动化了容器�
 
 ```mermaid
 graph TB
-    subgraph Control Plane
+    subgraph "Control Plane"
         API[API Server]
         ETCD[etcd]
         Sched[Scheduler]
@@ -26,7 +26,7 @@ graph TB
         API --> Sched
         API --> CM
     end
-    subgraph Node 1
+    subgraph "Node 1"
         Kubelet1[kubelet]
         KProxy1[kube-proxy]
         CRI1[Container Runtime]
@@ -36,7 +36,7 @@ graph TB
         CRI1 --> Pod1
         CRI1 --> Pod2
     end
-    subgraph Node 2
+    subgraph "Node 2"
         Kubelet2[kubelet]
         KProxy2[kube-proxy]
         CRI2[Container Runtime]

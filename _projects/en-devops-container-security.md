@@ -18,7 +18,7 @@ Container security is not a single technology but a full-chain practice spanning
 
 ```mermaid
 graph TB
-    subgraph Container Security Layers
+    subgraph "Container Security Layers"
         A[Image Security<br/>Base Image/Vulnerability Scanning] --> B[Runtime Security<br/>Privileges/Filesystem/Capabilities]
         B --> C[Network Security<br/>Network Policies/Service Mesh]
         C --> D[Secrets Management<br/>Secret Encryption/Rotation]

@@ -78,9 +78,9 @@ Multi-Version Concurrency Control (MVCC) is InnoDB's core mechanism for high-con
 
 ```mermaid
 sequenceDiagram
-    participant T1 as Transaction T1<br/>Started at TRX_ID=100
-    participant DB as Data Row<br/>DB_TRX_ID=90
-    participant T2 as Transaction T2<br/>Started at TRX_ID=110
+    participant T1 as Transaction T1 - TRX_ID=100
+    participant DB as Data Row - DB_TRX_ID=90
+    participant T2 as Transaction T2 - TRX_ID=110
 
     Note over T1,T2: Two transactions executing concurrently
 

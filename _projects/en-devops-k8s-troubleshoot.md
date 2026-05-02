@@ -229,17 +229,17 @@ spec:
 
 ```mermaid
 graph TB
-    subgraph Data Collection
+    subgraph "Data Collection"
         NodeExp[Node Exporter]
         KubeState[Kube State Metrics]
         CAdvisor[cAdvisor]
         AppExp[App Exporter]
     end
-    subgraph Storage & Query
+    subgraph "Storage & Query"
         Prom[Prometheus]
         Thanos[Thanos / VictoriaMetrics]
     end
-    subgraph Visualization & Alerting
+    subgraph "Visualization & Alerting"
         Grafana[Grafana Dashboard]
         AlertMgr[Alertmanager]
         PagerDuty[PagerDuty / Feishu]

@@ -50,8 +50,8 @@ ArgoCD is a K8s-native GitOps continuous delivery tool that runs as a Controller
 
 ```mermaid
 graph TB
-    subgraph ArgoCD Architecture
-        subgraph Control Plane
+    subgraph "ArgoCD Architecture"
+        subgraph "Control Plane"
             APIServer[API Server]
             RepoServer[Repo Server]
             AppController[Application Controller]
@@ -138,7 +138,7 @@ Flux CD is a CNCF graduated project known for being lightweight and modular:
 
 ```mermaid
 graph TB
-    subgraph Flux CD Components
+    subgraph "Flux CD Components"
         SourceCtl[source-controller<br/>GitRepository/HelmChart/OCIRepository]
         KustomizeCtl[kustomize-controller<br/>Kustomization]
         HelmCtl[helm-controller<br/>HelmRelease]
@@ -209,7 +209,7 @@ Canary releases gradually expose new versions to a portion of traffic, verifying
 
 ```mermaid
 graph LR
-    subgraph Canary Release Flow
+    subgraph "Canary Release Flow"
         Stable[Stable Version<br/>v1.0 → 100% traffic]
         Stable -->|10% traffic| Canary[Canary Version<br/>v2.0]
         Canary -->|Metrics normal| Scale[Scale to 50%]

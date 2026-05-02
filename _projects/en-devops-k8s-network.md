@@ -22,11 +22,11 @@ K8s networking follows a fundamental principle: every Pod has its own IP, and Po
 
 ```mermaid
 graph TB
-    subgraph Node A
+    subgraph "Node A"
         PA1[Pod 10.244.1.2]
         PA2[Pod 10.244.1.3]
     end
-    subgraph Node B
+    subgraph "Node B"
         PB1[Pod 10.244.2.2]
         PB2[Pod 10.244.2.3]
     end
@@ -255,12 +255,12 @@ spec:
 
 ```mermaid
 graph TB
-    subgraph production Namespace
+    subgraph "production Namespace"
         Web[Web Pod]
         API[API Pod]
         DB[DB Pod]
     end
-    subgraph staging Namespace
+    subgraph "staging Namespace"
         Test[Test Pod]
     end
     Web -->|✅ Allow 8080| API
@@ -275,12 +275,12 @@ Service mesh provides traffic management, secure communication, and observabilit
 
 ```mermaid
 graph TB
-    subgraph Service Mesh Architecture
-        subgraph Pod A
+    subgraph "Service Mesh Architecture"
+        subgraph "Pod A"
             App1[App Container]
             Proxy1[Envoy Sidecar]
         end
-        subgraph Pod B
+        subgraph "Pod B"
             App2[App Container]
             Proxy2[Envoy Sidecar]
         end
@@ -288,7 +288,7 @@ graph TB
         Proxy1 -->|mTLS| Proxy2
         Proxy2 -->|Inbound| App2
     end
-    subgraph Control Plane
+    subgraph "Control Plane"
         Pilot[Config Distribution]
         Citadel[Certificate Management]
         Galley[Config Validation]

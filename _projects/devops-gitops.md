@@ -49,7 +49,7 @@ ArgoCD 是 K8s 原生的 GitOps 持续交付工具，以 Controller 形式运行
 
 ```mermaid
 graph TB
-    subgraph ArgoCD 架构
+    subgraph "ArgoCD 架构"
         subgraph 控制面
             APIServer[API Server]
             RepoServer[Repo Server]
@@ -137,7 +137,7 @@ Flux CD 是 CNCF 毕业项目，以轻量化和模块化著称：
 
 ```mermaid
 graph TB
-    subgraph Flux CD 组件
+    subgraph "Flux CD 组件"
         SourceCtl[source-controller<br/>GitRepository/HelmChart/OCIRepository]
         KustomizeCtl[kustomize-controller<br/>Kustomization]
         HelmCtl[helm-controller<br/>HelmRelease]

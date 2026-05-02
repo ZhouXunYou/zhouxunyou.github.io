@@ -77,9 +77,9 @@ SELECT id, email FROM users WHERE email = 'alice@example.com';
 
 ```mermaid
 sequenceDiagram
-    participant T1 as 事务T1<br/>开始于 TRX_ID=100
-    participant DB as 数据行<br/>DB_TRX_ID=90
-    participant T2 as 事务T2<br/>开始于 TRX_ID=110
+    participant T1 as 事务T1 - TRX_ID=100
+    participant DB as 数据行 - DB_TRX_ID=90
+    participant T2 as 事务T2 - TRX_ID=110
 
     Note over T1,T2: 两事务并发执行
 

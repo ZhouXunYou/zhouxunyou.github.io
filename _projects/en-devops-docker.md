@@ -18,7 +18,7 @@ Docker is currently the most popular containerization platform. It uses OS-level
 
 ```mermaid
 graph TB
-    subgraph Container Architecture
+    subgraph "Container Architecture"
         App1[App A] --> Lib1[Dependencies]
         App2[App B] --> Lib2[Dependencies]
         App3[App C] --> Lib3[Dependencies]
@@ -61,7 +61,7 @@ graph LR
         PID1[PID 1 systemd]
         PID100[PID 100 docker-shim]
     end
-    subgraph Container A
+    subgraph "Container A"
         CPID1[PID 1 Main Process]
         CPID2[PID 2 Child Process]
     end
@@ -167,7 +167,7 @@ Docker images consist of a series of read-only layers, where each Dockerfile ins
 
 ```mermaid
 graph TB
-    subgraph Image Layering
+    subgraph "Image Layering"
         A["FROM ubuntu:22.04 → Layer 0"]
         B["RUN apt-get update → Layer 1"]
         C["COPY . /app → Layer 2"]
@@ -199,7 +199,7 @@ Docker provides multiple network modes for different scenarios:
 
 ```mermaid
 graph LR
-    subgraph Bridge Network Mode
+    subgraph "Bridge Network Mode"
         C1[Container A<br/>172.17.0.2]
         C2[Container B<br/>172.17.0.3]
         C1 --> veth0[veth pair]
@@ -252,7 +252,7 @@ tmpfs data exists only in memory and is lost when the container stops, suitable 
 
 ```mermaid
 graph TB
-    subgraph Docker Storage Comparison
+    subgraph "Docker Storage Comparison"
         V[Volume<br/>Docker Managed<br/>Recommended for Production]
         BM[Bind Mount<br/>Host Mapping<br/>Common in Development]
         TF[tmpfs<br/>Memory Storage<br/>Temporary Data]

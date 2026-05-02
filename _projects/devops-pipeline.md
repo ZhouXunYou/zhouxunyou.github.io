@@ -24,7 +24,7 @@ CI/CD 流水线是软件交付的核心引擎。好的流水线设计应当追�
 
 ```mermaid
 graph LR
-    subgraph 完整 CI/CD 流水线
+    subgraph "完整 CI/CD 流水线"
         A[代码检查<br/>~1min] --> B[单元测试<br/>~3min]
         B --> C[集成测试<br/>~5min]
         C --> D[安全扫描<br/>~2min]

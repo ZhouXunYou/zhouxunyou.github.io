@@ -25,7 +25,7 @@ CI/CD pipelines are the core engine of software delivery. Good pipeline design s
 
 ```mermaid
 graph LR
-    subgraph Complete CI/CD Pipeline
+    subgraph "Complete CI/CD Pipeline"
         A[Lint<br/>~1min] --> B[Unit Tests<br/>~3min]
         B --> C[Integration Tests<br/>~5min]
         C --> D[Security Scan<br/>~2min]
@@ -261,7 +261,7 @@ Run two complete environments simultaneously, switch traffic for zero-downtime:
 
 ```mermaid
 graph LR
-    subgraph Blue-Green Deployment
+    subgraph "Blue-Green Deployment"
         LB[Load Balancer] -->|100%| Blue[Blue Environment<br/>v1.0 Current Version]
         LB -.->|0%| Green[Green Environment<br/>v2.0 New Version]
     end

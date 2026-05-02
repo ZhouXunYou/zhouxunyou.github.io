@@ -310,7 +310,7 @@ module "eks" {
 
 ```mermaid
 graph TB
-    subgraph Modular Architecture
+    subgraph "Modular Architecture"
         Prod[production/main.tf] --> VPC1[module.vpc]
         Prod --> EKS1[module.eks]
         Prod --> RDS1[module.rds]

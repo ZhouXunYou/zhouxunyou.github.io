@@ -60,7 +60,7 @@ graph LR
         PID1[PID 1 systemd]
         PID100[PID 100 docker-shim]
     end
-    subgraph 容器 A
+    subgraph "容器 A"
         CPID1[PID 1 主进程]
         CPID2[PID 2 子进程]
     end
@@ -198,7 +198,7 @@ Docker 提供多种网络模式满足不同场景：
 
 ```mermaid
 graph LR
-    subgraph bridge 网络模式
+    subgraph "bridge 网络模式"
         C1[容器 A<br/>172.17.0.2]
         C2[容器 B<br/>172.17.0.3]
         C1 --> veth0[veth pair]
@@ -251,7 +251,7 @@ tmpfs 数据仅存在于内存中，容器停止即丢失，适合存储临时�
 
 ```mermaid
 graph TB
-    subgraph Docker 存储对比
+    subgraph "Docker 存储对比"
         V[Volume<br/>Docker 管理<br/>生产环境推荐]
         BM[Bind Mount<br/>宿主机映射<br/>开发环境常用]
         TF[tmpfs<br/>内存存储<br/>临时数据]

@@ -75,7 +75,7 @@ Error Budget is the inverse of SLO: 1 - SLO = allowed failure space.
 
 ```mermaid
 graph LR
-    subgraph Error Budget Consumption
+    subgraph "Error Budget Consumption"
         SLO["SLO: 99.9%<br/>1M requests/month"]
         Budget["Error Budget: 0.1%<br/>≈ 1000 failures/month"]
         Budget --> B1["Deploy new version<br/>Consumes 200"]
@@ -138,7 +138,7 @@ Chaos engineering is an experimental method that proactively injects failures to
 
 ```mermaid
 graph LR
-    subgraph Chaos Experiment Flow
+    subgraph "Chaos Experiment Flow"
         Hypo[Establish Hypothesis<br/>Service A crashes<br/>Traffic auto-fails over to B]
         Inject[Inject Failure<br/>Terminate Service A process]
         Observe[Observe Results<br/>Failover takes 30s<br/>SLO unaffected]
@@ -244,7 +244,7 @@ Capacity planning ensures the system has enough resources to handle traffic as t
 
 ```mermaid
 graph TB
-    subgraph Capacity Planning Flow
+    subgraph "Capacity Planning Flow"
         Current[Current Resource Usage<br/>CPU: 60%<br/>Memory: 55%] --> Growth[Growth Prediction<br/>Quarterly growth 20%]
         Growth --> Peak[Peak Estimation<br/>Quarterly peak 1.5x]
         Peak --> Buffer[Safety Margin 30%]

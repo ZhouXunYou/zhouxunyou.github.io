@@ -182,11 +182,11 @@ networks:
 
 ```mermaid
 graph LR
-    subgraph frontend Network
+    subgraph "frontend Network"
         Nginx[Nginx]
         Web[Web App]
     end
-    subgraph backend Network
+    subgraph "backend Network"
         Web
         DB[PostgreSQL]
         Redis[Redis]

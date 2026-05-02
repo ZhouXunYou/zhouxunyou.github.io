@@ -48,7 +48,7 @@ Prometheus 是云原生可观测性的基石，采用拉取（Pull）模式采�
 
 ```mermaid
 graph TB
-    subgraph Prometheus 架构
+    subgraph "Prometheus 架构"
         Prom[Prometheus Server]
         TSDB[TSDB 时序数据库]
         SD[服务发现]
@@ -249,7 +249,7 @@ OpenTelemetry 是可观测性的统一标准，融合了 OpenTracing 和 OpenCen
 
 ```mermaid
 graph TB
-    subgraph OpenTelemetry 架构
+    subgraph "OpenTelemetry 架构"
         SDK[OTel SDK<br/>自动/手动埋点]
         SDK --> Exporter[OTel Exporter<br/>OTLP 协议]
         Exporter --> Collector[OTel Collector<br/>数据处理管道]
@@ -268,7 +268,7 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph 一次请求的 Trace
+    subgraph "一次请求的 Trace"
         GW[API Gateway<br/>Span: 50ms]
         GW --> User[User Service<br/>Span: 20ms]
         GW --> Order[Order Service<br/>Span: 30ms]
