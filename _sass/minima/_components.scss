@@ -352,3 +352,16 @@
 .gh-chapter-next {
   margin-left: auto;
 }
+
+// Ad containers
+.gh-ad {
+  margin: $spacing-6 0;
+  text-align: center;
+  min-height: 90px;
+}
+
+.gh-ad-sidebar {
+  margin-top: $spacing-6;
+  padding-top: $spacing-4;
+  border-top: 1px solid var(--color-border-default);
+}

@@ -1,9 +1,10 @@
 <footer class="gh-footer" role="contentinfo">
   <div class="gh-footer-inner">
     <ul class="gh-footer-links">
-      <li>&copy; {{ 'now' | date: "%Y" }}</li>
+      <li>&copy; <span id="gh-year">2026</span></li>
       <li><a href="https://gwzz.xyz">gwzz.xyz</a></li>
     </ul>
     <p class="gh-footer-motto">{{ strings.home.hero_tagline }} — {{ strings.home.hero_subtitle }}</p>
   </div>
+  <script>document.getElementById('gh-year').textContent=new Date().getFullYear();</script>
 </footer>

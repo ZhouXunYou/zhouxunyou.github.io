@@ -1,5 +1,5 @@
 title: "格物致知"
-email: your-email@example.com
+email: gwzz@gwzz.xyz
 description: "Developer / Open Source Enthusiast"
 baseurl: ""
 url: "https://gwzz.xyz"
@@ -7,6 +7,9 @@ author: "Zhou Xunyou"
 github_username: zhouxunyou
 location: "China"
 # avatar: "/assets/images/avatar.png"  # Uncomment and set path when adding a real avatar image
+
+# Google AdSense — replace with your publisher ID after approval
+google_adsense: # ca-pub-XXXXXXXXXXXXXXXX
 
 # i18n
 default_lang: zh

@@ -4,7 +4,6 @@ sitemap: false
 ---
 User-agent: *
 Allow: /
-Disallow: /assets/
 Disallow: /search.json
 
 Sitemap: {{ "sitemap.xml" | absolute_url }}
