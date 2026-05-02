@@ -22,6 +22,12 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
 
+# Feed: include projects collection
+feed:
+  collections:
+    projects:
+      output: true
+
 # Collections
 collections:
   projects:
