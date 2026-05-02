@@ -73,5 +73,6 @@ graph LR
 
 ## 联系方式
 
+- **邮箱**：gwzz@gwzz.xyz
 - **GitHub**：[zhouxunyou](https://github.com/zhouxunyou)
 - **博客**：[gwzz.xyz](https://gwzz.xyz)
