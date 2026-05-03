@@ -80,7 +80,7 @@ exclude:
   - worker/
   - "*.yaml"
   - "*.yml"
-  - "*.png"
+  - "*.docx"
   - "*.docx"
   - WW_verify_*.txt
 
