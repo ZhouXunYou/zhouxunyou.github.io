@@ -1,1 +1,113 @@
-[]
+- type: create
+  text: "Site launched — personal tech blog goes live"
+  text_zh: "站点上线 — 个人技术博客正式发布"
+  url: "/"
+  date: 2024-11-01
+
+- type: create
+  text: "Created JVM knowledge domain"
+  text_zh: "创建 JVM 知识领域"
+  url: "/jvm/"
+  date: 2024-11-08
+
+- type: post
+  text: "Published GC algorithms deep dive"
+  text_zh: "发布垃圾回收算法详解"
+  url: "/jvm-gc-algorithms/"
+  date: 2024-11-15
+
+- type: post
+  text: "Published memory leak diagnosis guide"
+  text_zh: "发布内存泄漏诊断指南"
+  url: "/jvm-diagnostics/"
+  date: 2024-11-22
+
+- type: post
+  text: "Published JVM performance tuning practices"
+  text_zh: "发布 JVM 性能调优实践"
+  url: "/jvm-tuning-practice/"
+  date: 2024-12-01
+
+- type: post
+  text: "Published off-heap memory in-depth article"
+  text_zh: "发布堆外内存深入解析"
+  url: "/jvm-memory/"
+  date: 2024-12-08
+
+- type: create
+  text: "Created Frontend knowledge domain"
+  text_zh: "创建前端知识领域"
+  url: "/frontend/"
+  date: 2025-01-15
+
+- type: post
+  text: "Published JavaScript deep dive"
+  text_zh: "发布 JavaScript 语言精粹"
+  url: "/frontend-javascript/"
+  date: 2025-01-20
+
+- type: create
+  text: "Created Backend knowledge domain"
+  text_zh: "创建后端知识领域"
+  url: "/backend/"
+  date: 2025-02-01
+
+- type: post
+  text: "Published Go concurrency model article"
+  text_zh: "发布 Go 并发模型文章"
+  url: "/backend-go/"
+  date: 2025-02-10
+
+- type: star
+  text: "Starred kubernetes/kubernetes"
+  text_zh: "收藏了 kubernetes/kubernetes"
+  url: "https://github.com/kubernetes/kubernetes"
+  date: 2025-02-15
+
+- type: create
+  text: "Created DevOps knowledge domain"
+  text_zh: "创建 DevOps 知识领域"
+  url: "/devops/"
+  date: 2025-03-01
+
+- type: post
+  text: "Published Docker internals article"
+  text_zh: "发布 Docker 核心原理文章"
+  url: "/devops-docker/"
+  date: 2025-03-10
+
+- type: push
+  text: "Updated Kubernetes storage and scheduling guide"
+  text_zh: "更新 Kubernetes 存储与调度指南"
+  url: "/devops-k8s-storage/"
+  date: 2025-03-20
+
+- type: release
+  text: "Site v2.0 — dark mode, i18n, and redesigned layout"
+  text_zh: "站点 v2.0 — 深色模式、国际化与全新布局"
+  url: "/"
+  date: 2025-04-01
+
+- type: post
+  text: "Published observability guide"
+  text_zh: "发布可观测性体系指南"
+  url: "/devops-observability/"
+  date: 2025-04-10
+
+- type: star
+  text: "Starred golang/go"
+  text_zh: "收藏了 golang/go"
+  url: "https://github.com/golang/go"
+  date: 2025-04-15
+
+- type: push
+  text: "Updated all i18n content and translations"
+  text_zh: "更新全部国际化内容与翻译"
+  url: "/"
+  date: 2025-04-20
+
+- type: post
+  text: "Added cookie consent and privacy policy pages"
+  text_zh: "新增 Cookie 同意与隐私政策页面"
+  url: "/about/"
+  date: 2025-05-01

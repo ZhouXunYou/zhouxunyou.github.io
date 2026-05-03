@@ -1,0 +1,6 @@
+{% include home/i18n.html %}
+<section class="gh-timeline-section">
+  <h2 class="gh-section-title">{{ s.home.activity }}</h2>
+  {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
+  {% include timeline.html limit=8 %}
+</section>
