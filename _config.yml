@@ -10,8 +10,8 @@ github:
 location: "China"
 avatar: "/assets/images/avatar.svg"
 
-# Google AdSense — replace with your publisher ID after approval
-google_adsense: # ca-pub-XXXXXXXXXXXXXXXX
+# Google AdSense
+google_adsense: ca-pub-1609698158812333
 
 # Umami Analytics (privacy-friendly) — uncomment and fill in to enable
 umami:
