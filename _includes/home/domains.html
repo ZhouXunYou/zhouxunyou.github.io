@@ -8,6 +8,29 @@
     {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
     {% for category in site.data.categories %}
       {% assign cat_project_count = 0 %}
+      {% for project in site.projects %}
+        {% if project.lang == page_lang %}
+          {% assign cat_match = false %}
+          {% if project.category == category.id %}
+            {% assign cat_match = true %}
+          {% else %}
+            {% for child in category.children %}
+              {% if project.category == child.id %}
+                {% assign cat_match = true %}
+              {% else %}
+                {% for grandchild in child.children %}
+                  {% if project.category == grandchild.id %}
+                    {% assign cat_match = true %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {% if cat_match %}
+            {% assign cat_project_count = cat_project_count | plus: 1 %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
       <a class="gh-domain-card{% if cat_project_count == 0 %} gh-domain-empty{% endif %}"
          href="{% if cat_project_count > 0 %}{{ link_prefix }}/{{ category.id }}/{% else %}#{% endif %}">
         <div class="gh-domain-header">
