@@ -353,64 +353,7 @@
   color: var(--color-text-secondary);
 }
 
-// 404 page
-.gh-404 {
-  text-align: center;
-  padding: $spacing-12 0;
-
-  h1 {
-    font-size: 64px;
-    font-weight: $font-weight-semibold;
-    color: var(--color-text-tertiary);
-    margin-bottom: $spacing-4;
-  }
-
-  p {
-    font-size: $font-size-20;
-    color: var(--color-text-secondary);
-    margin-bottom: $spacing-6;
-  }
-
-  .gh-404-actions {
-    display: flex;
-    justify-content: center;
-    gap: $spacing-2;
-    margin-bottom: $spacing-8;
-
-    .gh-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: $spacing-1;
-    }
-  }
-
-  .gh-404-sitemap {
-    text-align: left;
-    max-width: 300px;
-    margin: 0 auto;
-
-    p {
-      font-size: $base-font-size;
-      font-weight: $font-weight-semibold;
-      color: var(--color-text-primary);
-      margin-bottom: $spacing-2;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-
-      li {
-        padding: $spacing-1 0;
-
-        a {
-          color: var(--color-text-link);
-          font-size: $base-font-size;
-        }
-      }
-    }
-  }
-}
+// 404 page styles moved to _components.scss
 
 // Code Copy Button
 .gh-code-block {

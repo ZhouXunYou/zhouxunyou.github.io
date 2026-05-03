@@ -13,21 +13,64 @@ sidebar: false
 {% endif %}
 
 <div class="gh-404">
-  <h1>404</h1>
-  <p>{{ strings.not_found.message }}</p>
+  <div class="gh-404-hero">
+    <h1 class="gh-404-code">404</h1>
+    <p class="gh-404-message">{% if page_lang == 'en' %}Page not found{% else %}页面未找到{% endif %}</p>
+    <p class="gh-404-sub">{% if page_lang == 'en' %}The page you're looking for doesn't exist or has been moved.{% else %}你访问的页面不存在或已被移动。{% endif %}</p>
+  </div>
+
   <div class="gh-404-actions">
-    <a href="{{ '/' | relative_url }}" class="gh-btn gh-btn-primary">{{ strings.not_found.back_home }}</a>
+    <a href="{{ '/' | relative_url }}" class="gh-btn gh-btn-primary">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/></svg>
+      {% if page_lang == 'en' %}Back to home{% else %}返回首页{% endif %}
+    </a>
     <button class="gh-btn" onclick="document.getElementById('gh-search-btn').click()" aria-label="{{ strings.aria.search | default: '搜索' }}">
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.08 7.02a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"/></svg>
       {% if page_lang == 'en' %}Search{% else %}搜索{% endif %}
     </button>
   </div>
-  <div class="gh-404-sitemap">
-    <p>{% if page_lang == 'en' %}Browse by category:{% else %}按分类浏览：{% endif %}</p>
-    <ul>
-      {% for cat in site.data.categories %}
-      <li><a href="{% if page_lang == 'en' %}/en{% endif %}/{{ cat.id }}/">{{ strings.categories[cat.id] | default: cat.name }}</a></li>
-      {% endfor %}
-    </ul>
+
+  <div class="gh-404-section">
+    <h2 class="gh-404-section-title">{% if page_lang == 'en' %}Popular Articles{% else %}热门文章{% endif %}</h2>
+    <div class="gh-404-articles">
+      <a href="/frontend-javascript/" class="gh-404-article-card" data-category="frontend">
+        <span class="gh-404-badge gh-404-badge-frontend">Frontend</span>
+        <span class="gh-404-article-title">{% if page_lang == 'en' %}JavaScript Essentials{% else %}JavaScript 语言精粹{% endif %}</span>
+      </a>
+      <a href="/backend-go/" class="gh-404-article-card" data-category="backend">
+        <span class="gh-404-badge gh-404-badge-backend">Backend</span>
+        <span class="gh-404-article-title">{% if page_lang == 'en' %}Go Concurrency Model{% else %}Go 并发模型{% endif %}</span>
+      </a>
+      <a href="/jvm-gc-collectors/" class="gh-404-article-card" data-category="jvm">
+        <span class="gh-404-badge gh-404-badge-jvm">JVM</span>
+        <span class="gh-404-article-title">{% if page_lang == 'en' %}Garbage Collectors Deep Dive{% else %}垃圾收集器详解{% endif %}</span>
+      </a>
+      <a href="/devops-k8s-basics/" class="gh-404-article-card" data-category="devops">
+        <span class="gh-404-badge gh-404-badge-devops">DevOps</span>
+        <span class="gh-404-article-title">{% if page_lang == 'en' %}Kubernetes Core Concepts{% else %}Kubernetes 核心概念{% endif %}</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="gh-404-section">
+    <h2 class="gh-404-section-title">{% if page_lang == 'en' %}Browse by Category{% else %}按分类浏览{% endif %}</h2>
+    <div class="gh-404-categories">
+      <a href="/frontend/" class="gh-404-cat-link" data-category="frontend">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 12H.75a.75.75 0 0 1-.75-.75Zm7.251 10.324.004-5.073-.002-2.253A2.25 2.25 0 0 0 5.003 2.5H1.5v9h3.757a3.75 3.75 0 0 1 1.994.574ZM8.755 4.75l-.004 7.322a3.75 3.75 0 0 1 1.992-.572H14.5v-9h-3.495a2.25 2.25 0 0 0-2.25 2.25Z"/></svg>
+        <span>Frontend</span>
+      </a>
+      <a href="/backend/" class="gh-404-cat-link" data-category="backend">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 2.75a.25.25 0 0 1 .25-.25h12.5c.138 0 .25.112.25.25v2.5a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25Zm0 5a.25.25 0 0 1 .25-.25h12.5c.138 0 .25.112.25.25v2.5a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25ZM1.75 12.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25Z"/></svg>
+        <span>Backend</span>
+      </a>
+      <a href="/jvm/" class="gh-404-cat-link" data-category="jvm">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6.5 0a.75.75 0 0 0-.75.75v1.5h-2A.75.75 0 0 0 3 3v1.5H1.75A.75.75 0 0 0 1 5.25v10.5c0 .414.336.75.75.75h12.5a.75.75 0 0 0 .75-.75V5.25a.75.75 0 0 0-.75-.75H13V3a.75.75 0 0 0-.75-.75h-2V.75A.75.75 0 0 0 9.5 0Zm3.75 3h1.25v1.25h-1.25Zm-5.5 0h1.25v1.25H4.75ZM8 8a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg>
+        <span>JVM</span>
+      </a>
+      <a href="/devops/" class="gh-404-cat-link" data-category="devops">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M9.396 5.065a2.25 2.25 0 0 0-.874-1.472A2.248 2.248 0 0 0 6.89 3.1h-.014a2.248 2.248 0 0 0-1.632.492 2.25 2.25 0 0 0-.874 1.473 2.249 2.249 0 0 0 .44 1.683L6.89 8.5l2.08-1.752a2.249 2.249 0 0 0 .44-1.683ZM6.89 9.94 4.79 8.188a3.747 3.747 0 0 1-.734-2.805 3.75 3.75 0 0 1 1.456-2.455A3.746 3.746 0 0 1 6.876 1.6h.014a3.747 3.747 0 0 1 2.364.528 3.75 3.75 0 0 1 1.456 2.455 3.748 3.748 0 0 1-.734 2.805ZM11.25 6h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1-.75-.75v-1.5a.75.75 0 0 1 .75-.75ZM12 8.25v-1.5h-1.5v1.5ZM2.25 6h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-1.5A.75.75 0 0 1 1.5 8.25v-1.5A.75.75 0 0 1 2.25 6ZM3 8.25v-1.5H1.5v1.5ZM8.25 11.25h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1-.75-.75V12a.75.75 0 0 1 .75-.75ZM9.75 13.5V12h-1.5v1.5ZM5.25 11.25h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1-.75-.75V12a.75.75 0 0 1 .75-.75ZM6.75 13.5V12h-1.5v1.5Z"/></svg>
+        <span>DevOps</span>
+      </a>
+    </div>
   </div>
 </div>
