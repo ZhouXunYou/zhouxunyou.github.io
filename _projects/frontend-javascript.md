@@ -199,3 +199,117 @@ import UserService, { API_BASE } from "./user.js";
 ```
 
 ES Modules 的静态特性使得构建工具能在编译阶段分析依赖图，实现 Tree-shaking——移除未使用的代码。这是 Vite、Rollup 等现代构建工具的基石。
+
+## 6. 异步编程核心
+
+### 6.1 Promise 链式调用
+
+{% raw %}
+```javascript
+fetch('/api/user')
+  .then(res => res.json())
+  .then(user => fetch(`/api/posts?userId=${user.id}`))
+  .then(res => res.json())
+  .then(posts => console.log(posts))
+  .catch(err => console.error('请求失败:', err));
+```
+{% endraw %}
+
+### 6.2 async/await 错误处理
+
+{% raw %}
+```javascript
+// 推荐的错误处理模式
+async function fetchUser(id) {
+  try {
+    const res = await fetch(`/api/user/${id}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (error) {
+    console.error(`获取用户 ${id} 失败:`, error);
+    return null;
+  }
+}
+
+// 并行请求
+const [users, posts] = await Promise.all([
+  fetch('/api/users').then(r => r.json()),
+  fetch('/api/posts').then(r => r.json())
+]);
+```
+{% endraw %}
+
+### 6.3 Event Loop 机制
+
+```
+┌───────────────────────┐
+│     调用栈 (Call Stack) │
+└───────────┬───────────┘
+            │
+┌───────────▼───────────┐
+│   微任务队列 (Microtask) │  ← Promise.then, queueMicrotask
+└───────────┬───────────┘
+            │
+┌───────────▼───────────┐
+│   宏任务队列 (Macrotask) │  ← setTimeout, setInterval, I/O
+└───────────────────────┘
+
+执行顺序：同步代码 → 微任务清空 → 下一个宏任务
+```
+
+## 7. Proxy 与 Reflect
+
+```javascript
+// 响应式数据代理
+const reactive = (target) => {
+  return new Proxy(target, {
+    get(obj, key, receiver) {
+      track(obj, key);  // 依赖收集
+      return Reflect.get(obj, key, receiver);
+    },
+    set(obj, key, value, receiver) {
+      const oldValue = obj[key];
+      Reflect.set(obj, key, value, receiver);
+      if (oldValue !== value) trigger(obj, key);  // 触发更新
+      return true;
+    }
+  });
+};
+```
+
+## 8. 函数式编程
+
+### 8.1 纯函数与组合
+
+```javascript
+// 纯函数：相同输入始终产生相同输出，无副作用
+const add = (a) => (b) => a + b;
+const multiply = (a) => (b) => a * b;
+
+// 函数组合
+const compose = (...fns) => (x) => fns.reduceRight((acc, fn) => fn(acc), x);
+
+const add10 = add(10);
+const double = multiply(2);
+const add10ThenDouble = compose(double, add10);
+
+add10ThenDouble(5); // 30
+```
+
+### 8.2 柯里化
+
+```javascript
+const curry = (fn) => {
+  const arity = fn.length;
+  return function curried(...args) {
+    return args.length >= arity
+      ? fn.apply(this, args)
+      : (...more) => curried.apply(this, args.concat(more));
+  };
+};
+
+const sum = curry((a, b, c) => a + b + c);
+sum(1)(2)(3);    // 6
+sum(1, 2)(3);    // 6
+sum(1)(2, 3);    // 6
+```

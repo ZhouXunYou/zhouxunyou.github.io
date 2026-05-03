@@ -173,3 +173,141 @@ function SearchPage() {
 ```
 
 React 18 的 Suspense 配合 Concurrent Rendering，可以实现**选择性水合（Selective Hydration）**——优先响应用户正在交互的区域，其余区域延后水合。
+
+## 6. React 19 新特性
+
+### 6.1 React Compiler
+
+React Compiler（原 React Forget）是 Meta 开发的自动优化编译器，无需手动使用 useMemo/useCallback：
+
+- **自动记忆化**：编译器分析组件依赖，自动插入记忆化逻辑
+- **零侵入**：现有代码无需修改，编译时优化
+- **开发体验**：不再需要思考"这里该不该 memo"
+
+### 6.2 Server Actions
+
+```jsx
+// 服务端操作 — 直接在组件中定义
+async function CreatePost() {
+  async function createAction(formData) {
+    'use server';
+    const title = formData.get('title');
+    await db.posts.create({ title });
+    revalidatePath('/posts');
+  }
+
+  return (
+    <form action={createAction}>
+      <input name="title" />
+      <button type="submit">创建</button>
+    </form>
+  );
+}
+```
+
+### 6.3 use() Hook
+
+```jsx
+// 在渲染时读取 Promise 和 Context
+function Post({ postPromise }) {
+  const post = use(postPromise);
+  return <h1>{post.title}</h1>;
+}
+```
+
+## 7. 性能优化实践
+
+### 7.1 React.memo 与渲染优化
+
+```jsx
+// 精确控制组件重渲染
+const ExpensiveList = React.memo(function ExpensiveList({ items, onSelect }) {
+  return items.map(item => (
+    <Item key={item.id} item={item} onSelect={onSelect} />
+  ));
+}, (prev, next) => {
+  return prev.items.length === next.items.length;
+});
+```
+
+### 7.2 代码分割与懒加载
+
+```jsx
+const HeavyComponent = React.lazy(() => import('./HeavyComponent'));
+
+function App() {
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <HeavyComponent />
+    </Suspense>
+  );
+}
+```
+
+### 7.3 虚拟列表
+
+对于长列表渲染（1000+ 项），使用 react-window 或 @tanstack/virtual：
+
+{% raw %}
+```jsx
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+function VirtualList({ items }) {
+  const parentRef = useRef(null);
+
+  const virtualizer = useVirtualizer({
+    count: items.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 50,
+  });
+
+  return (
+    <div ref={parentRef} style={{ height: '600px', overflow: 'auto' }}>
+      <div style={{ height: virtualizer.getTotalSize() }}>
+        {virtualizer.getVirtualItems().map(virtualRow => (
+          <div key={virtualRow.key} style={{
+            position: 'absolute',
+            top: 0,
+            transform: `translateY(${virtualRow.start}px)`,
+            height: virtualRow.size,
+          }}>
+            {items[virtualRow.index].name}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+{% endraw %}
+
+## 8. 错误边界
+
+```jsx
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || <h1>Something went wrong.</h1>;
+    }
+    return this.props.children;
+  }
+}
+
+// 使用方式
+<ErrorBoundary fallback={<ErrorPage />}>
+  <App />
+</ErrorBoundary>
+```

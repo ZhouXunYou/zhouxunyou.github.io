@@ -541,6 +541,40 @@
   }
 }
 
+// Share Buttons
+.gh-share {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  margin: $spacing-2 0;
+}
+
+.gh-share-label {
+  font-size: $font-size-small;
+  color: var(--color-fg-muted);
+}
+
+.gh-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-border-default);
+  border-radius: 6px;
+  background-color: var(--color-canvas-default);
+  color: var(--color-fg-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-fg-default);
+    border-color: var(--color-fg-muted);
+  }
+}
+
 // Comments
 .gh-comments {
   margin-top: $spacing-6;

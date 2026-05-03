@@ -200,3 +200,117 @@ import UserService, { API_BASE } from "./user.js";
 ```
 
 The static nature of ES Modules allows build tools to analyze the dependency graph at compile time and implement Tree-shaking—removing unused code. This is the foundation of modern build tools like Vite and Rollup.
+
+## 6. Asynchronous Programming Core
+
+### 6.1 Promise Chaining
+
+{% raw %}
+```javascript
+fetch('/api/user')
+  .then(res => res.json())
+  .then(user => fetch(`/api/posts?userId=${user.id}`))
+  .then(res => res.json())
+  .then(posts => console.log(posts))
+  .catch(err => console.error('Request failed:', err));
+```
+{% endraw %}
+
+### 6.2 async/await Error Handling
+
+{% raw %}
+```javascript
+// Recommended error handling pattern
+async function fetchUser(id) {
+  try {
+    const res = await fetch(`/api/user/${id}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (error) {
+    console.error(`Failed to fetch user ${id}:`, error);
+    return null;
+  }
+}
+
+// Parallel requests
+const [users, posts] = await Promise.all([
+  fetch('/api/users').then(r => r.json()),
+  fetch('/api/posts').then(r => r.json())
+]);
+```
+{% endraw %}
+
+### 6.3 Event Loop Mechanism
+
+```
+┌───────────────────────┐
+│     Call Stack          │
+└───────────┬───────────┘
+            │
+┌───────────▼───────────┐
+│   Microtask Queue       │  ← Promise.then, queueMicrotask
+└───────────┬───────────┘
+            │
+┌───────────▼───────────┐
+│   Macrotask Queue       │  ← setTimeout, setInterval, I/O
+└───────────────────────┘
+
+Execution order: Sync code → Drain microtasks → Next macrotask
+```
+
+## 7. Proxy and Reflect
+
+```javascript
+// Reactive data proxy
+const reactive = (target) => {
+  return new Proxy(target, {
+    get(obj, key, receiver) {
+      track(obj, key);  // Dependency collection
+      return Reflect.get(obj, key, receiver);
+    },
+    set(obj, key, value, receiver) {
+      const oldValue = obj[key];
+      Reflect.set(obj, key, value, receiver);
+      if (oldValue !== value) trigger(obj, key);  // Trigger update
+      return true;
+    }
+  });
+};
+```
+
+## 8. Functional Programming
+
+### 8.1 Pure Functions and Composition
+
+```javascript
+// Pure function: same input always produces same output, no side effects
+const add = (a) => (b) => a + b;
+const multiply = (a) => (b) => a * b;
+
+// Function composition
+const compose = (...fns) => (x) => fns.reduceRight((acc, fn) => fn(acc), x);
+
+const add10 = add(10);
+const double = multiply(2);
+const add10ThenDouble = compose(double, add10);
+
+add10ThenDouble(5); // 30
+```
+
+### 8.2 Currying
+
+```javascript
+const curry = (fn) => {
+  const arity = fn.length;
+  return function curried(...args) {
+    return args.length >= arity
+      ? fn.apply(this, args)
+      : (...more) => curried.apply(this, args.concat(more));
+  };
+};
+
+const sum = curry((a, b, c) => a + b + c);
+sum(1)(2)(3);    // 6
+sum(1, 2)(3);    // 6
+sum(1)(2, 3);    // 6
+```
