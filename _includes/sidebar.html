@@ -11,7 +11,8 @@
   </div>
   <!-- Category tree: show group matching current page category, or all on overview -->
   <nav class="gh-sidebar-tree" role="navigation" aria-label="{{ strings.aria.category_nav }}">
-    {% assign current_cat = page.category | default: 'overview' %}
+    {% assign page_category = page.category | default: page.categories | first %}
+  {% assign current_cat = page_category | default: 'overview' %}
     {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
     {% assign link_prefix = '' %}
     {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
@@ -53,7 +54,7 @@
                 </summary>
                 <div class="gh-tree-children">
                   {% for child in item.children %}
-                    <a class="gh-tree-link{% if page.category == child.id %} active{% endif %}"
+                    <a class="gh-tree-link{% if page_category == child.id %} active{% endif %}"
                        href="{{ link_prefix }}/{{ child.id }}/">
                       <svg class="gh-tree-dot" aria-hidden="true" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
                         <circle cx="8" cy="8" r="4"/>
@@ -64,7 +65,7 @@
                 </div>
               </details>
             {% else %}
-              <a class="gh-tree-link{% if page.category == item.id %} active{% endif %}"
+              <a class="gh-tree-link{% if page_category == item.id %} active{% endif %}"
                  href="{{ link_prefix }}/{{ item.id }}/">
                 <svg class="gh-tree-dot" aria-hidden="true" width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
                   <circle cx="8" cy="8" r="4"/>

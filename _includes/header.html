@@ -17,10 +17,11 @@
         {% elsif page_lang == 'en' %}
           {% assign nav_url = nav_prefix | append: item.url %}
         {% endif %}
-        <a class="gh-header-link{% if page.category == item.category or page.url == item.url %} active{% endif %}"
-           href="{{ nav_url }}"
-           data-category="{{ item.category }}"
-           {% if page.category == item.category or page.url == item.url %}aria-current="page"{% endif %}>
+    {% assign page_category = page.category | default: page.categories | first %}
+    <a class="gh-header-link{% if page_category == item.category or page.url == item.url %} active{% endif %}"
+       href="{{ nav_url }}"
+       data-category="{{ item.category }}"
+       {% if page_category == item.category or page.url == item.url %}aria-current="page"{% endif %}>
           {{ strings.nav[item.key] | default: item.name }}
         </a>
       {% endfor %}
