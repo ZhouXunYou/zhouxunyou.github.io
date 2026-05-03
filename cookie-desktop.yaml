@@ -1,0 +1,183 @@
+- generic [active] [ref=e1]:
+  - link "跳到主要内容" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "格物致知" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e7]: 格物致知
+      - navigation [ref=e8]:
+        - link "概览" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - link "前端" [ref=e10] [cursor=pointer]:
+          - /url: /frontend/
+        - link "后端" [ref=e11] [cursor=pointer]:
+          - /url: /backend/
+        - link "JVM" [ref=e12] [cursor=pointer]:
+          - /url: /jvm/
+        - link "DevOps" [ref=e13] [cursor=pointer]:
+          - /url: /devops/
+        - link "关于" [ref=e14] [cursor=pointer]:
+          - /url: /about/
+      - generic [ref=e15]:
+        - button "搜索" [ref=e16] [cursor=pointer]:
+          - img [ref=e17]
+        - link "EN" [ref=e20] [cursor=pointer]:
+          - /url: /en/cookie-policy/
+        - button "切换主题" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+  - main "内容" [ref=e25]:
+    - article [ref=e27]:
+      - heading "Cookie 政策" [level=1] [ref=e29]
+      - generic [ref=e30]:
+        - paragraph [ref=e31]:
+          - strong [ref=e32]: 最后更新：2026年5月2日
+        - paragraph [ref=e33]: 本 Cookie 政策说明格物致知（gwzz.xyz）在使用 Cookie 和类似技术时的做法，以及您如何管理这些偏好。
+        - heading "1. 什么是 Cookie" [level=2] [ref=e34]
+        - paragraph [ref=e35]: Cookie 是您访问网站时存放在浏览器中的小型文本文件。它们被广泛用于使网站更高效地运行，以及为网站所有者提供信息。
+        - heading "2. 我们使用的 Cookie" [level=2] [ref=e36]
+        - heading "2.1 必要 Cookie" [level=3] [ref=e37]
+        - paragraph [ref=e38]: 这些 Cookie 是网站正常运行所必需的，无法禁用。
+        - table [ref=e39]:
+          - rowgroup [ref=e40]:
+            - row "Cookie 用途 存储位置 过期时间" [ref=e41]:
+              - columnheader "Cookie" [ref=e42]
+              - columnheader "用途" [ref=e43]
+              - columnheader "存储位置" [ref=e44]
+              - columnheader "过期时间" [ref=e45]
+          - rowgroup [ref=e46]:
+            - row "主题偏好 记住您选择的深色/浅色主题 localStorage 永久（直到手动清除）" [ref=e47]:
+              - cell "主题偏好" [ref=e48]
+              - cell "记住您选择的深色/浅色主题" [ref=e49]
+              - cell "localStorage" [ref=e50]
+              - cell "永久（直到手动清除）" [ref=e51]
+        - heading "2.2 分析型 Cookie" [level=3] [ref=e52]
+        - paragraph [ref=e53]: 这些 Cookie 帮助我们了解访客如何与网站互动。
+        - table [ref=e54]:
+          - rowgroup [ref=e55]:
+            - row "Cookie 用途 来源 过期时间" [ref=e56]:
+              - columnheader "Cookie" [ref=e57]
+              - columnheader "用途" [ref=e58]
+              - columnheader "来源" [ref=e59]
+              - columnheader "过期时间" [ref=e60]
+          - rowgroup [ref=e61]:
+            - row "Google Analytics 匿名化访问统计 Google 2 年" [ref=e62]:
+              - cell "Google Analytics" [ref=e63]
+              - cell "匿名化访问统计" [ref=e64]
+              - cell "Google" [ref=e65]
+              - cell "2 年" [ref=e66]
+        - heading "2.3 广告 Cookie" [level=3] [ref=e67]
+        - paragraph [ref=e68]: 这些 Cookie 用于展示相关广告。
+        - table [ref=e69]:
+          - rowgroup [ref=e70]:
+            - row "Cookie 用途 来源 过期时间" [ref=e71]:
+              - columnheader "Cookie" [ref=e72]
+              - columnheader "用途" [ref=e73]
+              - columnheader "来源" [ref=e74]
+              - columnheader "过期时间" [ref=e75]
+          - rowgroup [ref=e76]:
+            - row "Google AdSense 个性化广告投放 Google 最长 13 个月" [ref=e77]:
+              - cell "Google AdSense" [ref=e78]
+              - cell "个性化广告投放" [ref=e79]
+              - cell "Google" [ref=e80]
+              - cell "最长 13 个月" [ref=e81]
+            - row "DoubleClick 广告展示和点击跟踪 Google 最长 13 个月" [ref=e82]:
+              - cell "DoubleClick" [ref=e83]
+              - cell "广告展示和点击跟踪" [ref=e84]
+              - cell "Google" [ref=e85]
+              - cell "最长 13 个月" [ref=e86]
+        - heading "2.4 CDN Cookie" [level=3] [ref=e87]
+        - table [ref=e88]:
+          - rowgroup [ref=e89]:
+            - row "Cookie 用途 来源 过期时间" [ref=e90]:
+              - columnheader "Cookie" [ref=e91]
+              - columnheader "用途" [ref=e92]
+              - columnheader "来源" [ref=e93]
+              - columnheader "过期时间" [ref=e94]
+          - rowgroup [ref=e95]:
+            - row "jsDelivr CDN 缓存和性能 jsDelivr 会话" [ref=e96]:
+              - cell "jsDelivr" [ref=e97]
+              - cell "CDN 缓存和性能" [ref=e98]
+              - cell "jsDelivr" [ref=e99]
+              - cell "会话" [ref=e100]
+        - heading "3. 第三方 Cookie" [level=2] [ref=e101]
+        - paragraph [ref=e102]: 我们无法控制第三方 Cookie 的使用。以上列出的第三方服务各自有其隐私政策：
+        - list [ref=e103]:
+          - listitem [ref=e104]:
+            - link "Google 隐私政策" [ref=e105] [cursor=pointer]:
+              - /url: https://policies.google.com/privacy
+          - listitem [ref=e106]:
+            - link "jsDelivr 隐私政策" [ref=e107] [cursor=pointer]:
+              - /url: https://www.jsdelivr.com/privacy-policy-jsdelivr-net
+        - heading "4. 如何管理 Cookie" [level=2] [ref=e108]
+        - heading "4.1 浏览器设置" [level=3] [ref=e109]
+        - paragraph [ref=e110]: 您可以通过浏览器设置管理或删除 Cookie：
+        - list [ref=e111]:
+          - listitem [ref=e112]:
+            - strong [ref=e113]: Chrome
+            - text: ：设置 → 隐私与安全 → Cookie 及其他站点数据
+          - listitem [ref=e114]:
+            - strong [ref=e115]: Firefox
+            - text: ：设置 → 隐私与安全 → Cookie 和站点数据
+          - listitem [ref=e116]:
+            - strong [ref=e117]: Safari
+            - text: ：偏好设置 → 隐私 → 管理网站数据
+          - listitem [ref=e118]:
+            - strong [ref=e119]: Edge
+            - text: ：设置 → Cookie 和站点权限 → 管理和删除 Cookie
+        - heading "4.2 选择退出个性化广告" [level=3] [ref=e120]
+        - list [ref=e121]:
+          - listitem [ref=e122]:
+            - link "Google 广告设置" [ref=e123] [cursor=pointer]:
+              - /url: https://adssettings.google.com/
+            - text: — 管理广告个性化偏好
+          - listitem [ref=e124]:
+            - link "Your Online Choices" [ref=e125] [cursor=pointer]:
+              - /url: https://www.youronlinechoices.com/
+            - text: — 欧洲用户选择退出
+          - listitem [ref=e126]:
+            - link "Network Advertising Initiative" [ref=e127] [cursor=pointer]:
+              - /url: https://optout.networkadvertising.org/
+            - text: — 美国用户选择退出
+        - heading "4.3 选择退出 Google Analytics" [level=3] [ref=e128]
+        - paragraph [ref=e129]:
+          - text: 安装
+          - link "Google Analytics 选择退出插件" [ref=e130] [cursor=pointer]:
+            - /url: https://tools.google.com/dlpage/gaoptout
+          - text: 。
+        - heading "5. Cookie 的变更" [level=2] [ref=e131]
+        - paragraph [ref=e132]: 如果我们对 Cookie 的使用方式做出变更，将在此页面上更新政策并修改”最后更新”日期。
+        - heading "6. 联系方式" [level=2] [ref=e133]
+        - paragraph [ref=e134]: 如果您对本 Cookie 政策有任何疑问，请通过以下方式联系我们：
+        - list [ref=e135]:
+          - listitem [ref=e136]:
+            - strong [ref=e137]: 邮箱
+            - text: ：gwzz@gwzz.xyz
+          - listitem [ref=e138]:
+            - strong [ref=e139]: GitHub
+            - text: ：
+            - link "zhouxunyou" [ref=e140] [cursor=pointer]:
+              - /url: https://github.com/zhouxunyou
+        - paragraph [ref=e141]:
+          - text: 相关链接：
+          - link "隐私政策" [ref=e142] [cursor=pointer]:
+            - /url: /privacy-policy/
+      - link "编辑此页" [ref=e143] [cursor=pointer]:
+        - /url: https://github.com/zhouxunyou/zhouxunyou.github.io/edit/main/cookie-policy.md
+        - img [ref=e144]
+        - text: 编辑此页
+  - contentinfo [ref=e146]:
+    - generic [ref=e147]:
+      - list [ref=e148]:
+        - listitem [ref=e149]: © 2026
+        - listitem [ref=e150]:
+          - link "gwzz.xyz" [ref=e151] [cursor=pointer]:
+            - /url: https://gwzz.xyz
+        - listitem [ref=e152]:
+          - link "隐私政策" [ref=e153] [cursor=pointer]:
+            - /url: /privacy-policy/
+        - listitem [ref=e154]:
+          - link "Cookie" [ref=e155] [cursor=pointer]:
+            - /url: /cookie-policy/
+      - paragraph [ref=e156]: 格物致知 — 深入技术本质，构建系统认知

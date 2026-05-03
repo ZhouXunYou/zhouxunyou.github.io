@@ -362,7 +362,7 @@ my-chart/
 # Chart.yaml
 apiVersion: v2
 name: my-app
-description: My application Helm chart
+description: Kubernetes storage management Helm chart
 type: application
 version: 1.0.0
 appVersion: "2.0.0"
