@@ -9,6 +9,7 @@ sort_order: 6
 nav:
   prev: /frontend-react/
   next: /frontend-component/
+link_gate_slug: test-resource
 ---
 
 ## Vue 3 响应式原理

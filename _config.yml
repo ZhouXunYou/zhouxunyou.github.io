@@ -85,5 +85,5 @@ jekyll-minifier:
   exclude: ['search.json', 'feed.xml']
 
 # Link Gate (Cloudflare Worker)
-link_gate_api: # https://gwzz-link-gate.<your-subdomain>.workers.dev
-link_gate_ad_slot: # AdSense ad-slot for link gate
+link_gate_api: https://gwzz-link-gate.gwzz.workers.dev
+link_gate_ad_slot: 1234567890
