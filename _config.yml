@@ -10,6 +10,7 @@ location: "China"
 
 # Google AdSense — replace with your publisher ID after approval
 google_adsense: # ca-pub-XXXXXXXXXXXXXXXX
+og_image: "/assets/images/og-default.svg"
 
 # i18n
 default_lang: zh
@@ -24,6 +25,7 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-sitemap
+  - jekyll-minifier
 
 # Feed: include projects collection
 feed:
@@ -67,3 +69,9 @@ exclude:
   - vendor/
   - CODEBUDDY.md
   - README.md
+
+jekyll-minifier:
+  compress_html: true
+  compress_css: true
+  compress_js: true
+  exclude: ['search.json', 'feed.xml']
