@@ -1,1 +1,179 @@
-[]
+- name: modern-javascript-knowledge
+  url: /frontend-javascript/
+  description: A comprehensive knowledge base covering modern JavaScript features, ES6+ syntax, async patterns, and module systems.
+  description_zh: 现代 JavaScript 知识库，涵盖 ES6+ 语法、异步模式、模块系统等核心特性。
+  language: JavaScript
+  language_color: "#f1e05a"
+  stars: 326
+  forks: 58
+  topics:
+    - javascript
+    - es6
+    - async-await
+    - modules
+  category: frontend-javascript
+
+- name: react-patterns-and-practices
+  url: /frontend-react/
+  description: React design patterns, hooks best practices, state management strategies, and component architecture.
+  description_zh: React 设计模式、Hooks 最佳实践、状态管理策略与组件架构。
+  language: JavaScript
+  language_color: "#f1e05a"
+  stars: 278
+  forks: 45
+  topics:
+    - react
+    - hooks
+    - state-management
+    - design-patterns
+  category: frontend-react
+
+- name: frontend-performance-optimization
+  url: /frontend-performance/
+  description: Techniques and tools for measuring and optimizing web performance, including Core Web Vitals and rendering strategies.
+  description_zh: Web 性能测量与优化技术，涵盖 Core Web Vitals、渲染策略及性能工具。
+  language: JavaScript
+  language_color: "#f1e05a"
+  stars: 195
+  forks: 34
+  topics:
+    - performance
+    - core-web-vitals
+    - optimization
+    - rendering
+  category: frontend-performance
+
+- name: go-concurrency-and-web
+  url: /backend-go/
+  description: Deep dive into Go concurrency primitives, goroutine patterns, and building high-performance web services.
+  description_zh: 深入 Go 并发原语、Goroutine 模式与高性能 Web 服务构建。
+  language: Go
+  language_color: "#00ADD8"
+  stars: 412
+  forks: 87
+  topics:
+    - golang
+    - concurrency
+    - goroutine
+    - web-framework
+  category: backend-go
+
+- name: microservice-architecture-guide
+  url: /backend-microservice/
+  description: Microservice design principles, service decomposition, inter-service communication, and distributed system patterns.
+  description_zh: 微服务设计原则、服务拆分、服务间通信与分布式系统模式。
+  language: Go
+  language_color: "#00ADD8"
+  stars: 367
+  forks: 72
+  topics:
+    - microservices
+    - distributed-systems
+    - service-mesh
+    - api-gateway
+  category: backend-microservice
+
+- name: auth-authorization-deep-dive
+  url: /backend-auth/
+  description: Authentication and authorization patterns including OAuth2, JWT, RBAC, and session management best practices.
+  description_zh: 认证与授权模式，包括 OAuth2、JWT、RBAC 及会话管理最佳实践。
+  language: Python
+  language_color: "#3572A5"
+  stars: 245
+  forks: 51
+  topics:
+    - authentication
+    - oauth2
+    - jwt
+    - rbac
+  category: backend-auth
+
+- name: jvm-gc-collectors-deep-dive
+  url: /jvm-gc-collectors/
+  description: In-depth analysis of JVM garbage collectors — Serial, Parallel, CMS, G1, ZGC, and Shenandoah internals.
+  description_zh: JVM 垃圾收集器深度剖析——Serial、Parallel、CMS、G1、ZGC 与 Shenandoah 内部原理。
+  language: Java
+  language_color: "#b07219"
+  stars: 389
+  forks: 64
+  topics:
+    - jvm
+    - garbage-collection
+    - g1gc
+    - zgc
+  category: jvm-gc-collectors
+
+- name: jvm-tuning-in-practice
+  url: /jvm-tuning-practice/
+  description: Practical JVM tuning strategies — heap sizing, GC selection, JIT optimization, and real-world case studies.
+  description_zh: JVM 调优实战——堆大小设置、GC 选择、JIT 优化与真实案例分析。
+  language: Java
+  language_color: "#b07219"
+  stars: 298
+  forks: 53
+  topics:
+    - jvm
+    - tuning
+    - performance
+    - heap-analysis
+  category: jvm-tuning-practice
+
+- name: jvm-diagnostics-troubleshooting
+  url: /jvm-diagnostics/
+  description: JVM diagnostics toolkit — thread dumps, heap dumps, GC logs analysis, and common failure pattern identification.
+  description_zh: JVM 诊断工具箱——线程转储、堆转储、GC 日志分析与常见故障模式识别。
+  language: Java
+  language_color: "#b07219"
+  stars: 276
+  forks: 48
+  topics:
+    - jvm
+    - diagnostics
+    - troubleshooting
+    - profiling
+  category: jvm-diagnostics
+
+- name: kubernetes-core-concepts
+  url: /devops-k8s-basics/
+  description: Kubernetes fundamental concepts — Pods, Services, Deployments, ConfigMaps, and cluster architecture essentials.
+  description_zh: Kubernetes 核心概念——Pod、Service、Deployment、ConfigMap 与集群架构要点。
+  language: Shell
+  language_color: "#89e051"
+  stars: 465
+  forks: 92
+  topics:
+    - kubernetes
+    - k8s
+    - containers
+    - orchestration
+  category: devops-k8s-basics
+
+- name: ci-cd-github-actions
+  url: /devops-github-actions/
+  description: Building CI/CD pipelines with GitHub Actions — workflows, reusable actions, matrix builds, and deployment automation.
+  description_zh: 使用 GitHub Actions 构建 CI/CD 流水线——工作流、可复用 Action、矩阵构建与部署自动化。
+  language: Shell
+  language_color: "#89e051"
+  stars: 203
+  forks: 37
+  topics:
+    - github-actions
+    - ci-cd
+    - automation
+    - devops
+  category: devops-github-actions
+
+- name: observability-and-monitoring
+  url: /devops-observability/
+  description: Observability stack — metrics with Prometheus, tracing with OpenTelemetry, logging with Loki, and alerting strategies.
+  description_zh: 可观测性体系——Prometheus 指标、OpenTelemetry 链路追踪、Loki 日志与告警策略。
+  language: Python
+  language_color: "#3572A5"
+  stars: 318
+  forks: 66
+  topics:
+    - observability
+    - prometheus
+    - opentelemetry
+    - monitoring
+  category: devops-observability
