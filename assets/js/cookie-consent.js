@@ -9,15 +9,17 @@
 
   banner.style.display = 'block';
 
-  document.getElementById('gh-cookie-accept').addEventListener('click', function() {
+  var acceptBtn = document.getElementById('gh-cookie-accept');
+  var declineBtn = document.getElementById('gh-cookie-decline');
+
+  if (acceptBtn) acceptBtn.addEventListener('click', function() {
     localStorage.setItem('cookie-consent', 'accepted');
     banner.style.display = 'none';
   });
 
-  document.getElementById('gh-cookie-decline').addEventListener('click', function() {
+  if (declineBtn) declineBtn.addEventListener('click', function() {
     localStorage.setItem('cookie-consent', 'declined');
     banner.style.display = 'none';
-    // Disable non-essential cookies
     disableNonEssentialCookies();
   });
 

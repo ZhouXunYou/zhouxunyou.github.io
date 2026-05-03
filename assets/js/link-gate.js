@@ -13,6 +13,8 @@
   var pwdCode = document.getElementById('linkGatePwdCode');
   var errorEl = document.getElementById('linkGateError');
 
+  if (!btn || !countdown || !timer) return;
+
   var seconds = 10;
 
   var interval = setInterval(function() {
@@ -35,23 +37,27 @@
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.error) {
+        if (errorEl) {
           errorEl.textContent = data.error;
           errorEl.style.display = 'block';
+        }
           btn.textContent = '获取下载链接';
           btn.disabled = false;
           return;
         }
-        urlEl.href = data.url;
-        result.style.display = 'block';
+        if (urlEl) urlEl.href = data.url;
+        if (result) result.style.display = 'block';
         btn.style.display = 'none';
         if (data.password) {
-          pwdCode.textContent = data.password;
-          pwdEl.style.display = 'block';
+          if (pwdCode) pwdCode.textContent = data.password;
+          if (pwdEl) pwdEl.style.display = 'block';
         }
       })
       .catch(function() {
+      if (errorEl) {
         errorEl.textContent = '获取失败，请稍后重试';
         errorEl.style.display = 'block';
+      }
         btn.textContent = '获取下载链接';
         btn.disabled = false;
       });
