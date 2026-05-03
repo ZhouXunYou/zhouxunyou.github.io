@@ -85,7 +85,7 @@ Cookie 是您访问网站时存放在浏览器中的小型文本文件。它们�
 
 如果您对本 Cookie 政策有任何疑问，请通过以下方式联系我们：
 
-- **邮箱**：gwzz@gwzz.xyz
+- **邮箱**：zhouxunyou@gmail.com
 - **GitHub**：[zhouxunyou](https://github.com/zhouxunyou)
 
 相关链接：[隐私政策](/privacy-policy/)

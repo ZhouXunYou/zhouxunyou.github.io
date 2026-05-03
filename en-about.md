@@ -73,6 +73,6 @@ This site is built with Jekyll, using a custom GitHub-style theme with dark/ligh
 
 ## Get in Touch
 
-- **Email**: gwzz@gwzz.xyz
+- **Email**: zhouxunyou@gmail.com
 - **GitHub**: [zhouxunyou](https://github.com/zhouxunyou)
 - **Blog**: [gwzz.xyz](https://gwzz.xyz)

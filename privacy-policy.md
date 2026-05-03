@@ -83,5 +83,5 @@ sidebar: false
 
 如果您对本隐私政策有任何疑问，请通过以下方式联系我们：
 
-- **邮箱**：gwzz@gwzz.xyz
+- **邮箱**：zhouxunyou@gmail.com
 - **GitHub**：[zhouxunyou](https://github.com/zhouxunyou)

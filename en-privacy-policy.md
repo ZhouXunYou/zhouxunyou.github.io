@@ -83,5 +83,5 @@ We may update this Privacy Policy from time to time. Updated policies will be po
 
 If you have any questions about this Privacy Policy, please contact us at:
 
-- **Email**: gwzz@gwzz.xyz
+- **Email**: zhouxunyou@gmail.com
 - **GitHub**: [zhouxunyou](https://github.com/zhouxunyou)

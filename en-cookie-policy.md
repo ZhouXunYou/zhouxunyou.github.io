@@ -85,7 +85,7 @@ If we make changes to how we use cookies, we will update this policy and modify 
 
 If you have any questions about this Cookie Policy, please contact us at:
 
-- **Email**: gwzz@gwzz.xyz
+- **Email**: zhouxunyou@gmail.com
 - **GitHub**: [zhouxunyou](https://github.com/zhouxunyou)
 
 Related: [Privacy Policy](/en/privacy-policy/)
