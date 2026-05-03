@@ -1,0 +1,59 @@
+(function() {
+  var gate = document.getElementById('linkGate');
+  if (!gate) return;
+
+  var slug = gate.dataset.slug;
+  var apiBase = gate.dataset.api;
+  var btn = document.getElementById('linkGateBtn');
+  var countdown = document.getElementById('linkGateCountdown');
+  var timer = document.getElementById('linkGateTimer');
+  var result = document.getElementById('linkGateResult');
+  var urlEl = document.getElementById('linkGateUrl');
+  var pwdEl = document.getElementById('linkGatePwd');
+  var pwdCode = document.getElementById('linkGatePwdCode');
+  var errorEl = document.getElementById('linkGateError');
+
+  var seconds = 10;
+
+  var interval = setInterval(function() {
+    seconds--;
+    countdown.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(interval);
+      timer.style.display = 'none';
+      btn.disabled = false;
+      btn.classList.add('active');
+    }
+  }, 1000);
+
+  btn.addEventListener('click', function() {
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = '获取中...';
+
+    fetch(apiBase + '/api/links/' + encodeURIComponent(slug))
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.error) {
+          errorEl.textContent = data.error;
+          errorEl.style.display = 'block';
+          btn.textContent = '获取下载链接';
+          btn.disabled = false;
+          return;
+        }
+        urlEl.href = data.url;
+        result.style.display = 'block';
+        btn.style.display = 'none';
+        if (data.password) {
+          pwdCode.textContent = data.password;
+          pwdEl.style.display = 'block';
+        }
+      })
+      .catch(function() {
+        errorEl.textContent = '获取失败，请稍后重试';
+        errorEl.style.display = 'block';
+        btn.textContent = '获取下载链接';
+        btn.disabled = false;
+      });
+  });
+})();

@@ -1,0 +1,11 @@
+name = "gwzz-link-gate"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "LINKS_KV"
+id = "YOUR_KV_NAMESPACE_ID"
+
+[vars]
+ADMIN_TOKEN = "YOUR_ADMIN_TOKEN"
+SITE_DOMAIN = "gwzz.xyz"

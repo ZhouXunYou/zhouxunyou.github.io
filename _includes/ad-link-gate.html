@@ -1,0 +1,33 @@
+{% if site.google_adsense and page.link_gate_slug %}
+<div class="gh-link-gate" id="linkGate" data-slug="{{ page.link_gate_slug }}" data-api="{{ site.link_gate_api }}">
+  <div class="gh-link-gate-ad">
+    <p class="gh-link-gate-label">观看广告后获取下载链接</p>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="{{ site.google_adsense }}"
+         data-ad-slot="{{ site.link_gate_ad_slot }}"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <div class="gh-link-gate-timer" id="linkGateTimer">
+    <span id="linkGateCountdown">10</span> 秒后可获取链接
+  </div>
+
+  <button class="gh-link-gate-btn" id="linkGateBtn" disabled>
+    获取下载链接
+  </button>
+
+  <div class="gh-link-gate-result" id="linkGateResult" style="display:none">
+    <div class="gh-link-gate-link">
+      <a id="linkGateUrl" href="#" target="_blank" rel="noopener">百度网盘下载</a>
+    </div>
+    <div class="gh-link-gate-pwd" id="linkGatePwd" style="display:none">
+      提取码：<code id="linkGatePwdCode"></code>
+    </div>
+  </div>
+
+  <div class="gh-link-gate-error" id="linkGateError" style="display:none"></div>
+</div>
+{% endif %}
