@@ -414,12 +414,13 @@
 }
 
 .gh-cookie-btn-accept {
-  background-color: var(--color-btn-primary-bg);
-  color: var(--color-btn-primary-text);
-  border-color: var(--color-btn-primary-border);
+  background-color: var(--color-canvas-default);
+  color: var(--color-fg-default);
+  border-color: var(--color-btn-primary-bg);
+  font-weight: 600;
 
   &:hover {
-    background-color: var(--color-btn-primary-hover-bg);
+    background-color: var(--color-canvas-subtle);
   }
 }
 
