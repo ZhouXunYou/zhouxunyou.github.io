@@ -22,6 +22,15 @@ bundle exec jekyll serve
 bundle exec jekyll build
 ```
 
+## CI/CD
+
+- **GitHub Actions** (`.github/workflows/ci.yml`)：每次 push 到 main 和 PR 时自动运行
+  - Jekyll 构建验证
+  - 链接健康检查（lychee）
+  - Lighthouse 性能监控
+- **Lighthouse CI** (`lighthouserc.json`)：性能/无障碍/最佳实践/SEO 评分监控
+- **链接检查**：使用 lychee，排除列表在 `.lycheeignore`
+
 ## 架构
 
 ### 布局结构
