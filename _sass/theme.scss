@@ -66,6 +66,26 @@
   --color-sidebar-active-bg: #f6f8fa;
   --color-sidebar-active-border: #fd8c73;
 
+  // Canvas (Primer aliases)
+  --color-canvas-default:    #ffffff;
+  --color-canvas-subtle:     #f6f8fa;
+
+  // Foreground (Primer aliases)
+  --color-fg-default:        #1f2328;
+  --color-fg-muted:          #656d76;
+
+  // Danger
+  --color-danger-fg:         #d1242f;
+  --color-danger-subtle:     #ffebe9;
+
+  // Neutral / Attention
+  --color-neutral-muted:     rgba(175, 184, 193, 0.2);
+  --color-attention-subtle:  #fff8c5;
+
+  // Buttons (Primer aliases)
+  --color-btn-primary-border:       rgba(31, 35, 40, 0.15);
+  --color-btn-primary-hover-bg:     #2c974b;
+
   // Contribution graph
   --color-calendar-graph-1:  #9be9a8;
   --color-calendar-graph-2:  #40c463;
@@ -146,6 +166,26 @@
   --color-calendar-graph-3:  #26a641;
   --color-calendar-graph-4:  #39d353;
   --color-calendar-graph-0:  #161b22;
+
+  // Canvas (Primer aliases)
+  --color-canvas-default:    #0d1117;
+  --color-canvas-subtle:     #161b22;
+
+  // Foreground (Primer aliases)
+  --color-fg-default:        #e6edf3;
+  --color-fg-muted:          #8b949e;
+
+  // Danger
+  --color-danger-fg:         #f85149;
+  --color-danger-subtle:     rgba(248, 81, 73, 0.1);
+
+  // Neutral / Attention
+  --color-neutral-muted:     rgba(110, 118, 129, 0.4);
+  --color-attention-subtle:  rgba(187, 128, 9, 0.15);
+
+  // Buttons (Primer aliases)
+  --color-btn-primary-border:       rgba(240, 246, 252, 0.1);
+  --color-btn-primary-hover-bg:     #2ea043;
 
   // Domain colors
   --color-domain-frontend:   #5a9fd4;

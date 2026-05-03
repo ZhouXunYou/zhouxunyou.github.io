@@ -29,7 +29,7 @@ languages:
     name: English
 
 # Build settings
-theme: minima
+theme: null
 plugins:
   - jekyll-feed
   - jekyll-sitemap
@@ -77,6 +77,12 @@ exclude:
   - vendor/
   - CODEBUDDY.md
   - README.md
+  - worker/
+  - "*.yaml"
+  - "*.yml"
+  - "*.png"
+  - "*.docx"
+  - WW_verify_*.txt
 
 jekyll-minifier:
   compress_html: true

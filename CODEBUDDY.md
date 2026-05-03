@@ -75,3 +75,5 @@ bundle exec jekyll build
 
 ## CodeBuddy Added Memories
 - 必须使用中文
+- 当我说"zxy"代表"阅读理解工程"
+- 删除zxy的定义

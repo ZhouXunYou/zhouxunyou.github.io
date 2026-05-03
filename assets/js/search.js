@@ -299,10 +299,31 @@
     }
   }
 
+  // Focus trap: keep Tab within the modal
+  function handleFocusTrap(e) {
+    if (e.key !== 'Tab') return;
+    var focusable = overlay.querySelectorAll('input, a[href], button, [tabindex]:not([tabindex="-1"])');
+    if (focusable.length === 0) return;
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
   // Open/close search
   function openSearch() {
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleFocusTrap);
     input.focus();
     initSearch(function() {});
   }
@@ -310,6 +331,7 @@
   function closeSearch() {
     overlay.classList.remove('active');
     document.body.style.overflow = '';
+    document.removeEventListener('keydown', handleFocusTrap);
     input.value = '';
     resultsList.innerHTML = '';
     emptyEl.classList.remove('visible');

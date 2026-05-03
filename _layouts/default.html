@@ -14,7 +14,7 @@
         </button>
         {% include sidebar.html %}
       {% endunless %}
-      <main class="gh-main" id="main-content" role="main" aria-label="{{ strings.aria.content }}">
+      <main class="gh-main" id="main-content" aria-label="{{ strings.aria.content }}">
         <div class="gh-container">
           {{ content }}
         </div>
@@ -24,5 +24,13 @@
     {% include search-modal.html %}
     <script src="{{ '/assets/js/cookie-consent.js' | relative_url }}" defer></script>
     {%- include cookie-banner.html -%}
+    <script>
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('.js-back-btn');
+      if (btn) { e.preventDefault(); history.back(); }
+      var searchBtn = e.target.closest('.js-404-search-btn');
+      if (searchBtn) { var sb = document.getElementById('gh-search-btn'); if (sb) sb.click(); }
+    });
+    </script>
   </body>
 </html>

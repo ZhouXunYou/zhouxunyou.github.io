@@ -8,3 +8,36 @@ vendor/
 .DS_Store
 .playwright-cli/
 node_modules/
+
+# Playwright snapshots & test files (root only)
+/accept-test.yaml
+/blogpost-snap.yaml
+/cookie-desktop.yaml
+/cookie-policy.yaml
+/decline-test.yaml
+/desktop-home.yaml
+/desktop-snap.yml
+/home-desktop.yaml
+/homepage-snap.yaml
+/mobile-snap.yaml
+/privacy-desktop.yaml
+/privacy-policy.yaml
+/cookie-banner-check.png
+/desktop-cookie-policy.png
+/desktop-en-privacy-policy.png
+/desktop-home-1440.png
+/desktop-privacy-policy.png
+/homepage-desktop.png
+/homepage-mobile.png
+/mobile-home-375-full.png
+/mobile-home-375.png
+/screenshot-home-1440.png
+
+# Personal files
+/周训游-个人简历.docx
+
+# WeChat verification
+/WW_verify_*.txt
+
+# Cloudflare Worker
+/worker/

@@ -4,8 +4,8 @@
   "description": "软件开发知识库",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0d1117",
-  "theme_color": "#238636",
+  "background_color": "#ffffff",
+  "theme_color": "#24292f",
   "icons": [
     {
       "src": "/assets/images/favicon-96x96.png",

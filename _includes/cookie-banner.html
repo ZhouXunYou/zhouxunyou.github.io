@@ -3,9 +3,9 @@
   <div class="gh-cookie-banner-inner">
     <p class="gh-cookie-banner-text">
       {%- if page.lang == 'en' -%}
-        We use cookies to improve your experience and analyze site traffic. By clicking "Accept", you consent to our use of cookies. <a href="/en/cookie-policy/">Learn more</a>
+        We use cookies to improve your experience and analyze site traffic. By clicking "Accept", you consent to our use of cookies. <a href="{{ '/en/cookie-policy/' | relative_url }}">Learn more</a>
       {%- else -%}
-        我们使用 Cookie 来改善您的体验并分析网站流量。点击"接受"即表示您同意我们使用 Cookie。<a href="/cookie-policy/">了解更多</a>
+        我们使用 Cookie 来改善您的体验并分析网站流量。点击"接受"即表示您同意我们使用 Cookie。<a href="{{ '/cookie-policy/' | relative_url }}">了解更多</a>
       {%- endif -%}
     </p>
     <div class="gh-cookie-banner-actions">

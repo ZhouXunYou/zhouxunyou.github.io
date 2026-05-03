@@ -24,7 +24,7 @@ sidebar: false
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/></svg>
       {% if page_lang == 'en' %}Back to home{% else %}返回首页{% endif %}
     </a>
-    <button class="gh-btn" onclick="document.getElementById('gh-search-btn').click()" aria-label="{{ strings.aria.search | default: '搜索' }}">
+    <button class="gh-btn js-404-search-btn" aria-label="{{ strings.aria.search | default: '搜索' }}">
       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.08 7.02a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"/></svg>
       {% if page_lang == 'en' %}Search{% else %}搜索{% endif %}
     </button>
