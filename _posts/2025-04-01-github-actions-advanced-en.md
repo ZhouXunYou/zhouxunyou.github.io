@@ -2,7 +2,7 @@
 layout: post
 title: "Advanced GitHub Actions: Building Efficient CI/CD Pipelines"
 date: 2025-04-01
-categories: [devops, cicd]
+categories: [devops]
 author: Zhou Xunyou
 lang: en
 ---

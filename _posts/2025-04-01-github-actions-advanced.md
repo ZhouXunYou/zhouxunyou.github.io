@@ -2,7 +2,7 @@
 layout: post
 title: "GitHub Actions 进阶：构建高效 CI/CD 流水线"
 date: 2025-04-01
-categories: [devops, cicd]
+categories: [devops]
 author: Zhou Xunyou
 lang: zh
 ---

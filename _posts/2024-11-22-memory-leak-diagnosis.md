@@ -2,8 +2,9 @@
 layout: post
 title: "内存泄漏排查实战：用 MAT 和 async-profiler 定位生产问题"
 date: 2024-11-22
-category: jvm-performance
+categories: [jvm]
 author: Zhou Xunyou
+lang: zh
 ---
 
 内存泄漏是 Java 生产环境的常见问题。本文通过一个真实案例，展示如何用 **MAT（Memory Analyzer Tool）** 和 **async-profiler** 定位并解决内存泄漏。

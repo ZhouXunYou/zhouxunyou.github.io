@@ -2,7 +2,7 @@
 layout: post
 title: "Kubernetes Troubleshooting Handbook: From CrashLoopBackOff to Smooth Sailing"
 date: 2025-03-15
-categories: [devops, kubernetes]
+categories: [devops]
 author: Zhou Xunyou
 lang: en
 ---

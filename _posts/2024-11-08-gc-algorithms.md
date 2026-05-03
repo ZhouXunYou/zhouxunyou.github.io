@@ -2,8 +2,9 @@
 layout: post
 title: "垃圾回收算法四大门派：标记-清除、复制、标记-整理、分代"
 date: 2024-11-08
-category: java
+categories: [jvm]
 author: Zhou Xunyou
+lang: zh
 ---
 
 上一篇文章介绍了 JVM 内存分区，本篇深入讲解 GC 的核心算法。理解算法原理才能真正掌握调优技巧。

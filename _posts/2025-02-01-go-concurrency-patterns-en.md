@@ -2,7 +2,7 @@
 layout: post
 title: "Go Concurrency Patterns: From Goroutines to Production Pipelines"
 date: 2025-02-01
-categories: [backend, go]
+categories: [backend]
 author: Zhou Xunyou
 lang: en
 ---

@@ -2,7 +2,7 @@
 layout: post
 title: "Microservice Resilience: Circuit Breakers, Rate Limiting, and Graceful Degradation"
 date: 2025-03-01
-categories: [backend, microservice]
+categories: [backend]
 author: Zhou Xunyou
 lang: en
 ---

@@ -2,7 +2,7 @@
 layout: post
 title: "Kubernetes 排障手册：从 CrashLoopBackOff 到丝滑运行"
 date: 2025-03-15
-categories: [devops, kubernetes]
+categories: [devops]
 author: Zhou Xunyou
 lang: zh
 ---

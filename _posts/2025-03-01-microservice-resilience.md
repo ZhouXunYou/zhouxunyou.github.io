@@ -2,7 +2,7 @@
 layout: post
 title: "微服务弹性设计：熔断、限流与降级实战"
 date: 2025-03-01
-categories: [backend, microservice]
+categories: [backend]
 author: Zhou Xunyou
 lang: zh
 ---

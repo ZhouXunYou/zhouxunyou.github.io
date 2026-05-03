@@ -2,8 +2,9 @@
 layout: post
 title: "JVM 内存模型入门：一文看懂堆与非堆"
 date: 2024-11-01
-category: java
+categories: [jvm]
 author: Zhou Xunyou
+lang: zh
 ---
 
 JVM 运行时数据区是理解 Java 内存管理的基础。本文从整体架构出发，介绍 JVM 如何划分内存、各区域的作用以及常见的内存溢出场景。

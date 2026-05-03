@@ -2,8 +2,9 @@
 layout: post
 title: "堆外内存与 DirectByteBuffer：高性能 I/O 的幕后功臣"
 date: 2024-12-08
-category: jvm-performance
+categories: [jvm]
 author: Zhou Xunyou
+lang: zh
 ---
 
 除了堆内内存，JVM 还有一块常被忽视但至关重要的内存区域——**堆外内存（Off-Heap / Direct Memory）**。它由 NIO 的 `DirectByteBuffer` 和 native 代码使用，是高性能 I/O 的基础。

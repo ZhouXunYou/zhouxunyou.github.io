@@ -2,7 +2,7 @@
 layout: post
 title: "Vue 3 组合式 API 最佳实践模式"
 date: 2025-02-15
-categories: [frontend, vue]
+categories: [frontend]
 author: Zhou Xunyou
 lang: zh
 ---

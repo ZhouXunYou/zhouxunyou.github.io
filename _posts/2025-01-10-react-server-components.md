@@ -2,7 +2,7 @@
 layout: post
 title: "React Server Components：彻底改变前端渲染模式"
 date: 2025-01-10
-categories: [frontend, react]
+categories: [frontend]
 author: Zhou Xunyou
 lang: zh
 ---

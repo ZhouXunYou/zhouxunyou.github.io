@@ -2,8 +2,9 @@
 layout: post
 title: "JVM 性能调优实战：从参数到工具的完整流程"
 date: 2024-12-01
-category: jvm-performance
+categories: [jvm]
 author: Zhou Xunyou
+lang: zh
 ---
 
 前面的文章介绍了原理和工具，本篇将理论与实践结合，讲解如何对真实业务系统做 JVM 调优，包括常见场景的参数配置与调优思路。

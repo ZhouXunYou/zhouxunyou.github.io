@@ -2,7 +2,7 @@
 layout: post
 title: "Go 并发模式：从 goroutine 到生产级管道"
 date: 2025-02-01
-categories: [backend, go]
+categories: [backend]
 author: Zhou Xunyou
 lang: zh
 ---

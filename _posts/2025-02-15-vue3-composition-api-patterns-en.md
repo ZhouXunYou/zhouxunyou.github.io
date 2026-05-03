@@ -2,7 +2,7 @@
 layout: post
 title: "Vue 3 Composition API Best Practice Patterns"
 date: 2025-02-15
-categories: [frontend, vue]
+categories: [frontend]
 author: Zhou Xunyou
 lang: en
 ---

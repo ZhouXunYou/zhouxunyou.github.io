@@ -2,9 +2,9 @@
 layout: post
 title: "Kotlin Coroutines: From Basics to Production"
 date: 2024-09-15
-categories: [kotlin, coroutines, async]
-category: kotlin
+categories: [jvm]
 author: Zhou Xunyou
+lang: zh
 ---
 
 Kotlin coroutines simplify asynchronous programming on the JVM. This post covers the core concepts and production patterns.

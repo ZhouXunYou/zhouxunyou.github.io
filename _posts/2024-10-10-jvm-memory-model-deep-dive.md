@@ -2,9 +2,9 @@
 layout: post
 title: "JVM Memory Model Deep Dive"
 date: 2024-10-10
-categories: [jvm, java, performance]
-category: jvm-performance
+categories: [jvm]
 author: Zhou Xunyou
+lang: zh
 ---
 
 Understanding the JVM memory model is essential for writing high-performance Java applications and diagnosing production issues.

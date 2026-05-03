@@ -2,7 +2,7 @@
 layout: post
 title: "React Server Components: Revolutionizing Frontend Rendering"
 date: 2025-01-10
-categories: [frontend, react]
+categories: [frontend]
 author: Zhou Xunyou
 lang: en
 ---
