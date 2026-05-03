@@ -1,7 +1,7 @@
 {%- if page.layout == 'post' or page.layout == 'page' -%}
 <div class="gh-comments">
   <h3 class="gh-comments-title">
-    {%- if page.lang == 'en' -%}Comments{%- else -%}评论{%- endif -%}
+    {%- if page_lang == 'en' -%}Comments{%- else -%}评论{%- endif -%}
   </h3>
   <div class="giscus"></div>
   <script>
@@ -18,7 +18,7 @@
     script.setAttribute('data-emit-metadata', '0');
     script.setAttribute('data-input-position', 'top');
     script.setAttribute('data-theme', giscusTheme);
-    script.setAttribute('data-lang', '{% if page.lang == "en" %}en{% else %}zh-CN{% endif %}');
+    script.setAttribute('data-lang', '{% if page_lang == "en" %}en{% else %}zh-CN{% endif %}');
     script.setAttribute('data-loading', 'lazy');
     script.crossOrigin = 'anonymous';
     script.async = true;

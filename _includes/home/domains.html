@@ -3,7 +3,6 @@
 <section class="gh-domains">
   <h2 class="gh-section-title">{{ s.home.domains_title }}</h2>
   <div class="gh-domains-grid">
-    {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
     {% assign link_prefix = '' %}
     {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
     {% for category in site.data.categories %}

@@ -2,7 +2,7 @@
 <div class="gh-cookie-banner" id="gh-cookie-banner" style="display:none;">
   <div class="gh-cookie-banner-inner">
     <p class="gh-cookie-banner-text">
-      {%- if page.lang == 'en' -%}
+      {%- if page_lang == 'en' -%}
         We use cookies to improve your experience and analyze site traffic. By clicking "Accept", you consent to our use of cookies. <a href="{{ '/en/cookie-policy/' | relative_url }}">Learn more</a>
       {%- else -%}
         我们使用 Cookie 来改善您的体验并分析网站流量。点击"接受"即表示您同意我们使用 Cookie。<a href="{{ '/cookie-policy/' | relative_url }}">了解更多</a>
@@ -10,10 +10,10 @@
     </p>
     <div class="gh-cookie-banner-actions">
       <button class="gh-cookie-btn gh-cookie-btn-accept" id="gh-cookie-accept">
-        {%- if page.lang == 'en' -%}Accept{%- else -%}接受{%- endif -%}
+        {%- if page_lang == 'en' -%}Accept{%- else -%}接受{%- endif -%}
       </button>
       <button class="gh-cookie-btn gh-cookie-btn-decline" id="gh-cookie-decline">
-        {%- if page.lang == 'en' -%}Decline{%- else -%}拒绝{%- endif -%}
+        {%- if page_lang == 'en' -%}Decline{%- else -%}拒绝{%- endif -%}
       </button>
     </div>
   </div>

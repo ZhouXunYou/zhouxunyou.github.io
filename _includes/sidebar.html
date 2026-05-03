@@ -13,7 +13,6 @@
   <nav class="gh-sidebar-tree" role="navigation" aria-label="{{ strings.aria.category_nav }}">
     {% assign page_category = page.category | default: page.categories | first %}
   {% assign current_cat = page_category | default: 'overview' %}
-    {% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
     {% assign link_prefix = '' %}
     {% if page_lang == 'en' %}{% assign link_prefix = '/en' %}{% endif %}
 

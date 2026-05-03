@@ -43,7 +43,7 @@ sidebar: false
     {%- if page.previous -%}
     <a href="{{ page.previous.url | relative_url }}" class="gh-post-nav-prev">
       <span class="gh-post-nav-label">
-        {%- if page.lang == 'en' -%}Previous{%- else -%}上一篇{%- endif -%}
+        {%- if page_lang == 'en' -%}Previous{%- else -%}上一篇{%- endif -%}
       </span>
       <span class="gh-post-nav-title">{{ page.previous.title }}</span>
     </a>
@@ -51,7 +51,7 @@ sidebar: false
     {%- if page.next -%}
     <a href="{{ page.next.url | relative_url }}" class="gh-post-nav-next">
       <span class="gh-post-nav-label">
-        {%- if page.lang == 'en' -%}Next{%- else -%}下一篇{%- endif -%}
+        {%- if page_lang == 'en' -%}Next{%- else -%}下一篇{%- endif -%}
       </span>
       <span class="gh-post-nav-title">{{ page.next.title }}</span>
     </a>

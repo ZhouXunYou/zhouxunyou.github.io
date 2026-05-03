@@ -1,5 +1,5 @@
 {% comment %} 统计指定语言的分类和项目数 {% endcomment %}
-{% assign page_lang = include.lang | default: page.lang | default: site.default_lang | default: 'zh' %}
+{% assign page_lang = include.lang | default: page_lang %}
 {% assign project_count = 0 %}
 {% assign active_count = 0 %}
 {% for category in site.data.categories %}

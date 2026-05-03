@@ -5,13 +5,6 @@ category: overview
 sidebar: false
 ---
 
-{% assign page_lang = page.lang | default: site.default_lang | default: 'zh' %}
-{% if page_lang == 'en' %}
-  {% assign strings = site.data.strings %}
-{% else %}
-  {% assign strings = site.data.strings_zh %}
-{% endif %}
-
 <div class="gh-404">
   <div class="gh-404-hero">
     <h1 class="gh-404-code">404</h1>

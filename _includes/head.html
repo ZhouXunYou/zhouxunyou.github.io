@@ -67,7 +67,7 @@
     },
     "description": {{ page.description | default: page.excerpt | default: "" | strip_html | normalize_whitespace | truncate: 160 | jsonify }},
     "url": {{ page.url | absolute_url | jsonify }},
-    "inLanguage": {{ page.lang | default: "zh" | jsonify }}
+    "inLanguage": {{ page_lang | jsonify }}
   }
   </script>
   {%- endif -%}

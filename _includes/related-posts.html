@@ -2,7 +2,6 @@
   {%- assign page_category = page.category | default: page.categories | first -%}
   {%- assign related_count = 0 -%}
   {%- assign max_related = 4 -%}
-  {%- assign page_lang = page.lang | default: "zh" -%}
 
   {%- for post in site.posts -%}
     {%- if post.url == page.url -%}
