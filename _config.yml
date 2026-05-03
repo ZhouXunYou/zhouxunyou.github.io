@@ -81,7 +81,6 @@ exclude:
   - "*.yaml"
   - "*.yml"
   - "*.docx"
-  - "*.docx"
   - WW_verify_*.txt
 
 jekyll-minifier:
