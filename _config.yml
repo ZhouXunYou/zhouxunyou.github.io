@@ -38,8 +38,7 @@ plugins:
 # Feed: include projects collection
 feed:
   collections:
-    projects:
-      output: true
+    - projects
 
 # Collections
 collections:
