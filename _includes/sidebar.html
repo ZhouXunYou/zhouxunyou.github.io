@@ -1,4 +1,14 @@
 <aside class="gh-sidebar" role="complementary">
+  <div class="gh-sidebar-profile">
+    {%- if site.avatar -%}
+    <img src="{{ site.avatar | relative_url }}" alt="{{ site.title | escape }}" class="gh-sidebar-avatar" width="64" height="64" loading="lazy">
+    {%- endif -%}
+    <h2 class="gh-sidebar-title">{{ site.title | escape }}</h2>
+    {%- if site.description -%}
+    <p class="gh-sidebar-desc">{{ site.description | escape }}</p>
+    {%- endif -%}
+    {%- include social-links.html -%}
+  </div>
   <!-- Category tree: show group matching current page category, or all on overview -->
   <nav class="gh-sidebar-tree" role="navigation" aria-label="{{ strings.aria.category_nav }}">
     {% assign current_cat = page.category | default: 'overview' %}

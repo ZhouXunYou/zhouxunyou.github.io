@@ -119,3 +119,40 @@
   width: 10px;
   height: 10px;
 }
+
+// Sidebar profile section
+.gh-sidebar-profile {
+  margin-bottom: $spacing-4;
+  text-align: center;
+}
+
+.gh-sidebar-avatar {
+  border-radius: 50%;
+  margin-bottom: $spacing-2;
+  border: 2px solid var(--color-border-default);
+}
+
+.gh-sidebar-title {
+  font-size: 16px;
+  font-weight: $font-weight-semibold;
+  margin: 0 0 $spacing-1;
+  color: var(--color-text-primary);
+}
+
+.gh-sidebar-desc {
+  font-size: $base-font-size;
+  color: var(--color-text-secondary);
+  margin: 0 0 $spacing-2;
+}
+
+.gh-social-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-fg-muted);
+  margin-right: $spacing-2;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--color-fg-default);
+  }
+}
