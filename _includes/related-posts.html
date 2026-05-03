@@ -1,0 +1,54 @@
+{%- if page.categories or page.category -%}
+  {%- assign page_category = page.category | default: page.categories | first -%}
+  {%- assign related_count = 0 -%}
+  {%- assign max_related = 4 -%}
+  {%- assign page_lang = page.lang | default: "zh" -%}
+
+  {%- for post in site.posts -%}
+    {%- if post.url == page.url -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- assign post_lang = post.lang | default: "zh" -%}
+    {%- if post_lang != page_lang -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- assign post_category = post.category | default: post.categories | first -%}
+    {%- if post_category == page_category and related_count < max_related -%}
+      {%- assign related_count = related_count | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if related_count > 0 -%}
+  <div class="gh-related-posts">
+    <h3 class="gh-related-title">
+      {%- if page_lang == 'en' -%}Related Articles{%- else -%}相关文章{%- endif -%}
+    </h3>
+    <ul class="gh-related-list">
+      {%- assign related_count = 0 -%}
+      {%- for post in site.posts -%}
+        {%- if post.url == page.url -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- assign post_lang = post.lang | default: "zh" -%}
+        {%- if post_lang != page_lang -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- assign post_category = post.category | default: post.categories | first -%}
+        {%- if post_category == page_category and related_count < max_related -%}
+          {%- assign related_count = related_count | plus: 1 -%}
+          <li class="gh-related-item">
+            <a href="{{ post.url | relative_url }}" class="gh-related-link">{{ post.title }}</a>
+            <span class="gh-related-date">
+              {%- if page_lang == 'en' -%}
+                {{ post.date | date: "%b %-d, %Y" }}
+              {%- else -%}
+                {{ post.date | date: "%Y年%-m月%d日" }}
+              {%- endif -%}
+            </span>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+  {%- endif -%}
+{%- endif -%}

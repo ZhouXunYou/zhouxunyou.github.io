@@ -24,6 +24,7 @@ sidebar: false
             {% if page_lang == 'en' %}{{ page.date | date: "%b %-d, %Y" }}{% else %}{{ page.date | date: "%Y年%-m月%d日" }}{% endif %}
           </time>
       </span>
+      <span class="gh-issue-meta-item">{% include reading-time.html %}</span>
       {% if page.categories %}
         {% for cat in page.categories %}
           <span class="gh-badge">{{ cat }}</span>
@@ -35,4 +36,25 @@ sidebar: false
     {{ content }}
   </div>
   {% include ad-banner.html %}
+  {%- include related-posts.html -%}
+  {%- if page.next or page.previous -%}
+  <nav class="gh-post-nav">
+    {%- if page.previous -%}
+    <a href="{{ page.previous.url | relative_url }}" class="gh-post-nav-prev">
+      <span class="gh-post-nav-label">
+        {%- if page.lang == 'en' -%}Previous{%- else -%}上一篇{%- endif -%}
+      </span>
+      <span class="gh-post-nav-title">{{ page.previous.title }}</span>
+    </a>
+    {%- endif -%}
+    {%- if page.next -%}
+    <a href="{{ page.next.url | relative_url }}" class="gh-post-nav-next">
+      <span class="gh-post-nav-label">
+        {%- if page.lang == 'en' -%}Next{%- else -%}下一篇{%- endif -%}
+      </span>
+      <span class="gh-post-nav-title">{{ page.next.title }}</span>
+    </a>
+    {%- endif -%}
+  </nav>
+  {%- endif -%}
 </article>
