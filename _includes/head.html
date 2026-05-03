@@ -33,6 +33,7 @@
   <!-- Theme color (matches header bg) -->
   <meta name="theme-color" content="#24292f" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+  <link rel="manifest" href="{{ '/assets/manifest.json' | relative_url }}">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -107,4 +108,11 @@
   {% if site.google_adsense %}
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.google_adsense }}" crossorigin="anonymous"></script>
   {% endif %}
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('{{ "/assets/js/sw.js" | relative_url }}');
+      });
+    }
+  </script>
 </head>

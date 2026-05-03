@@ -541,6 +541,19 @@
   }
 }
 
+// Comments
+.gh-comments {
+  margin-top: $spacing-6;
+  padding-top: $spacing-4;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.gh-comments-title {
+  font-size: $base-font-size;
+  font-weight: $font-weight-semibold;
+  margin: 0 0 $spacing-3 0;
+}
+
 // 404 Page
 .gh-404 {
   padding: $spacing-12 0;

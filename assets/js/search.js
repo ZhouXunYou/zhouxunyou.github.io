@@ -211,9 +211,25 @@
     return { frontend: '前端', backend: '后端', jvm: 'JVM', devops: 'DevOps' }[top] || category;
   }
 
+  // Highlight matched text with <mark> tags
+  function highlightText(text, query) {
+    if (!query || !text) return escapeHtml(text);
+    var escaped = escapeHtml(text);
+    var escapedQuery = escapeHtml(query);
+    // Escape regex special chars
+    var safeQuery = escapedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    try {
+      var regex = new RegExp('(' + safeQuery + ')', 'gi');
+      return escaped.replace(regex, '<mark>$1</mark>');
+    } catch(e) {
+      return escaped;
+    }
+  }
+
   // Render results
   function renderResults(results) {
     var lang = getCurrentLang();
+    var query = input.value.trim();
     var html = '';
 
     results.forEach(function(r, i) {
@@ -225,7 +241,7 @@
 
       html += '<li class="gh-search-result" data-url="' + doc.url + '">';
       html += '<a href="' + doc.url + '" data-index="' + i + '">';
-      html += '<span class="gh-search-result-title">' + escapeHtml(doc.title) + '</span>';
+      html += '<span class="gh-search-result-title">' + highlightText(doc.title, query) + '</span>';
       html += '<span class="gh-search-result-meta">';
       if (catName) {
         html += '<span class="gh-search-result-category ' + catClass + '">' + escapeHtml(catName) + '</span>';

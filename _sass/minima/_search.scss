@@ -245,3 +245,11 @@
     background-color: rgba(255, 255, 255, 0.1);
   }
 }
+
+// Search keyword highlighting
+mark {
+  background-color: var(--color-attention-subtle);
+  color: var(--color-fg-default);
+  padding: 1px 2px;
+  border-radius: 2px;
+}
