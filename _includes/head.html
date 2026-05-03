@@ -116,4 +116,7 @@
       });
     }
   </script>
+  {%- if site.umami and site.umami.enabled -%}
+  <script async src="{{ site.umami.src }}" data-website-id="{{ site.umami.website_id }}"></script>
+  {%- endif -%}
 </head>

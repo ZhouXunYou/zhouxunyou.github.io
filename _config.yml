@@ -12,6 +12,12 @@ avatar: "/assets/images/avatar.svg"
 
 # Google AdSense — replace with your publisher ID after approval
 google_adsense: # ca-pub-XXXXXXXXXXXXXXXX
+
+# Umami Analytics (privacy-friendly) — uncomment and fill in to enable
+umami:
+  # enabled: true
+  # src: https://analytics.example.com/script.js
+  # website_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 og_image: "/assets/images/og-default.svg"
 
 # i18n
