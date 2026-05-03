@@ -2,38 +2,31 @@
 layout: null
 permalink: /search.json
 ---
+{% assign search_pages = site.projects | where_exp: "p", "p.title" %}
+{% assign search_posts = site.posts %}
+{% assign search_all = search_pages | concat: search_posts %}
+{% for page in site.html_pages %}
+  {% if page.title and page.layout != 'default' %}
+    {% assign search_all = search_all | push: page %}
+  {% endif %}
+{% endfor %}
 [
-  {% assign search_pages = site.projects | where_exp: "p", "p.title" %}
-  {% for page in search_pages %}
+  {% for page in search_all %}
   {
     "title": {{ page.title | jsonify }},
-    "category": {{ page.category | jsonify }},
+    "category": {{ page.category | default: page.categories[0] | jsonify }},
     "lang": {{ page.lang | default: "zh" | jsonify }},
     "url": {{ page.url | jsonify }},
+    {% if page.collection == "projects" %}
     "type": "project",
     "content": {{ page.content | strip_html | strip_newlines | normalize_whitespace | truncate: 3000 | jsonify }}
-  }{% unless forloop.last %},{% endunless %}
-  {% endfor %}
-  {% for page in site.posts %}
-  ,{
-    "title": {{ page.title | jsonify }},
-    "category": {{ page.category | default: page.categories | first | jsonify }},
-    "lang": {{ page.lang | default: "zh" | jsonify }},
-    "url": {{ page.url | jsonify }},
+    {% elsif page.collection == "posts" %}
     "type": "post",
     "content": {{ page.content | strip_html | strip_newlines | normalize_whitespace | truncate: 3000 | jsonify }}
-  }
-  {% endfor %}
-  {% for page in site.html_pages %}
-  {% if page.title and page.layout != 'default' %}
-  ,{
-    "title": {{ page.title | jsonify }},
-    "category": {{ page.category | jsonify }},
-    "lang": {{ page.lang | default: "zh" | jsonify }},
-    "url": {{ page.url | jsonify }},
+    {% else %}
     "type": "page",
     "content": {{ page.content | strip_html | strip_newlines | normalize_whitespace | truncate: 2000 | jsonify }}
-  }
-  {% endif %}
+    {% endif %}
+  }{% unless forloop.last %},{% endunless %}
   {% endfor %}
 ]
