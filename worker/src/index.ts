@@ -33,18 +33,19 @@ app.get('/api/links/:slug', async (c) => {
     return c.json({ error: '暂无可用链接' }, 404)
   }
 
-  // 找到第一个未使用的链接
+  // 找到第一个未使用的链接（从 value JSON 中读取状态，不依赖 metadata）
   for (const key of list.keys) {
-    const used = key.metadata?.used as boolean
-    if (!used) {
-      const linkData = await kv.get(key.name, 'json') as any
-      // 标记为已使用
-      await kv.put(key.name, JSON.stringify(linkData), {
-        metadata: { used: true, usedAt: new Date().toISOString() }
-      })
+    const data = await kv.get<{ url: string; password: string | null; used: boolean; usedAt: string | null }>(key.name, 'json')
+    if (data && !data.used) {
+      // 标记为已使用 - 将状态存在 value 本身中
+      await kv.put(key.name, JSON.stringify({
+        ...data,
+        used: true,
+        usedAt: new Date().toISOString()
+      }))
       return c.json({
-        url: linkData.url,
-        password: linkData.password || null
+        url: data.url,
+        password: data.password || null
       })
     }
   }
@@ -76,10 +77,10 @@ app.post('/api/links', async (c) => {
     const key = `link:${slug}:${id}`
     await kv.put(key, JSON.stringify({
       url: link.url,
-      password: link.password || null
-    }), {
-      metadata: { used: false, addedAt: new Date().toISOString() }
-    })
+      password: link.password || null,
+      used: false,
+      usedAt: null
+    }))
     added++
   }
 
@@ -102,16 +103,16 @@ app.get('/api/links/:slug/status', async (c) => {
   let used = 0
 
   for (const key of list.keys) {
-    const isUsed = key.metadata?.used as boolean
+    const data = await kv.get<{ url: string; password: string | null; used: boolean; usedAt: string | null }>(key.name, 'json')
+    const isUsed = data?.used ?? false
     if (isUsed) used++
     else available++
-    const data = await kv.get(key.name, 'json') as any
     links.push({
       id: key.name,
       url: data?.url,
       password: data?.password,
       used: isUsed,
-      usedAt: key.metadata?.usedAt || null
+      usedAt: data?.usedAt || null
     })
   }
 
