@@ -28,8 +28,17 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable pipelines
 ITEM_PIPELINES = {
     "gwzz_spider.pipelines.DedupPipeline": 100,
+    "scrapy.pipelines.images.ImagesPipeline": 200,
+    "gwzz_spider.pipelines.ImageLocalizePipeline": 250,
     "gwzz_spider.pipelines.JsonPipeline": 300,
 }
+
+# ImagesPipeline settings
+import os
+PROJECT_DIR = os.path.dirname(os.path.dirname(__file__))
+IMAGES_STORE = os.path.join(PROJECT_DIR, "output", "images")
+IMAGES_URLS_FIELD = "image_urls"
+IMAGES_RESULT_FIELD = "images"
 
 # AutoThrottle
 AUTOTHROTTLE_ENABLED = True

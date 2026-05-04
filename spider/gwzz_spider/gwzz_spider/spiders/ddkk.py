@@ -163,6 +163,15 @@ class DdkkSpider(scrapy.Spider):
         item["tags"] = f"{keywords}, {category}".strip(", ")
         item["crawl_time"] = datetime.now().isoformat()
 
+        # 收集图片 URL 供 ImagesPipeline 下载
+        image_urls = []
+        for img in article_content.css("img"):
+            src = img.attrib.get("src", "")
+            if src:
+                image_urls.append(urljoin(BASE_URL, src))
+        item["image_urls"] = image_urls
+        item["images"] = []
+
         self.article_count += 1
         self.logger.info(f"爬取文章 [{self.article_count}]: {title}")
         yield item

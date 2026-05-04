@@ -11,3 +11,6 @@ class ArticleItem(scrapy.Item):
     summary = scrapy.Field()
     tags = scrapy.Field()
     crawl_time = scrapy.Field()
+    # Scrapy ImagesPipeline 所需字段
+    image_urls = scrapy.Field()
+    images = scrapy.Field()
