@@ -41,3 +41,7 @@ node_modules/
 
 # Cloudflare Worker
 /worker/
+
+# Python cache
+__pycache__/
+
