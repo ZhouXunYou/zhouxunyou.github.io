@@ -64,9 +64,17 @@ class DdkkSpider(scrapy.Spider):
         if category:
             self.start_urls = [f"{BASE_URL}/category/{category}/index.html"]
 
+    def _reached_limit(self):
+        """检查是否已达到最大文章数"""
+        return self.max_articles > 0 and self.article_count >= self.max_articles
+
     def parse(self, response):
         """首页/分类页：提取教程系列入口"""
+        if self._reached_limit():
+            return
         for link in response.css('a[href*="/category/"]'):
+            if self._reached_limit():
+                return
             href = link.attrib.get("href", "")
             title = link.css("h3::text").get("") or link.css("::text").get("")
 
@@ -79,7 +87,11 @@ class DdkkSpider(scrapy.Spider):
 
     def parse_series(self, response):
         """教程系列页：提取文章链接"""
+        if self._reached_limit():
+            return
         for link in response.css('a[href*="/zhuanlan/"]'):
+            if self._reached_limit():
+                return
             href = link.attrib.get("href", "")
             title = link.css("::text").get("").strip()
 
@@ -94,7 +106,7 @@ class DdkkSpider(scrapy.Spider):
 
     def parse_article(self, response):
         """文章详情页：提取标题和正文内容"""
-        if self.max_articles > 0 and self.article_count >= self.max_articles:
+        if self._reached_limit():
             self.logger.info(f"已达到最大文章数 {self.max_articles}，停止爬取")
             return
 
