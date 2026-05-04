@@ -18,7 +18,7 @@ umami:
   # enabled: true
   # src: https://analytics.example.com/script.js
   # website_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-og_image: "/assets/images/og-default.svg"
+og_image: "/assets/images/og-default.png"
 
 # i18n
 default_lang: zh
