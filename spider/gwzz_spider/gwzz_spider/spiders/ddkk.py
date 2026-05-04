@@ -108,13 +108,19 @@ class DdkkSpider(scrapy.Spider):
             article_content = response
 
         content_parts = []
-        for el in article_content.css("h2, h3, p, pre, ul, ol, table"):
+        for el in article_content.css("h2, h3, p, pre, ul, ol, table, img"):
             tag = el.root.tag
             if tag in ("h2", "h3"):
                 prefix = "##" if tag == "h2" else "###"
                 text = el.css("::text").getall()
                 if text:
                     content_parts.append(f"\n{prefix} {''.join(text).strip()}\n")
+            elif tag == "img":
+                src = el.attrib.get("src", "")
+                alt = el.attrib.get("alt", "")
+                if src:
+                    full_src = urljoin(BASE_URL, src)
+                    content_parts.append(f"![{alt}]({full_src})")
             elif tag == "p":
                 text = el.css("::text").getall()
                 if text:
